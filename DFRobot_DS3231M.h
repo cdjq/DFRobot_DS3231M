@@ -1,0 +1,193 @@
+/*!
+ * @file DFRobot_DS3231M.h
+ * @brief 定义DFRobot_DS3231M 类的基础结构
+ * @copyright	Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
+ * @licence     The MIT License (MIT)
+ * @author [yufeng](yufeng.luo@dfrobot.com)
+ * @version  V1.0
+ * @date  2019-07-13
+ * @https://github.com/DFRobot/DFRobot_DS3231M
+ */
+
+#ifndef _DFRobot_DS3231M_H
+#define _DFRobot_DS3231M_H
+
+#if ARDUINO >= 100
+#include "Arduino.h"
+#else
+#include "WProgram.h"
+#endif
+#include <Wire.h>
+
+
+/*I2C ADDRESS*/
+#define DS3231M_IIC_ADDRESS          0x68
+
+#define SECONDS_FROM_1970_TO_2000    946684800
+#define DS3231M_REG_RTC_SEC          0X00
+#define DS3231M_REG_RTC_MIN          0X01
+#define DS3231M_REG_RTC_HOUR         0X02
+#define DS3231M_REG_RTC_DAY          0X03
+#define DS3231M_REG_RTC_DATE         0X04
+#define DS3231M_REG_RTC_MONTH        0X05
+#define DS3231M_REG_RTC_YEAR         0X06
+#define DS3231M_REG_ALM1_SEC         0X07
+#define DS3231M_REG_ALM1_MIN         0X08
+#define DS3231M_REG_ALM1_HOUR        0X09
+#define DS3231M_REG_ALM1_DAY         0X0A
+#define DS3231M_REG_ALM2_MIN         0X0B
+#define DS3231M_REG_ALM2_HOUR        0X0C
+#define DS3231M_REG_ALM2_DAY         0X0D
+#define DS3231M_REG_CONTROL          0x0E  // Control register
+#define DS3231M_REG_STATUS           0x0F  // Status register
+#define DS3231M_REG_AGE_OFFSET       0X10
+#define DS3231M_REG_TEMPERATURE      0x11  // temperature register
+//打开这个宏，可以看到程序的详细运行过程
+//#define ENABLE_DBG
+
+#ifdef ENABLE_DBG
+#define DBG(...) {Serial.print("[");Serial.print(__FUNCTION__); Serial.print("(): "); Serial.print(__LINE__); Serial.print(" ] "); Serial.println(__VA_ARGS__);}
+#else
+#define DBG(...)
+#endif
+
+class timeSpan;
+
+typedef enum{
+    eDS3231M_OFF             = 0x01, // Off
+    eDS3231M_SquareWave_1Hz  = 0x00, // 1Hz square wave
+    eDS3231M_SquareWave_1kHz = 0x08, // 1kHz square wave
+    eDS3231M_SquareWave_4kHz = 0x10, // 4kHz square wave
+    eDS3231M_SquareWave_8kHz = 0x18  // 8kHz square wave
+}eDs3231MSqwPinMode_t;
+
+typedef enum{
+    eEverySecond,
+    eSecondsMatch,
+    eSecondsMinutesMatch,
+    eSecondsMinutesHoursMatch,
+    eSecondsMinutesHoursDateMatch,
+    eSecondsMinutesHoursDayMatch, //Alarm1
+    eEveryMinute,
+    eMinutesMatch,
+    eMinutesHoursMatch,
+    eMinutesHoursDateMatch,
+    eMinutesHoursDayMatch,        //Alarm2
+    eUnknownAlarm
+}eAlarmTypes;
+
+class DFRobot_DS3231M
+{
+public:
+    DFRobot_DS3231M(TwoWire *pWire = &Wire){_pWire = pWire;};
+    ~DFRobot_DS3231M();
+    /*!
+     *@brief 初始化芯片
+     *@return True代表IIC通信成功，false代表通信失败
+     */
+    bool begin(void);
+    /*!
+     *@brief 获取当前时间数据
+     *@return 当前时间数据
+     */
+    void getNowTime();
+    
+    uint16_t year()         const { return _y; }           // Return the year
+    uint8_t  month()        const { return _m; }           // Return the month
+    uint8_t  day()          const { return _d; }           // Return the day
+    uint8_t  hour()         const { return _hh; }          // Return the hour
+    uint8_t  minute()       const { return _mm; }          // Return the minute
+    uint8_t  second()       const { return _ss; }          // Return the second
+    
+    /*!
+     *@brief get day of week
+     *@return day of week
+     */
+    uint8_t  dayOfTheWeek() const ;
+    
+    void adjust();
+    /*!
+     *@brief 获取当前温度
+     *@return 当前温度，单位为摄氏度
+     */
+    float getTemperature();
+    /*!
+     *@brief 判断是否掉电
+     *@return true为发生掉电，需要重设时间，false为未发生掉电
+     */
+    bool lostPower(void);
+    /*!
+     *@brief 读取sqw引脚的值
+     *@return 读取值在枚举变量eDs3231MSqwPinMode_t中解释
+     */
+    eDs3231MSqwPinMode_t readSqwPinMode();
+    /*!
+     *@brief 设置sqw引脚的值
+     *@param dt 传入值在枚举变量eDs3231MSqwPinMode_t中解释
+     */
+    void writeSqwPinMode(eDs3231MSqwPinMode_t mode);
+    /*!
+     *@brief 设置闹钟
+     *@param alarmType 闹钟的工作模式
+     *@param days    闹钟时间(天)
+     *@param hours   闹钟时间(小时)
+     *@param minutes 闹钟时间(分钟)
+     *@param seconds 闹钟时间(秒)
+     */
+    void setAlarm(const uint8_t alarmType,int16_t days,int8_t hours,int8_t minutes,int8_t seconds, const bool state  = true);
+    /*!
+     *@brief 判断闹钟是否触发
+     *@return true代表触发，false代表未触发
+     */
+    bool isAlarm();
+    /*!
+     *@brief 清除触发
+     */
+    void clearAlarm();
+    
+    uint8_t rtc[7];
+
+protected:
+    uint8_t readReg8(uint8_t reg);
+    void writeReg8(uint8_t reg, uint8_t val);
+    virtual void writeReg(uint8_t reg, const void* pBuf, size_t size);
+    virtual uint8_t readReg(uint8_t reg, const void* pBuf, size_t size);
+    
+    /*!
+     *@brief BCD码转BIN码
+     *@param val 传入BCD码
+     *@return 返回BIN码
+     */
+    static uint8_t bcd2bin(uint8_t val);
+    /*!
+     *@brief BIN码转BCD码
+     *@param val 传入BIN码
+     *@return 返回BCD码
+     */
+    static uint8_t bin2bcd(uint8_t val);
+    /*!
+     *@brief 写入初始时间
+     *@param date 写入初始日期
+     *@param time 写入初始时间
+     */
+    void dateTime(const char* date, const char* time);
+    void dateTime(const __FlashStringHelper* date, const __FlashStringHelper* time);
+    
+    uint8_t y,   ///< Year Offset
+            m,  ///< Months
+            d,    ///< Days
+            hh,   ///< Hours
+            mm, ///< Minutes
+            ss; ///< Seconds
+
+private:
+    TwoWire *_pWire;
+    uint8_t _deviceAddr = DS3231M_IIC_ADDRESS;
+    uint8_t rtc_bcd[7];
+    uint8_t bcd[7];
+    uint8_t  _ss,_mm,_hh,_d,_m;
+    uint16_t _y;
+    uint32_t _SetUnixTime        = 0;
+};
+
+#endif
