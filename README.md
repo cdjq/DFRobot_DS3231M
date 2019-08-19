@@ -157,7 +157,7 @@ To use this library, first download the library file, paste it into the \Arduino
    */
   bool isAlarm();
   /*!
-   *@brief 清除触发
+   *@brief 清除触发flag
    */
   void clearAlarm();
 ```

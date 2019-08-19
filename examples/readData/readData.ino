@@ -7,7 +7,7 @@
  * @licence     The MIT License (MIT)
  * @author [LuoYufeng](yufeng.luo@dfrobot.com)
  * @version  V0.1
- * @date  2019-07-19
+ * @date  2019-08-19
  * @https://github.com/DFRobot/DFRobot_CCS811
  */
 #include "DFRobot_DS3231M.h"
@@ -25,31 +25,52 @@ void setup(void)
         Serial.println("初始化芯片失败，请确认芯片连接是否正确");
         delay(1000);
     }
+    /*!
+     *@brief 设置sqw引脚的值
+     *@param mode eDS3231M_OFF             = 0x01 // Off
+     *@n          eDS3231M_SquareWave_1Hz  = 0x00 // 1Hz square wave
+     *@n          eDS3231M_SquareWave_1kHz = 0x08 // 1kHz square wave
+     *@n          eDS3231M_SquareWave_4kHz = 0x10 // 4kHz square wave
+     *@n          eDS3231M_SquareWave_8kHz = 0x18 // 8kHz square wave
+     */
     rtc.writeSqwPinMode(eDS3231M_SquareWave_1Hz);
+    /*!
+     *@brief 判断是否掉电
+     *@return true为发生掉电，需要重设时间，false为未发生掉电
+     */
     if (rtc.lostPower()) {
         Serial.println("RTC lost power, lets set the time!");
-        // following line sets the RTC to the date & time this sketch was compiled
-        //rtc.adjust(dateTime(F(__DATE__), F(__TIME__)));
+        /*!
+         *@brief 校准当前时间
+         */
         rtc.adjust();
     }
 }
 void loop() {
+    /*!
+     *@brief 获取当前时间数据
+     *@return 当前时间数据
+     */
     rtc.getNowTime();
-    Serial.print(rtc.year(), DEC);
+    Serial.print(rtc.year(), DEC);//year
     Serial.print('/');
-    Serial.print(rtc.month(), DEC);
+    Serial.print(rtc.month(), DEC);//month
     Serial.print('/');
-    Serial.print(rtc.day(), DEC);
+    Serial.print(rtc.day(), DEC);//date
     Serial.print(" (");
-    Serial.print(daysOfTheWeek[rtc.dayOfTheWeek()]);
+    Serial.print(daysOfTheWeek[rtc.dayOfTheWeek()]);//day of week
     Serial.print(") ");
-    Serial.print(rtc.hour(), DEC);
+    Serial.print(rtc.hour(), DEC);//hour
     Serial.print(':');
-    Serial.print(rtc.minute(), DEC);
+    Serial.print(rtc.minute(), DEC);//minute
     Serial.print(':');
-    Serial.print(rtc.second(), DEC);
+    Serial.print(rtc.second(), DEC);//second
     Serial.println();
     Serial.print("Temperature: ");
+    /*!
+     *@brief 获取当前温度
+     *@return 当前温度，单位为摄氏度
+     */
     Serial.print(rtc.getTemperature());
     Serial.println(" C");
     delay(3000);

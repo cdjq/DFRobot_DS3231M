@@ -1,13 +1,13 @@
 /*!
  * @file setAlarms.ino
  * @brief ,设置闹钟
- * @n 实验现象：设置闹钟在12秒后触发
+ * @n 实验现象：设置闹钟在固定的时间触发
  *
  * @copyright	Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  * @licence     The MIT License (MIT)
  * @author [LuoYufeng](yufeng.luo@dfrobot.com)
  * @version  V0.1
- * @date  2019-07-19
+ * @date  2019-08-19
  * @https://github.com/DFRobot/DFRobot_DS3231M
  */
 #include "DFRobot_DS3231M.h"
@@ -25,20 +25,64 @@ void setup(void)
         Serial.println("初始化芯片失败，请确认芯片连接是否正确");
         delay(1000);
     }
-    rtc.getNowTime();
+    /*!
+     *@brief 设置sqw引脚的值
+     *@param mode eDS3231M_OFF             = 0x01 // Off
+     *@n          eDS3231M_SquareWave_1Hz  = 0x00 // 1Hz square wave
+     *@n          eDS3231M_SquareWave_1kHz = 0x08 // 1kHz square wave
+     *@n          eDS3231M_SquareWave_4kHz = 0x10 // 4kHz square wave
+     *@n          eDS3231M_SquareWave_8kHz = 0x18 // 8kHz square wave
+     */
     rtc.writeSqwPinMode(eDS3231M_SquareWave_1Hz);
-    Serial.println("Setting alarm with");
-    rtc.setAlarm(eSecondsMinutesHoursDateMatch,19,15,46,12); // Alarm goes off in 12 seconds
+    /*!
+     *@brief 设置闹钟
+     *@param alarmType 闹钟的工作模式typedef enum{
+     *@n                                  eEverySecond,
+     *@n                                  eSecondsMatch,
+     *@n                                  eSecondsMinutesMatch,
+     *@n                                  eSecondsMinutesHoursMatch,
+     *@n                                  eSecondsMinutesHoursDateMatch,
+     *@n                                  eSecondsMinutesHoursDayMatch, //Alarm1
+     *@n                                  eEveryMinute,
+     *@n                                  eMinutesMatch,
+     *@n                                  eMinutesHoursMatch,
+     *@n                                  eMinutesHoursDateMatch,
+     *@n                                  eMinutesHoursDayMatch,        //Alarm2
+     *@n                                  eUnknownAlarm
+     *@n                                  }eAlarmTypes;
+     *@param days    闹钟时间(天)
+     *@param hours   闹钟时间(小时)
+     *@param minutes 闹钟时间(分钟)
+     *@param seconds 闹钟时间(秒)
+     */
+    rtc.setAlarm(eSecondsMinutesHoursDateMatch,19,15,46,12);
+    /*!
+     *@brief 判断是否掉电
+     *@return true为发生掉电，需要重设时间，false为未发生掉电
+     */
     if (rtc.lostPower()) {
         Serial.println("RTC lost power, lets set the time!");
-        // following line sets the RTC to the date & time this sketch was compiled
+        /*!
+         *@brief 校准当前时间
+         */
         rtc.adjust();
     }
 }
 void loop() {
+    /*!
+     *@brief 获取当前时间数据
+     *@return 当前时间数据
+     */
     rtc.getNowTime();
+    /*!
+     *@brief 判断闹钟是否触发
+     *@return true代表触发，false代表未触发
+     */
     if (rtc.isAlarm()){ // If the alarm bit is set
         Serial.println("闹钟触发.");
+        /*!
+         *@brief 清除触发flag
+         */
         rtc.clearAlarm();
     }
     Serial.print(rtc.year(), DEC);
