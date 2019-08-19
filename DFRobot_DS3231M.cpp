@@ -104,13 +104,13 @@ uint8_t DFRobot_DS3231M::dayOfTheWeek() const {
 
 void DFRobot_DS3231M::adjust(){
     dateTime(F(__DATE__), F(__TIME__));
-    writeReg8(DS3231M_REG_RTC_SEC,bin2bcd(ss));                 // Write seconds, keep device off
-    writeReg8(DS3231M_REG_RTC_MIN,bin2bcd(mm));                 // Write the minutes value
-    writeReg8(DS3231M_REG_RTC_HOUR,bin2bcd(hh));                // Also re-sets the 24Hour clock on
-    writeReg8(DS3231M_REG_RTC_DAY,dayOfTheWeek());              // Update the weekday
-    writeReg8(DS3231M_REG_RTC_DATE,bin2bcd(d));                 // Write the day of month
-    writeReg8(DS3231M_REG_RTC_MONTH,bin2bcd(m));                // Month, ignore century bit
-    writeReg8(DS3231M_REG_RTC_YEAR,bin2bcd(y));                 // Write the year
+    writeReg8(DS3231M_REG_RTC_SEC,bin2bcd(ss));    // Write seconds, keep device off
+    writeReg8(DS3231M_REG_RTC_MIN,bin2bcd(mm));    // Write the minutes value
+    writeReg8(DS3231M_REG_RTC_HOUR,bin2bcd(hh));   // Also re-sets the 24Hour clock on
+    writeReg8(DS3231M_REG_RTC_DAY,dayOfTheWeek()); // Update the weekday
+    writeReg8(DS3231M_REG_RTC_DATE,bin2bcd(d));    // Write the day of month
+    writeReg8(DS3231M_REG_RTC_MONTH,bin2bcd(m));   // Month, ignore century bit
+    writeReg8(DS3231M_REG_RTC_YEAR,bin2bcd(y));    // Write the year
     uint8_t statreg = readReg8(DS3231M_REG_STATUS);
     statreg &= ~0x80; // flip OSF bit
     writeReg8(DS3231M_REG_STATUS, statreg);
@@ -136,8 +136,8 @@ bool DFRobot_DS3231M::lostPower(void) {
     return (readReg8(DS3231M_REG_STATUS) >> 7);
 }
 
-void DFRobot_DS3231M::setAlarm(const uint8_t alarmType, int16_t days,int8_t hours,int8_t minutes,int8_t seconds, const bool state ) 
-{
+void DFRobot_DS3231M::setAlarm(const uint8_t alarmType, int16_t days,int8_t hours,
+                               int8_t minutes,int8_t seconds, const bool state ){
     if (alarmType >= eUnknownAlarm)
         return;
     if (alarmType < eEveryMinute){
@@ -148,39 +148,39 @@ void DFRobot_DS3231M::setAlarm(const uint8_t alarmType, int16_t days,int8_t hour
             writeReg8(DS3231M_REG_ALM1_DAY, bin2bcd(days));
         else
             writeReg8(DS3231M_REG_ALM1_DAY, bin2bcd(dayOfTheWeek()));
-        if(alarmType<eSecondsMinutesHoursDateMatch)                                 // Set the high-bit of ALM1DATE if the alarm bit needs setting
+        if(alarmType<eSecondsMinutesHoursDateMatch)                                 
             writeReg8(DS3231M_REG_ALM1_DAY,readReg8(DS3231M_REG_ALM1_DAY)|0x80);
-        if(alarmType<eSecondsMinutesHoursMatch)                                     // Set the high-bit of ALM1HOUR if the alarm bit needs setting
+        if(alarmType<eSecondsMinutesHoursMatch)                                     
             writeReg8(DS3231M_REG_ALM1_HOUR,readReg8(DS3231M_REG_ALM1_HOUR)|0x80);
-        if(alarmType<eSecondsMinutesMatch)                                          // Set the high-bit of ALM1MIN if the alarm bit needs setting
+        if(alarmType<eSecondsMinutesMatch)                                          
             writeReg8(DS3231M_REG_ALM1_MIN,readReg8(DS3231M_REG_ALM1_MIN)|0x80);
-        if(alarmType==eEverySecond)                                                 // Set the high-bit of ALM1SEC if the alarm bit needs setting
+        if(alarmType==eEverySecond)                                                 
             writeReg8(DS3231M_REG_ALM1_SEC,readReg8(DS3231M_REG_ALM1_SEC)|0x80);
-        if(alarmType==eSecondsMinutesHoursDayMatch)                                 // Set bit 7 if the alarm bit needs setting
+        if(alarmType==eSecondsMinutesHoursDayMatch)                                 
             writeReg8(DS3231M_REG_ALM1_DAY,readReg8(DS3231M_REG_ALM1_DAY)|0x40);
         if (state) 
-            writeReg8(DS3231M_REG_CONTROL,readReg8(DS3231M_REG_CONTROL)|1);         // Set A1IE enable to on
+            writeReg8(DS3231M_REG_CONTROL,readReg8(DS3231M_REG_CONTROL)|1);         
         else 
-            writeReg8(DS3231M_REG_CONTROL,readReg8(DS3231M_REG_CONTROL)&0xFE);      // Set A1IE enable to off
+            writeReg8(DS3231M_REG_CONTROL,readReg8(DS3231M_REG_CONTROL)&0xFE);      
     }
     else{
-        writeReg8(DS3231M_REG_ALM2_MIN,bin2bcd(minutes));                           // Set minutes value
-        writeReg8(DS3231M_REG_ALM2_HOUR,bin2bcd(hours));                            // Set hours value
-        if(alarmType == eMinutesHoursDateMatch)                                     // If we do a min-hh-d match
-            writeReg8(DS3231M_REG_ALM2_DAY,bin2bcd(days));                          // Set day of month value
+        writeReg8(DS3231M_REG_ALM2_MIN,bin2bcd(minutes));                           
+        writeReg8(DS3231M_REG_ALM2_HOUR,bin2bcd(hours));                            
+        if(alarmType == eMinutesHoursDateMatch)                                     
+            writeReg8(DS3231M_REG_ALM2_DAY,bin2bcd(days));                          
         else
-            if (alarmType == eMinutesHoursDayMatch)                                 // if we have a min-hh-dow match
-                writeReg8(DS3231M_REG_ALM2_DAY,bin2bcd(dayOfTheWeek() | 0x80));     // Set day of week value and switch
+            if (alarmType == eMinutesHoursDayMatch)                                 
+                writeReg8(DS3231M_REG_ALM2_DAY,bin2bcd(dayOfTheWeek() | 0x80));     
         if(alarmType < eMinutesHoursDateMatch) 
-            writeReg8(DS3231M_REG_ALM2_DAY,readReg8(DS3231M_REG_ALM2_DAY) | 0x80);  // the alarm bit needs setting
+            writeReg8(DS3231M_REG_ALM2_DAY,readReg8(DS3231M_REG_ALM2_DAY) | 0x80);  
         if(alarmType < eMinutesHoursMatch)
-            writeReg8(DS3231M_REG_ALM2_HOUR,readReg8(DS3231M_REG_ALM2_HOUR) | 0x80);// the alarm bit needs setting
+            writeReg8(DS3231M_REG_ALM2_HOUR,readReg8(DS3231M_REG_ALM2_HOUR) | 0x80);
         if(alarmType == eEveryMinute)
-            writeReg8(DS3231M_REG_ALM2_MIN, readReg8(DS3231M_REG_ALM2_MIN) | 0x80); // the alarm bit needs setting
+            writeReg8(DS3231M_REG_ALM2_MIN, readReg8(DS3231M_REG_ALM2_MIN) | 0x80); 
         if (state) 
-            writeReg8(DS3231M_REG_CONTROL, readReg8(DS3231M_REG_CONTROL)|2);        // Set A2IE enable to on
+            writeReg8(DS3231M_REG_CONTROL, readReg8(DS3231M_REG_CONTROL)|2);
         else
-            writeReg8(DS3231M_REG_CONTROL, readReg8(DS3231M_REG_CONTROL)&0xFD);     // Set A2IE enable to off
+            writeReg8(DS3231M_REG_CONTROL, readReg8(DS3231M_REG_CONTROL)&0xFD);
     } // of if-then-else use alarm 1 or 2
     clearAlarm(); // Clear the alarm state
     return;
