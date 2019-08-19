@@ -1,4 +1,4 @@
-# DFRobot_CCS811
+# DFRobot_DS3231M
 这是一个高精度，高稳定性RTC时钟模块<br>
 这个模块通过IIC通信，它的精度在±5%ppm(每天误差不超过0.432秒)，并且在全温度范围和全寿命期间都能保持这个精度<br>
 这个模块兼容2.5-5.5V宽电压，电池供电时消耗电流低至2uA<br>
@@ -109,19 +109,40 @@ To use this library, first download the library file, paste it into the \Arduino
   
   /*!
    *@brief 读取sqw引脚的值
-   *@return 读取值在枚举变量eDs3231MSqwPinMode_t中解释
+   *@return eDS3231M_OFF             = 0x01 // Off
+   *@n      eDS3231M_SquareWave_1Hz  = 0x00 // 1Hz square wave
+   *@n      eDS3231M_SquareWave_1kHz = 0x08 // 1kHz square wave
+   *@n      eDS3231M_SquareWave_4kHz = 0x10 // 4kHz square wave
+   *@n      eDS3231M_SquareWave_8kHz = 0x18 // 8kHz square wave
    */
   eDs3231MSqwPinMode_t readSqwPinMode();
   
   /*!
    *@brief 设置sqw引脚的值
-   *@param mode 传入值在枚举变量eDs3231MSqwPinMode_t中解释
+   *@param mode eDS3231M_OFF             = 0x01 // Off
+   *@n          eDS3231M_SquareWave_1Hz  = 0x00 // 1Hz square wave
+   *@n          eDS3231M_SquareWave_1kHz = 0x08 // 1kHz square wave
+   *@n          eDS3231M_SquareWave_4kHz = 0x10 // 4kHz square wave
+   *@n          eDS3231M_SquareWave_8kHz = 0x18 // 8kHz square wave
    */
   void writeSqwPinMode(eDs3231MSqwPinMode_t mode);
   
   /*!
    *@brief 设置闹钟
-   *@param alarmType 闹钟的工作模式
+   *@param alarmType 闹钟的工作模式typedef enum{
+   *@n                                  eEverySecond,
+   *@n                                  eSecondsMatch,
+   *@n                                  eSecondsMinutesMatch,
+   *@n                                  eSecondsMinutesHoursMatch,
+   *@n                                  eSecondsMinutesHoursDateMatch,
+   *@n                                  eSecondsMinutesHoursDayMatch, //Alarm1
+   *@n                                  eEveryMinute,
+   *@n                                  eMinutesMatch,
+   *@n                                  eMinutesHoursMatch,
+   *@n                                  eMinutesHoursDateMatch,
+   *@n                                  eMinutesHoursDayMatch,        //Alarm2
+   *@n                                  eUnknownAlarm
+   *@n                                  }eAlarmTypes;
    *@param days    闹钟时间(天)
    *@param hours   闹钟时间(小时)
    *@param minutes 闹钟时间(分钟)
