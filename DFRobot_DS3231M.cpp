@@ -5,8 +5,8 @@
  * @licence     The MIT License (MIT)
  * @author [yufeng](yufeng.luo@dfrobot.com)
  * @version  V1.0
- * @d  2019-07-13
- * @https://github.com/DFRobot/DFRobot_DS3231M
+ * @date  2019-08-19
+ * @url https://github.com/DFRobot/DFRobot_DS3231M
  */
 
 #include <DFRobot_DS3231M.h>
@@ -79,7 +79,6 @@ void DFRobot_DS3231M::dateTime (const __FlashStringHelper* date, const __FlashSt
     memcpy_P(buff, date, 11);
     y = conv2d(buff + 9);
     // Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec
-    Serial.println(y);
     switch (buff[0]) {
         case 'J': m = (buff[1] == 'a') ? 1 : ((buff[2] == 'n') ? 6 : 7); break;
         case 'F': m = 2; break;
@@ -126,7 +125,7 @@ void DFRobot_DS3231M::getNowTime(){
     _y = bcd2bin(bcd[6]) + 2000;
 }
 
-float DFRobot_DS3231M::getTemperature(){
+float DFRobot_DS3231M::getTemperatureC(){
     uint8_t buf[2];
     readReg(DS3231M_REG_TEMPERATURE, buf, 2);
     return ((float)buf[0] + (buf[1]>>6)*0.25f);

@@ -5,8 +5,8 @@
  * @licence     The MIT License (MIT)
  * @author [yufeng](yufeng.luo@dfrobot.com)
  * @version  V1.0
- * @date  2019-07-13
- * @https://github.com/DFRobot/DFRobot_DS3231M
+ * @date  2019-08-19
+ * @url https://github.com/DFRobot/DFRobot_DS3231M
  */
 
 #ifndef _DFRobot_DS3231M_H
@@ -51,8 +51,6 @@
 #define DBG(...)
 #endif
 
-class timeSpan;
-
 typedef enum{
     eDS3231M_OFF             = 0x01, // Off
     eDS3231M_SquareWave_1Hz  = 0x00, // 1Hz square wave
@@ -62,23 +60,27 @@ typedef enum{
 }eDs3231MSqwPinMode_t;
 
 typedef enum{
-    eEverySecond,
-    eSecondsMatch,
-    eSecondsMinutesMatch,
-    eSecondsMinutesHoursMatch,
-    eSecondsMinutesHoursDateMatch,
-    eSecondsMinutesHoursDayMatch, //Alarm1
-    eEveryMinute,
-    eMinutesMatch,
-    eMinutesHoursMatch,
-    eMinutesHoursDateMatch,
-    eMinutesHoursDayMatch,        //Alarm2
+    eEverySecond,                  //每秒重复一次
+    eSecondsMatch,                 //每分钟重复一次
+    eSecondsMinutesMatch,          //每小时重复一次
+    eSecondsMinutesHoursMatch,     //每天重复一次
+    eSecondsMinutesHoursDateMatch, //每月重复一次
+    eSecondsMinutesHoursDayMatch,  //每周重复一次//Alarm1
+    eEveryMinute,                  //每分钟重复一次
+    eMinutesMatch,                 //每小时重复一次
+    eMinutesHoursMatch,            //每天重复一次
+    eMinutesHoursDateMatch,        //每月重复一次
+    eMinutesHoursDayMatch,         //每周重复一次//Alarm2
     eUnknownAlarm
 }eAlarmTypes;
 
 class DFRobot_DS3231M
 {
 public:
+    /**
+     * @brief 构造函数
+     * @param 传入Wire地址
+     */
     DFRobot_DS3231M(TwoWire *pWire = &Wire){_pWire = pWire;};
     ~DFRobot_DS3231M();
     /*!
@@ -88,7 +90,6 @@ public:
     bool begin(void);
     /*!
      *@brief 获取当前时间数据
-     *@return 当前时间数据
      */
     void getNowTime();
     
@@ -104,13 +105,15 @@ public:
      *@return day of week
      */
     uint8_t  dayOfTheWeek() const ;
-    
+    /*!
+     *@brief 校准当前时间
+     */
     void adjust();
     /*!
      *@brief 获取当前温度
      *@return 当前温度，单位为摄氏度
      */
-    float getTemperature();
+    float getTemperatureC();
     /*!
      *@brief 判断是否掉电
      *@return true为发生掉电，需要重设时间，false为未发生掉电

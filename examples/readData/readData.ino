@@ -8,7 +8,7 @@
  * @author [LuoYufeng](yufeng.luo@dfrobot.com)
  * @version  V0.1
  * @date  2019-08-19
- * @https://github.com/DFRobot/DFRobot_CCS811
+ * @url https://github.com/DFRobot/DFRobot_CCS811
  */
 #include "DFRobot_DS3231M.h"
 
@@ -34,6 +34,15 @@ void setup(void)
      *@n          eDS3231M_SquareWave_8kHz = 0x18 // 8kHz square wave
      */
     rtc.writeSqwPinMode(eDS3231M_SquareWave_1Hz);
+    /*!
+     *@brief 设置sqw引脚的值
+     *@return mode eDS3231M_OFF             = 0x01 // Off
+     *@n           eDS3231M_SquareWave_1Hz  = 0x00 // 1Hz square wave
+     *@n           eDS3231M_SquareWave_1kHz = 0x08 // 1kHz square wave
+     *@n           eDS3231M_SquareWave_4kHz = 0x10 // 4kHz square wave
+     *@n           eDS3231M_SquareWave_8kHz = 0x18 // 8kHz square wave
+     */
+    //Serial.println(rtc.readSqwPinMode,HEX);
     /*!
      *@brief 判断是否掉电
      *@return true为发生掉电，需要重设时间，false为未发生掉电
@@ -71,7 +80,7 @@ void loop() {
      *@brief 获取当前温度
      *@return 当前温度，单位为摄氏度
      */
-    Serial.print(rtc.getTemperature());
+    Serial.print(rtc.getTemperatureC());
     Serial.println(" C");
     delay(3000);
 }

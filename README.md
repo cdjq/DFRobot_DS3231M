@@ -44,7 +44,6 @@ To use this library, first download the library file, paste it into the \Arduino
   bool begin(void);
   /*!
    *@brief 获取当前时间数据
-   *@return 当前时间数据
    */
   void getNowTime();
   
@@ -99,7 +98,7 @@ To use this library, first download the library file, paste it into the \Arduino
    *@brief 获取当前温度
    *@return 当前温度，单位为摄氏度
    */
-  float getTemperature();
+  float getTemperatureC();
   
   /*!
    *@brief 判断是否掉电
@@ -130,17 +129,17 @@ To use this library, first download the library file, paste it into the \Arduino
   /*!
    *@brief 设置闹钟
    *@param alarmType 闹钟的工作模式typedef enum{
-   *@n                                  eEverySecond,
-   *@n                                  eSecondsMatch,
-   *@n                                  eSecondsMinutesMatch,
-   *@n                                  eSecondsMinutesHoursMatch,
-   *@n                                  eSecondsMinutesHoursDateMatch,
-   *@n                                  eSecondsMinutesHoursDayMatch, //Alarm1
-   *@n                                  eEveryMinute,
-   *@n                                  eMinutesMatch,
-   *@n                                  eMinutesHoursMatch,
-   *@n                                  eMinutesHoursDateMatch,
-   *@n                                  eMinutesHoursDayMatch,        //Alarm2
+   *@n                                  eEverySecond,                         //每秒触发一次
+   *@n                                  eSecondsMatch,                        //每分钟触发一次
+   *@n                                  eSecondsMinutesMatch,                 //每小时触发一次
+   *@n                                  eSecondsMinutesHoursMatch,            //每天触发一次
+   *@n                                  eSecondsMinutesHoursDateMatch,        //每月触发一次
+   *@n                                  eSecondsMinutesHoursDayMatch,         //每周触发一次//Alarm1
+   *@n                                  eEveryMinute,                         //每分钟触发一次
+   *@n                                  eMinutesMatch,                        //每小时触发一次
+   *@n                                  eMinutesHoursMatch,                   //每天触发一次
+   *@n                                  eMinutesHoursDateMatch,               //每月触发一次
+   *@n                                  eMinutesHoursDayMatch,                //每周触发一次//Alarm2
    *@n                                  eUnknownAlarm
    *@n                                  }eAlarmTypes;
    *@param days    闹钟时间(天)

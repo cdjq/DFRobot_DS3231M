@@ -2,13 +2,14 @@
  * @file setAlarms.ino
  * @brief ,设置闹钟
  * @n 实验现象：设置闹钟在固定的时间触发
+ * @n           闹钟的设置时间和RTC时间相同时触发
  *
  * @copyright	Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  * @licence     The MIT License (MIT)
  * @author [LuoYufeng](yufeng.luo@dfrobot.com)
  * @version  V0.1
  * @date  2019-08-19
- * @https://github.com/DFRobot/DFRobot_DS3231M
+ * @url https://github.com/DFRobot/DFRobot_DS3231M
  */
 #include "DFRobot_DS3231M.h"
 
@@ -55,7 +56,7 @@ void setup(void)
      *@param minutes 闹钟时间(分钟)
      *@param seconds 闹钟时间(秒)
      */
-    rtc.setAlarm(eSecondsMinutesHoursDateMatch,19,15,46,12);
+    rtc.setAlarm(eSecondsMinutesHoursDateMatch,/*date,0-30*/19,/*hour,0-23*/15,/*minute,0-59*/46,/*second,0-59*/12);
     /*!
      *@brief 判断是否掉电
      *@return true为发生掉电，需要重设时间，false为未发生掉电
