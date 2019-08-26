@@ -73,7 +73,27 @@ void DFRobot_DS3231M::writeSqwPinMode(eDs3231MSqwPinMode_t mode){
         ctrl |= mode;
     writeReg8(DS3231M_REG_CONTROL, ctrl);
 }
-
+/*
+void DFRobot_DS3231M::dateTime (const char* date, const char* time)
+{
+  y = conv2d(date + 9); // Compute the year offset
+  switch (date[0]) 
+  {
+    case 'J': m = (date[1] == 'a') ? 1 : ((date[2] == 'n') ? 6 : 7); break; // Jan Jun Jul
+    case 'F': m = 2; break;                                                 // Feb
+    case 'A': m = date[2] == 'r' ? 4 : 8; break;                            // Apr Aug
+    case 'M': m = date[2] == 'r' ? 3 : 5; break;                            // May
+    case 'S': m = 9; break;                                                 // Sep
+    case 'O': m = 10; break;                                                // Oct
+    case 'N': m = 11; break;                                                // Nov
+    case 'D': m = 12; break;                                                // Dec
+  } // of switch for the month
+  d = conv2d(date + 4);
+  hh = conv2d(time);
+  mm = conv2d(time + 3);
+  ss = conv2d(time + 6);
+}
+*/
 void DFRobot_DS3231M::dateTime (const __FlashStringHelper* date, const __FlashStringHelper* time){
     char buff[11];
     memcpy_P(buff, date, 11);
@@ -102,7 +122,7 @@ uint8_t DFRobot_DS3231M::dayOfTheWeek() const {
 } 
 
 void DFRobot_DS3231M::adjust(){
-    dateTime(F(__DATE__), F(__TIME__));
+    //dateTime(F(__DATE__), F(__TIME__));
     writeReg8(DS3231M_REG_RTC_SEC,bin2bcd(ss));    // Write seconds, keep device off
     writeReg8(DS3231M_REG_RTC_MIN,bin2bcd(mm));    // Write the minutes value
     writeReg8(DS3231M_REG_RTC_HOUR,bin2bcd(hh));   // Also re-sets the 24Hour clock on

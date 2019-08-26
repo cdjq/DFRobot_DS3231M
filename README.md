@@ -4,6 +4,7 @@
 这个模块兼容2.5-5.5V宽电压，电池供电时消耗电流低至2uA<br>
 这个模块还有测试环境温度的功能，误差在±3℃以内<br>
 这个模块没有采用传统晶振，而是采用MEMS(微机电系统)振荡器，具有极高的稳定性和极低的温度飘移<br>
+MEMS振荡器是对传统石英晶振产品的一个升级更新换代,防震效果是传统石英晶振的25倍,温度稳定性也比传统晶振更好<br>
 
 
 ![正反面svg效果图](https://github.com/ouki-wang/DFRobot_Sensor/raw/master/resources/images/SEN0245svg1.png)
@@ -88,6 +89,42 @@ To use this library, first download the library file, paste it into the \Arduino
    *@return day of week
    */
   uint8_t  dayOfTheWeek() const ;
+  
+  /*!
+   *@brief 设置年
+   *@param 年
+   */
+  void setYear(uint8_t year);
+  
+  /*!
+   *@brief 设置月
+   *@param 月
+   */
+  void setMonth(uint8_t month);
+  
+  /*!
+   *@brief 设置日
+   *@param 日
+   */
+  void setDate(uint8_t date);
+  
+  /*!
+   *@brief 设置时
+   *@param 时
+   */
+  void setHour(uint8_t hour);
+  
+  /*!
+   *@brief 设置分
+   *@param 分
+   */
+  void setMinute(uint8_t minute);
+  
+  /*!
+   *@brief 设置秒
+   *@param 秒
+   */
+  void setSecond(uint8_t second);
   
   /*!
    *@brief 校准当前时间

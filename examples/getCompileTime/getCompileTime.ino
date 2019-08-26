@@ -1,7 +1,7 @@
 /*!
- * @file readData.ino
- * @brief 显示当前时间
- * @n 实验现象：每3秒读取一次数据，并打印到串口
+ * @file getCompileTime.ino
+ * @brief 获取最后一次编译时间并显示当前时间
+ * @n 实验现象：每秒读取一次数据，并打印到串口
  *
  * @copyright	Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  * @licence     The MIT License (MIT)
@@ -13,7 +13,6 @@
 #include "DFRobot_DS3231M.h"
 
 DFRobot_DS3231M rtc;
-
 
 void setup(void)
 {
@@ -51,12 +50,7 @@ void setup(void)
         /*!
          *@brief 校准当前时间
          */
-        rtc.setYear(19);//设置年，默认21世纪
-        rtc.setMonth(8);
-        rtc.setDate(26);
-        rtc.setHour(15);
-        rtc.setMinute(12);
-        rtc.setSecond(30);
+        rtc.dateTime(F(__DATE__), F(__TIME__));
         rtc.adjust();
     }
 }
@@ -72,7 +66,7 @@ void loop() {
     Serial.print('/');
     Serial.print(rtc.day(), DEC);//date
     Serial.print(" (");
-    Serial.print(rtc.daysOfTheWeek[rtc.dayOfTheWeek()]);//day of week
+    Serial.print(daysOfTheWeek[rtc.dayOfTheWeek()]);//day of week
     Serial.print(") ");
     Serial.print(rtc.hour(), DEC);//hour
     Serial.print(':');
@@ -87,5 +81,5 @@ void loop() {
      */
     Serial.print(rtc.getTemperatureC());
     Serial.println(" C");
-    delay(3000);
+    delay(1000);
 }

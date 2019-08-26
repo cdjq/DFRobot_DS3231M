@@ -92,13 +92,66 @@ public:
      *@brief 获取当前时间数据
      */
     void getNowTime();
-    
-    uint16_t year()         const { return _y; }           // Return the year
-    uint8_t  month()        const { return _m; }           // Return the month
-    uint8_t  day()          const { return _d; }           // Return the day
-    uint8_t  hour()         const { return _hh; }          // Return the hour
-    uint8_t  minute()       const { return _mm; }          // Return the minute
-    uint8_t  second()       const { return _ss; }          // Return the second
+    /*!
+     *@brief 获取年
+     *@return 年
+     */
+    uint16_t year()         const { return _y; }
+    /*!
+     *@brief 获取月
+     *@return 月
+     */
+    uint8_t  month()        const { return _m; }
+    /*!
+     *@brief 获取日
+     *@return 日
+     */
+    uint8_t  day()          const { return _d; }
+    /*!
+     *@brief 获取时
+     *@return 时
+     */
+    uint8_t  hour()         const { return _hh; }
+    /*!
+     *@brief 获取分
+     *@return 分
+     */
+    uint8_t  minute()       const { return _mm; }
+    /*!
+     *@brief 获取秒
+     *@return 秒
+     */
+    uint8_t  second()       const { return _ss; }
+    /*!
+     *@brief 设置年
+     *@param 年
+     */
+    void setYear(uint8_t year)  { y = year; }
+    /*!
+     *@brief 设置月
+     *@param 月
+     */
+    void setMonth(uint8_t month)  { m = month; }
+    /*!
+     *@brief 设置日
+     *@param 日
+     */
+    void setDate(uint8_t date)  { d = date; }
+    /*!
+     *@brief 设置时
+     *@param 时
+     */
+    void setHour(uint8_t hour)  { hh = hour; }
+    /*!
+     *@brief 设置分
+     *@param 分
+     */
+    void setMinute(uint8_t minute)  { mm = minute; }
+    /*!
+     *@brief 设置秒
+     *@param 秒
+     */
+    void setSecond(uint8_t second)  { ss = second; }
     
     /*!
      *@brief get day of week
@@ -124,11 +177,20 @@ public:
      *@return 读取值在枚举变量eDs3231MSqwPinMode_t中解释
      */
     eDs3231MSqwPinMode_t readSqwPinMode();
+    
     /*!
      *@brief 设置sqw引脚的值
      *@param dt 传入值在枚举变量eDs3231MSqwPinMode_t中解释
      */
     void writeSqwPinMode(eDs3231MSqwPinMode_t mode);
+    
+    /*!
+     *@brief 设置当前时间数据
+     *@param date 传入编译时的日期
+     *@param time 传入编译时的时间
+     */
+    void dateTime(const __FlashStringHelper* date, const __FlashStringHelper* time);
+    
     /*!
      *@brief 设置闹钟
      *@param alarmType 闹钟的工作模式
@@ -149,6 +211,8 @@ public:
     void clearAlarm();
     
     uint8_t rtc[7];
+    
+    char* daysOfTheWeek[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"}; 
 
 protected:
     uint8_t readReg8(uint8_t reg);
@@ -173,8 +237,6 @@ protected:
      *@param date 写入初始日期
      *@param time 写入初始时间
      */
-    void dateTime(const char* date, const char* time);
-    void dateTime(const __FlashStringHelper* date, const __FlashStringHelper* time);
     
     uint8_t y,   ///< Year Offset
             m,  ///< Months

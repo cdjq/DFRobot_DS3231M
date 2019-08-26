@@ -1,8 +1,8 @@
 /*!
- * @file setAlarms.ino
- * @brief ,设置闹钟
+ * @file alarmInterrupt.ino
+ * @brief ,设置闹钟,用中断引脚触发
  * @n 实验现象：设置闹钟在固定的时间触发
- * @n           闹钟的设置时间和RTC时间相同时触发
+ * @n           将SQW脚与PIN2连接
  *
  * @copyright	Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  * @licence     The MIT License (MIT)
@@ -12,6 +12,8 @@
  * @url https://github.com/DFRobot/DFRobot_DS3231M
  */
 #include "DFRobot_DS3231M.h"
+
+volatile  int8_t GPIO1TRIG = 0;
 
 DFRobot_DS3231M rtc;
 
@@ -74,24 +76,16 @@ void setup(void)
         rtc.setSecond(30);
         rtc.adjust();
     }
+    attachInterrupt(0, interrupt, FALLING);
 }
 void loop() {
-    /*!
-     *@brief 获取当前时间数据
-     *@return 当前时间数据
-     */
-    rtc.getNowTime();
     /*!
      *@brief 判断闹钟是否触发
      *@return true代表触发，false代表未触发
      */
-    if (rtc.isAlarm()){ // If the alarm bit is set
-        Serial.println("闹钟触发.");
-        /*!
-         *@brief 清除触发flag
-         */
-        rtc.clearAlarm();
-    }
+    while(GPIO1TRIG == 0){}
+    GPIO1TRIG = 0;
+    rtc.getNowTime();
     Serial.print(rtc.year(), DEC);
     Serial.print('/');
     Serial.print(rtc.month(), DEC);
@@ -107,4 +101,17 @@ void loop() {
     Serial.print(rtc.second(), DEC);
     Serial.println();
     delay(1000);
+}
+
+int ledF = 0;
+
+void interrupt(){
+  GPIO1TRIG = 1;
+  if(ledF) {
+    digitalWrite(LED_BUILTIN, LOW);  
+    ledF = 0;
+  } else {
+    digitalWrite(LED_BUILTIN, HIGH);   
+    ledF = 1;
+  }
 }

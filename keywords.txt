@@ -27,6 +27,12 @@ readSqwPinMode	KEYWORD2
 writeSqwPinMode	KEYWORD2
 setAlarm	KEYWORD2
 isAlarm	KEYWORD2
+setYear	KEYWORD2
+setMonth	KEYWORD2
+setDate	KEYWORD2
+setHour	KEYWORD2
+setMinute	KEYWORD2
+setSecond	KEYWORD2
 clearAlarm	KEYWORD2
 
 #######################################
