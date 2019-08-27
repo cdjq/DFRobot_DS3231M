@@ -166,17 +166,17 @@ To use this library, first download the library file, paste it into the \Arduino
   /*!
    *@brief 设置闹钟
    *@param alarmType 闹钟的工作模式typedef enum{
-   *@n                                  eEverySecond,                         //每秒触发一次
-   *@n                                  eSecondsMatch,                        //每分钟触发一次
-   *@n                                  eSecondsMinutesMatch,                 //每小时触发一次
-   *@n                                  eSecondsMinutesHoursMatch,            //每天触发一次
-   *@n                                  eSecondsMinutesHoursDateMatch,        //每月触发一次
-   *@n                                  eSecondsMinutesHoursDayMatch,         //每周触发一次//Alarm1
-   *@n                                  eEveryMinute,                         //每分钟触发一次
-   *@n                                  eMinutesMatch,                        //每小时触发一次
-   *@n                                  eMinutesHoursMatch,                   //每天触发一次
-   *@n                                  eMinutesHoursDateMatch,               //每月触发一次
-   *@n                                  eMinutesHoursDayMatch,                //每周触发一次//Alarm2
+   *@n                                  eEverySecond,                         //repeat
+   *@n                                  eSecondsMatch,                        //repeat
+   *@n                                  eSecondsMinutesMatch,                 //repeat
+   *@n                                  eSecondsMinutesHoursMatch,            //repeat
+   *@n                                  eSecondsMinutesHoursDateMatch,        //repeat
+   *@n                                  eSecondsMinutesHoursDayMatch,         //repeat
+   *@n                                  eEveryMinute,                         //repeat
+   *@n                                  eMinutesMatch,                        //repeat
+   *@n                                  eMinutesHoursMatch,                   //repeat
+   *@n                                  eMinutesHoursDateMatch,               //repeat
+   *@n                                  eMinutesHoursDayMatch,                //repeat
    *@n                                  eUnknownAlarm
    *@n                                  }eAlarmTypes;
    *@param days    闹钟时间(天)
