@@ -1,5 +1,5 @@
 /*!
- * @file setAlarms.ino
+ * @file setAlarmInQuery.ino
  * @brief ,设置闹钟
  * @n 实验现象：设置闹钟在固定的时间触发
  * @n           闹钟的设置时间和RTC时间相同时触发
@@ -15,8 +15,6 @@
 
 DFRobot_DS3231M rtc;
 
-char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-
 void setup(void)
 {
     Serial.begin(9600);
@@ -28,7 +26,7 @@ void setup(void)
     }
     /*!
      *@brief 设置sqw引脚的值
-     *@param mode eDS3231M_OFF             = 0x01 // Off
+     *@param mode eDS3231M_OFF             = 0x01 // 不输出方波，进入中断模式
      *@n          eDS3231M_SquareWave_1Hz  = 0x00 // 1Hz square wave
      *@n          eDS3231M_SquareWave_1kHz = 0x08 // 1kHz square wave
      *@n          eDS3231M_SquareWave_4kHz = 0x10 // 4kHz square wave
@@ -98,7 +96,7 @@ void loop() {
     Serial.print('/');
     Serial.print(rtc.day(), DEC);
     Serial.print(" (");
-    Serial.print(daysOfTheWeek[rtc.dayOfTheWeek()]);
+    Serial.print(rtc.getDayOfTheWeek());
     Serial.print(") ");
     Serial.print(rtc.hour(), DEC);
     Serial.print(':');

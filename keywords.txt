@@ -21,7 +21,7 @@ hour	KEYWORD2
 minute	KEYWORD2
 second	KEYWORD2
 dayOfTheWeek	KEYWORD2
-getTemperature	KEYWORD2
+getTemperatureC	KEYWORD2
 lostPower	KEYWORD2
 readSqwPinMode	KEYWORD2
 writeSqwPinMode	KEYWORD2

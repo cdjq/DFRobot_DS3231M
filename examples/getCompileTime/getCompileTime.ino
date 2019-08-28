@@ -25,7 +25,7 @@ void setup(void)
     }
     /*!
      *@brief 设置sqw引脚的值
-     *@param mode eDS3231M_OFF             = 0x01 // Off
+     *@param mode eDS3231M_OFF             = 0x01 // 不输出方波，进入中断模式
      *@n          eDS3231M_SquareWave_1Hz  = 0x00 // 1Hz square wave
      *@n          eDS3231M_SquareWave_1kHz = 0x08 // 1kHz square wave
      *@n          eDS3231M_SquareWave_4kHz = 0x10 // 4kHz square wave
@@ -66,7 +66,7 @@ void loop() {
     Serial.print('/');
     Serial.print(rtc.day(), DEC);//date
     Serial.print(" (");
-    Serial.print(daysOfTheWeek[rtc.dayOfTheWeek()]);//day of week
+    Serial.print(rtc.getDayOfTheWeek());//day of week
     Serial.print(") ");
     Serial.print(rtc.hour(), DEC);//hour
     Serial.print(':');

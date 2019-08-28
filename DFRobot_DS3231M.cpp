@@ -17,14 +17,10 @@ static uint16_t date2days(uint16_t y, uint8_t m, uint8_t d) {
         y -= 2000;                              // Remove year offset
     uint16_t days = d;                          // Store numbers of days
     for (uint8_t i = 1; i < m; ++i){
-    days += pgm_read_byte(daysInMonth + i - 1); // Add number of days for each month
+        days += pgm_read_byte(daysInMonth + i - 1); // Add number of days for each month
     } if (m > 2 && y % 4 == 0)
         ++days;                                 // Deal with leap years
     return days + 365 * y + (y + 3) / 4 - 1;    // Return computed value
-}
-
-static long time2long(uint16_t days, uint8_t h, uint8_t m, uint8_t s){
-    return ((days * 24L + h) * 60 + m) * 60 + s;
 }
 
 static uint8_t conv2d(const char* p) {
@@ -56,22 +52,22 @@ uint8_t DFRobot_DS3231M::bin2bcd (uint8_t val){
 }
 
 eDs3231MSqwPinMode_t DFRobot_DS3231M::readSqwPinMode(){
-    int mode;
-    mode = readReg8(DS3231M_REG_CONTROL);
-    mode &= 0x93;
-    return static_cast<eDs3231MSqwPinMode_t>(mode);
+    int mode[1];
+    readReg(DS3231M_REG_CONTROL, mode, 1);
+    mode[0] &= 0x93;
+    return static_cast<eDs3231MSqwPinMode_t>(mode[0]);
 }
 
 void DFRobot_DS3231M::writeSqwPinMode(eDs3231MSqwPinMode_t mode){
-    uint8_t ctrl;
-    ctrl = readReg8(DS3231M_REG_CONTROL);
-    ctrl &= ~0x04;
-    ctrl &= ~0x18;
+    uint8_t ctrl[1];
+    readReg(DS3231M_REG_CONTROL, ctrl, 1);
+    ctrl[0] &= ~0x04;
+    ctrl[0] &= ~0x18;
     if (mode == eDS3231M_OFF) 
-        ctrl |= 0x04;
+        ctrl[0] |= 0x04;
     else
-        ctrl |= mode;
-    writeReg8(DS3231M_REG_CONTROL, ctrl);
+        ctrl[0] |= mode;
+    writeReg(DS3231M_REG_CONTROL, ctrl, 1);
 }
 /*
 void DFRobot_DS3231M::dateTime (const char* date, const char* time)
@@ -121,18 +117,18 @@ uint8_t DFRobot_DS3231M::dayOfTheWeek() const {
   return (day + 6) % 7;                 // Jan 1, 2000 is a Saturday
 } 
 
+char* DFRobot_DS3231M::getDayOfTheWeek(){
+    return daysOfTheWeek[dayOfTheWeek()];
+}
+
 void DFRobot_DS3231M::adjust(){
+    uint8_t buffer[] = {bin2bcd(ss),bin2bcd(mm),bin2bcd(hh),dayOfTheWeek(),bin2bcd(d),bin2bcd(m),bin2bcd(y)};
     //dateTime(F(__DATE__), F(__TIME__));
-    writeReg8(DS3231M_REG_RTC_SEC,bin2bcd(ss));    // Write seconds, keep device off
-    writeReg8(DS3231M_REG_RTC_MIN,bin2bcd(mm));    // Write the minutes value
-    writeReg8(DS3231M_REG_RTC_HOUR,bin2bcd(hh));   // Also re-sets the 24Hour clock on
-    writeReg8(DS3231M_REG_RTC_DAY,dayOfTheWeek()); // Update the weekday
-    writeReg8(DS3231M_REG_RTC_DATE,bin2bcd(d));    // Write the day of month
-    writeReg8(DS3231M_REG_RTC_MONTH,bin2bcd(m));   // Month, ignore century bit
-    writeReg8(DS3231M_REG_RTC_YEAR,bin2bcd(y));    // Write the year
-    uint8_t statreg = readReg8(DS3231M_REG_STATUS);
-    statreg &= ~0x80; // flip OSF bit
-    writeReg8(DS3231M_REG_STATUS, statreg);
+    writeReg(DS3231M_REG_RTC_SEC, buffer, 7);
+    uint8_t statreg[1];
+    readReg(DS3231M_REG_STATUS, statreg, 1);
+    statreg[0] &= ~0x80; // flip OSF bit
+    writeReg(DS3231M_REG_STATUS, statreg, 1);
 }
 
 void DFRobot_DS3231M::getNowTime(){
@@ -140,6 +136,7 @@ void DFRobot_DS3231M::getNowTime(){
     _ss = bcd2bin(bcd[0] & 0x7F);
     _mm = bcd2bin(bcd[1]);
     _hh = bcd2bin(bcd[2]);
+    Serial.println(bcd[5],BIN);
     _d = bcd2bin(bcd[4]);
     _m = bcd2bin(bcd[5]);
     _y = bcd2bin(bcd[6]) + 2000;
@@ -152,77 +149,116 @@ float DFRobot_DS3231M::getTemperatureC(){
 }
 
 bool DFRobot_DS3231M::lostPower(void) {
-    return (readReg8(DS3231M_REG_STATUS) >> 7);
+    uint8_t status[1];
+    readReg(DS3231M_REG_STATUS, status, 1);
+    return status[0] >> 7;
 }
 
-void DFRobot_DS3231M::setAlarm(const uint8_t alarmType, int16_t days,int8_t hours,
-                               int8_t minutes,int8_t seconds, const bool state ){
+void DFRobot_DS3231M::setAlarm(const uint8_t alarmType, int16_t date,int8_t hour,
+                               int8_t minute,int8_t second, const bool state ){
+    int16_t dates[] = {bin2bcd(date)};
+    int8_t hours[] = {bin2bcd(hour)};
+    int8_t minutes[] = {bin2bcd(minute)};
+    int8_t seconds[] = {bin2bcd(second)};
+    uint8_t days[] = {bin2bcd(dayOfTheWeek())};
+    uint8_t buffer[1];
     if (alarmType >= eUnknownAlarm)
         return;
     if (alarmType < eEveryMinute){
-        writeReg8(DS3231M_REG_ALM1_SEC,bin2bcd(seconds)); // Set seconds value
-        writeReg8(DS3231M_REG_ALM1_MIN,bin2bcd(minutes)); // Set minutes value
-        writeReg8(DS3231M_REG_ALM1_HOUR,bin2bcd(hours));  // Set hours value
+        writeReg(DS3231M_REG_ALM1_SEC, seconds, 1);
+        writeReg(DS3231M_REG_ALM1_MIN, minutes, 1);
+        writeReg(DS3231M_REG_ALM1_HOUR, hours, 1);
         if (alarmType == eSecondsMinutesHoursDateMatch)
-            writeReg8(DS3231M_REG_ALM1_DAY, bin2bcd(days));
+            writeReg(DS3231M_REG_ALM1_DAY, dates, 1);
         else
-            writeReg8(DS3231M_REG_ALM1_DAY, bin2bcd(dayOfTheWeek()));
-        if(alarmType<eSecondsMinutesHoursDateMatch)                                 
-            writeReg8(DS3231M_REG_ALM1_DAY,readReg8(DS3231M_REG_ALM1_DAY)|0x80);
-        if(alarmType<eSecondsMinutesHoursMatch)                                     
-            writeReg8(DS3231M_REG_ALM1_HOUR,readReg8(DS3231M_REG_ALM1_HOUR)|0x80);
-        if(alarmType<eSecondsMinutesMatch)                                          
-            writeReg8(DS3231M_REG_ALM1_MIN,readReg8(DS3231M_REG_ALM1_MIN)|0x80);
-        if(alarmType==eEverySecond)                                                 
-            writeReg8(DS3231M_REG_ALM1_SEC,readReg8(DS3231M_REG_ALM1_SEC)|0x80);
-        if(alarmType==eSecondsMinutesHoursDayMatch)                                 
-            writeReg8(DS3231M_REG_ALM1_DAY,readReg8(DS3231M_REG_ALM1_DAY)|0x40);
-        if (state) 
-            writeReg8(DS3231M_REG_CONTROL,readReg8(DS3231M_REG_CONTROL)|1);         
-        else 
-            writeReg8(DS3231M_REG_CONTROL,readReg8(DS3231M_REG_CONTROL)&0xFE);      
+            writeReg(DS3231M_REG_ALM1_DAY, days, 1);
+        if(alarmType<eSecondsMinutesHoursDateMatch){
+            readReg(DS3231M_REG_ALM1_DAY, buffer, 1);
+            buffer[0] |= 0x80;
+            writeReg(DS3231M_REG_ALM1_DAY, buffer, 1);
+        }
+        if(alarmType<eSecondsMinutesHoursMatch){
+            readReg(DS3231M_REG_ALM1_HOUR, buffer, 1);
+            buffer[0] |= 0x80;
+            writeReg(DS3231M_REG_ALM1_HOUR, buffer, 1);
+        }
+        if(alarmType<eSecondsMinutesMatch){
+            readReg(DS3231M_REG_ALM1_MIN, buffer, 1);
+            buffer[0] |= 0x80;
+            writeReg(DS3231M_REG_ALM1_MIN, buffer, 1);
+        }
+        if(alarmType==eEverySecond){
+            readReg(DS3231M_REG_ALM1_SEC, buffer, 1);
+            buffer[0] |= 0x80;
+            writeReg(DS3231M_REG_ALM1_SEC, buffer, 1);
+        }
+        if(alarmType==eSecondsMinutesHoursDayMatch){
+            readReg(DS3231M_REG_ALM1_DAY, buffer, 1);
+            buffer[0] |= 0x40;
+            writeReg(DS3231M_REG_ALM1_DAY, buffer, 1);
+        }
+        if (state){
+            readReg(DS3231M_REG_CONTROL, buffer, 1);
+            buffer[0] |= 1;
+            writeReg(DS3231M_REG_CONTROL, buffer, 1);
+        }
+        else{
+            readReg(DS3231M_REG_CONTROL, buffer, 1);
+            buffer[0] &= 0xFE;
+            writeReg(DS3231M_REG_CONTROL, buffer, 1);
+        }
     }
     else{
-        writeReg8(DS3231M_REG_ALM2_MIN,bin2bcd(minutes));                           
-        writeReg8(DS3231M_REG_ALM2_HOUR,bin2bcd(hours));                            
-        if(alarmType == eMinutesHoursDateMatch)                                     
-            writeReg8(DS3231M_REG_ALM2_DAY,bin2bcd(days));                          
-        else
-            if (alarmType == eMinutesHoursDayMatch)                                 
-                writeReg8(DS3231M_REG_ALM2_DAY,bin2bcd(dayOfTheWeek() | 0x80));     
-        if(alarmType < eMinutesHoursDateMatch) 
-            writeReg8(DS3231M_REG_ALM2_DAY,readReg8(DS3231M_REG_ALM2_DAY) | 0x80);  
-        if(alarmType < eMinutesHoursMatch)
-            writeReg8(DS3231M_REG_ALM2_HOUR,readReg8(DS3231M_REG_ALM2_HOUR) | 0x80);
-        if(alarmType == eEveryMinute)
-            writeReg8(DS3231M_REG_ALM2_MIN, readReg8(DS3231M_REG_ALM2_MIN) | 0x80); 
-        if (state) 
-            writeReg8(DS3231M_REG_CONTROL, readReg8(DS3231M_REG_CONTROL)|2);
-        else
-            writeReg8(DS3231M_REG_CONTROL, readReg8(DS3231M_REG_CONTROL)&0xFD);
+        writeReg(DS3231M_REG_ALM2_MIN, minutes, 1);
+        writeReg(DS3231M_REG_ALM2_HOUR, hours, 1);
+        if(alarmType == eMinutesHoursDateMatch)
+            writeReg(DS3231M_REG_ALM2_DAY, dates, 1);
+        else if (alarmType == eMinutesHoursDayMatch){
+            days[0] |= 0x80;
+            writeReg(DS3231M_REG_ALM2_DAY, days, 1);
+        }
+        if(alarmType < eMinutesHoursDateMatch){
+            readReg(DS3231M_REG_ALM2_DAY, buffer, 1);
+            buffer[0] |= 0x80;
+            writeReg(DS3231M_REG_ALM2_DAY, buffer, 1);
+        }
+        if(alarmType < eMinutesHoursMatch){
+            readReg(DS3231M_REG_ALM2_HOUR, buffer, 1);
+            buffer[0] |= 0x80;
+            writeReg(DS3231M_REG_ALM2_HOUR, buffer, 1);
+        }
+        if(alarmType == eEveryMinute){
+            readReg(DS3231M_REG_ALM2_MIN, buffer, 1);
+            buffer[0] |= 0x80;
+            writeReg(DS3231M_REG_ALM2_MIN, buffer, 1);
+        }
+        if (state){
+            readReg(DS3231M_REG_CONTROL, buffer, 1);
+            buffer[0] |= 2;
+            writeReg(DS3231M_REG_CONTROL, buffer, 1);
+        }
+        else{
+            readReg(DS3231M_REG_CONTROL, buffer, 1);
+            buffer[0] &= 0xFD;
+            writeReg(DS3231M_REG_CONTROL, buffer, 1);
+        }
     } // of if-then-else use alarm 1 or 2
     clearAlarm(); // Clear the alarm state
     return;
 }
 
 bool DFRobot_DS3231M::isAlarm() {
-    return (readReg8(DS3231M_REG_STATUS)&3); // Alarm if either of 2 LSBits set
+    uint8_t status[1];
+    readReg(DS3231M_REG_STATUS, status, 1);
+    return status[0]&3; // Alarm if either of 2 LSBits set
 }
 
 void DFRobot_DS3231M::clearAlarm(){
-    writeReg8(DS3231M_REG_STATUS, readReg8(DS3231M_REG_STATUS)&0xFC);
+    uint8_t status[1];
+    readReg(DS3231M_REG_STATUS, status, 1);
+    status[0] &= 0xFC;
+    writeReg(DS3231M_REG_STATUS, status, 1);
 } 
-
-uint8_t DFRobot_DS3231M::readReg8(uint8_t reg){
-    uint8_t val[1];
-    readReg(reg, val, 1);
-    return val[0];
-}
-
-void DFRobot_DS3231M::writeReg8(uint8_t reg, uint8_t val){
-    uint8_t buf[] = {val};
-    writeReg(reg, buf, 1);
-}
 
 void DFRobot_DS3231M::writeReg(uint8_t reg, const void* pBuf, size_t size)
 {

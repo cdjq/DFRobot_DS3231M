@@ -1,9 +1,9 @@
 /*!
- * @file alarmInterrupt.ino
+ * @file setAlarmInterrupt.ino
  * @brief ,设置闹钟,用中断引脚触发
  * @n 实验现象：设置闹钟在固定的时间触发
- * @n           将SQW脚与PIN2连接
- *
+ * @n           将SQW脚与DIGITALPIN2连接
+ * @n           闹钟触发后会在串口打印信息
  * @copyright	Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  * @licence     The MIT License (MIT)
  * @author [LuoYufeng](yufeng.luo@dfrobot.com)
@@ -13,11 +13,9 @@
  */
 #include "DFRobot_DS3231M.h"
 
-volatile  int8_t GPIO1TRIG = 0;
+volatile  int8_t alarmFlag = 0;
 
 DFRobot_DS3231M rtc;
-
-char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
 void setup(void)
 {
@@ -30,7 +28,7 @@ void setup(void)
     }
     /*!
      *@brief 设置sqw引脚的值
-     *@param mode eDS3231M_OFF             = 0x01 // Off
+     *@param mode eDS3231M_OFF             = 0x01 // 不输出方波，进入中断模式
      *@n          eDS3231M_SquareWave_1Hz  = 0x00 // 1Hz square wave
      *@n          eDS3231M_SquareWave_1kHz = 0x08 // 1kHz square wave
      *@n          eDS3231M_SquareWave_4kHz = 0x10 // 4kHz square wave
@@ -83,30 +81,33 @@ void loop() {
      *@brief 判断闹钟是否触发
      *@return true代表触发，false代表未触发
      */
-    while(GPIO1TRIG == 0){}
-    GPIO1TRIG = 0;
-    rtc.getNowTime();
-    Serial.print(rtc.year(), DEC);
-    Serial.print('/');
-    Serial.print(rtc.month(), DEC);
-    Serial.print('/');
-    Serial.print(rtc.day(), DEC);
-    Serial.print(" (");
-    Serial.print(daysOfTheWeek[rtc.dayOfTheWeek()]);
-    Serial.print(") ");
-    Serial.print(rtc.hour(), DEC);
-    Serial.print(':');
-    Serial.print(rtc.minute(), DEC);
-    Serial.print(':');
-    Serial.print(rtc.second(), DEC);
-    Serial.println();
-    delay(1000);
+    if(alarmFlag == 1){
+        alarmFlag = 0;
+        rtc.getNowTime();
+        Serial.print(rtc.year(), DEC);
+        Serial.print('/');
+        Serial.print(rtc.month(), DEC);
+        Serial.print('/');
+        Serial.print(rtc.day(), DEC);
+        Serial.print(" (");
+        Serial.print(rtc.getDayOfTheWeek());
+        Serial.print(") ");
+        Serial.print(rtc.hour(), DEC);
+        Serial.print(':');
+        Serial.print(rtc.minute(), DEC);
+        Serial.print(':');
+        Serial.print(rtc.second(), DEC);
+        Serial.println();
+        delay(1000);
+    }
+    else
+        delay(1000);
 }
 
 int ledF = 0;
 
 void interrupt(){
-  GPIO1TRIG = 1;
+  alarmFlag = 1;
   if(ledF) {
     digitalWrite(LED_BUILTIN, LOW);  
     ledF = 0;

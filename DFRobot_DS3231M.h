@@ -52,7 +52,7 @@
 #endif
 
 typedef enum{
-    eDS3231M_OFF             = 0x01, // Off
+    eDS3231M_OFF             = 0x01, // 不输出方波，进入中断模式
     eDS3231M_SquareWave_1Hz  = 0x00, // 1Hz square wave
     eDS3231M_SquareWave_1kHz = 0x08, // 1kHz square wave
     eDS3231M_SquareWave_4kHz = 0x10, // 4kHz square wave
@@ -122,6 +122,7 @@ public:
      *@return 秒
      */
     uint8_t  second()       const { return _ss; }
+    void setCentury(uint8_t c);
     /*!
      *@brief 设置年
      *@param 年
@@ -157,7 +158,7 @@ public:
      *@brief get day of week
      *@return day of week
      */
-    uint8_t  dayOfTheWeek() const ;
+    char* getDayOfTheWeek();
     /*!
      *@brief 校准当前时间
      */
@@ -185,7 +186,7 @@ public:
     void writeSqwPinMode(eDs3231MSqwPinMode_t mode);
     
     /*!
-     *@brief 设置当前时间数据
+     *@brief 设置最后一次编译的时间为当前时间
      *@param date 传入编译时的日期
      *@param time 传入编译时的时间
      */
@@ -212,11 +213,8 @@ public:
     
     uint8_t rtc[7];
     
-    char* daysOfTheWeek[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"}; 
 
 protected:
-    uint8_t readReg8(uint8_t reg);
-    void writeReg8(uint8_t reg, uint8_t val);
     virtual void writeReg(uint8_t reg, const void* pBuf, size_t size);
     virtual uint8_t readReg(uint8_t reg, const void* pBuf, size_t size);
     
@@ -238,6 +236,7 @@ protected:
      *@param time 写入初始时间
      */
     
+    uint8_t  dayOfTheWeek() const ;
     uint8_t y,   ///< Year Offset
             m,  ///< Months
             d,    ///< Days
@@ -252,7 +251,7 @@ private:
     uint8_t bcd[7];
     uint8_t  _ss,_mm,_hh,_d,_m;
     uint16_t _y;
-    uint32_t _SetUnixTime        = 0;
+    const char* daysOfTheWeek[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"}; 
 };
 
 #endif
