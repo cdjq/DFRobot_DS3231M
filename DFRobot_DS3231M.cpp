@@ -136,10 +136,13 @@ void DFRobot_DS3231M::getNowTime(){
     _ss = bcd2bin(bcd[0] & 0x7F);
     _mm = bcd2bin(bcd[1]);
     _hh = bcd2bin(bcd[2]);
-    Serial.println(bcd[5],BIN);
     _d = bcd2bin(bcd[4]);
     _m = bcd2bin(bcd[5]);
-    _y = bcd2bin(bcd[6]) + 2000;
+    _y = bcd2bin(bcd[6]) + 1970;
+    if(bcd[5] > 80){
+        _y += 100;
+        _m -= 80;
+    }
 }
 
 float DFRobot_DS3231M::getTemperatureC(){

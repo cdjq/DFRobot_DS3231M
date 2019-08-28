@@ -51,7 +51,7 @@ void setup(void)
         /*!
          *@brief 校准当前时间
          */
-        rtc.setYear(19);//设置年，默认21世纪
+        rtc.setYear(19);//设置年，默认21世纪,20世纪的年份可输入负数
         rtc.setMonth(8);
         rtc.setDate(26);
         rtc.setHour(15);

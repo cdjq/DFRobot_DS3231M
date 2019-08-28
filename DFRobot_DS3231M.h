@@ -127,7 +127,7 @@ public:
      *@brief 设置年
      *@param 年
      */
-    void setYear(uint8_t year)  { y = year; }
+    void setYear(uint8_t year)  { y = year + 30; }
     /*!
      *@brief 设置月
      *@param 月
