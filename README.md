@@ -140,7 +140,7 @@ To use this library, first download the library file, paste it into the \Arduino
   
   /*!
    *@brief Judge if it is power-down 
-   *@return If retrun true, power down, needs to reset time; false, work well. 
+   *@return If retrun true, power down, time needs to reset; false, work well. 
    */
   bool lostPower(void);
   
