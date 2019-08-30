@@ -1,6 +1,6 @@
 /*!
  * @file DFRobot_DS3231M.h
- * @brief 定义DFRobot_DS3231M 类的基础结构
+ * @brief Define the basic structure of class DFRobot_DS3231M 
  * @copyright	Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  * @licence     The MIT License (MIT)
  * @author [yufeng](yufeng.luo@dfrobot.com)
@@ -42,7 +42,7 @@
 #define DS3231M_REG_STATUS           0x0F  // Status register
 #define DS3231M_REG_AGE_OFFSET       0X10
 #define DS3231M_REG_TEMPERATURE      0x11  // temperature register
-//打开这个宏，可以看到程序的详细运行过程
+//Open this macro to see the detailed running process of the program 
 //#define ENABLE_DBG
 
 #ifdef ENABLE_DBG
@@ -52,7 +52,7 @@
 #endif
 
 typedef enum{
-    eDS3231M_OFF             = 0x01, // 不输出方波，进入中断模式
+    eDS3231M_OFF             = 0x01, // Not output square wave, enter interrupt mode 
     eDS3231M_SquareWave_1Hz  = 0x00, // 1Hz square wave
     eDS3231M_SquareWave_1kHz = 0x08, // 1kHz square wave
     eDS3231M_SquareWave_4kHz = 0x10, // 4kHz square wave
@@ -60,17 +60,17 @@ typedef enum{
 }eDs3231MSqwPinMode_t;
 
 typedef enum{
-    eEverySecond,                  //每秒重复一次
-    eSecondsMatch,                 //每分钟重复一次
-    eSecondsMinutesMatch,          //每小时重复一次
-    eSecondsMinutesHoursMatch,     //每天重复一次
-    eSecondsMinutesHoursDateMatch, //每月重复一次
-    eSecondsMinutesHoursDayMatch,  //每周重复一次//Alarm1
-    eEveryMinute,                  //每分钟重复一次
-    eMinutesMatch,                 //每小时重复一次
-    eMinutesHoursMatch,            //每天重复一次
-    eMinutesHoursDateMatch,        //每月重复一次
-    eMinutesHoursDayMatch,         //每周重复一次//Alarm2
+    eEverySecond,                  //repeat
+    eSecondsMatch,                 //repeat
+    eSecondsMinutesMatch,          //repeat
+    eSecondsMinutesHoursMatch,     //repeat
+    eSecondsMinutesHoursDateMatch, //repeat
+    eSecondsMinutesHoursDayMatch,  //repeat//Alarm1
+    eEveryMinute,                  //repeat
+    eMinutesMatch,                 //repeat
+    eMinutesHoursMatch,            //repeat
+    eMinutesHoursDateMatch,        //repeat
+    eMinutesHoursDayMatch,         //repeat//Alarm2
     eUnknownAlarm
 }eAlarmTypes;
 
@@ -78,79 +78,79 @@ class DFRobot_DS3231M
 {
 public:
     /**
-     * @brief 构造函数
-     * @param 传入Wire地址
+     * @brief Constructor 
+     * @param Input Wire address
      */
     DFRobot_DS3231M(TwoWire *pWire = &Wire){_pWire = pWire;};
     ~DFRobot_DS3231M();
     /*!
-     *@brief 初始化芯片
-     *@return True代表IIC通信成功，false代表通信失败
+     *@brief Init chip 
+     *@return True means IIC communication succeeds, false means it fails.
      */
     bool begin(void);
     /*!
-     *@brief 获取当前时间数据
+     *@brief Get current time data
      */
     void getNowTime();
     /*!
-     *@brief 获取年
-     *@return 年
+     *@brief Get year
+     *@return Year
      */
     uint16_t year()         const { return _y; }
     /*!
-     *@brief 获取月
-     *@return 月
+     *@brief Get month
+     *@return Month
      */
     uint8_t  month()        const { return _m; }
     /*!
-     *@brief 获取日
-     *@return 日
+     *@brief Get day
+     *@return Day
      */
     uint8_t  day()          const { return _d; }
     /*!
-     *@brief 获取时
-     *@return 时
+     *@brief Get hour
+     *@return Hour
      */
     uint8_t  hour()         const { return _hh; }
     /*!
-     *@brief 获取分
-     *@return 分
+     *@brief Get minute
+     *@return Minute
      */
     uint8_t  minute()       const { return _mm; }
     /*!
-     *@brief 获取秒
-     *@return 秒
+     *@brief Get second
+     *@return Second
      */
     uint8_t  second()       const { return _ss; }
     void setCentury(uint8_t c);
     /*!
-     *@brief 设置年
-     *@param 年
+     *@brief Set year 
+     *@param Year
      */
     void setYear(uint8_t year)  { y = year + 30; }
     /*!
-     *@brief 设置月
-     *@param 月
+     *@brief Set month 
+     *@param Month
      */
     void setMonth(uint8_t month)  { m = month; }
     /*!
-     *@brief 设置日
-     *@param 日
+     *@brief Set date
+     *@param Date
      */
     void setDate(uint8_t date)  { d = date; }
     /*!
-     *@brief 设置时
-     *@param 时
+     *@brief Set hour
+     *@param Hour
      */
     void setHour(uint8_t hour)  { hh = hour; }
     /*!
-     *@brief 设置分
-     *@param 分
+     *@brief Set minute
+     *@param Minute 
      */
     void setMinute(uint8_t minute)  { mm = minute; }
     /*!
-     *@brief 设置秒
-     *@param 秒
+     *@brief Set second
+     *@param Second
      */
     void setSecond(uint8_t second)  { ss = second; }
     
@@ -160,54 +160,54 @@ public:
      */
     char* getDayOfTheWeek();
     /*!
-     *@brief 校准当前时间
+     *@brief Adjust current time 
      */
     void adjust();
     /*!
-     *@brief 获取当前温度
-     *@return 当前温度，单位为摄氏度
+     *@brief Get current temperature 
+     *@return Current temperautre, unit: ℃ 
      */
     float getTemperatureC();
     /*!
-     *@brief 判断是否掉电
-     *@return true为发生掉电，需要重设时间，false为未发生掉电
+     *@brief Judge if it is power-down 
+     *@return If retrun true, power down, time needs to reset; false, work well. 
      */
     bool lostPower(void);
     /*!
-     *@brief 读取sqw引脚的值
-     *@return 读取值在枚举变量eDs3231MSqwPinMode_t中解释
+     *@brief Read the value of pin sqw
+     *@return Explanation of the readings in enumeration variable eDs3231MSqwPinMode_t
      */
     eDs3231MSqwPinMode_t readSqwPinMode();
     
     /*!
-     *@brief 设置sqw引脚的值
-     *@param dt 传入值在枚举变量eDs3231MSqwPinMode_t中解释
+     *@brief Set the vaule of pin sqw
+     *@param dt Explanation of the witten value in enumeration variable eDs3231MSqwPinMode_t
      */
     void writeSqwPinMode(eDs3231MSqwPinMode_t mode);
     
     /*!
-     *@brief 设置最后一次编译的时间为当前时间
-     *@param date 传入编译时的日期
-     *@param time 传入编译时的时间
+     *@brief Set the last compiled time as the current time
+     *@param date Input compiling  date
+     *@param time Input compiling time
      */
     void dateTime(const __FlashStringHelper* date, const __FlashStringHelper* time);
     
     /*!
-     *@brief 设置闹钟
-     *@param alarmType 闹钟的工作模式
-     *@param days    闹钟时间(天)
-     *@param hours   闹钟时间(小时)
-     *@param minutes 闹钟时间(分钟)
-     *@param seconds 闹钟时间(秒)
+     *@brief Set alarm clock 
+     *@param alarmType Alarm working mode
+     *@param days    Alarm clock (day)
+     *@param hours   Alarm clock (hour)
+     *@param minutes Alarm clock (minute)
+     *@param seconds Alarm clock (second)
      */
     void setAlarm(const uint8_t alarmType,int16_t days,int8_t hours,int8_t minutes,int8_t seconds, const bool state  = true);
     /*!
-     *@brief 判断闹钟是否触发
-     *@return true代表触发，false代表未触发
+     *@brief Judge if the alarm clock is triggered
+     *@return true, triggered; false, not trigger
      */
     bool isAlarm();
     /*!
-     *@brief 清除触发
+     *@brief Clear trigger 
      */
     void clearAlarm();
     
@@ -219,21 +219,21 @@ protected:
     virtual uint8_t readReg(uint8_t reg, const void* pBuf, size_t size);
     
     /*!
-     *@brief BCD码转BIN码
-     *@param val 传入BCD码
-     *@return 返回BIN码
+     *@brief BCD code to BIN code
+     *@param val Input BCD code
+     *@return Return BIN code
      */
     static uint8_t bcd2bin(uint8_t val);
     /*!
-     *@brief BIN码转BCD码
-     *@param val 传入BIN码
-     *@return 返回BCD码
+     *@brief BIN code to BCD code
+     *@param val Input BIN code
+     *@return Return BCD code
      */
     static uint8_t bin2bcd(uint8_t val);
     /*!
-     *@brief 写入初始时间
-     *@param date 写入初始日期
-     *@param time 写入初始时间
+     *@brief Write init time 
+     *@param date Write init date 
+     *@param time Write init time 
      */
     
     uint8_t  dayOfTheWeek() const ;
