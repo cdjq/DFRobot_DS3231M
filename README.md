@@ -1,16 +1,10 @@
 # DFRobot_DS3231M
-这是一个高精度，高稳定性RTC时钟模块<br>
-这个模块通过IIC通信，它的精度在±5%ppm(每天误差不超过0.432秒)，并且在全温度范围和全寿命期间都能保持这个精度<br>
-这个模块兼容2.5-5.5V宽电压，电池供电时消耗电流低至2uA<br>
-这个模块还有测试环境温度的功能，误差在±3℃以内<br>
-这个模块没有采用传统晶振，而是采用MEMS(微机电系统)振荡器，具有极高的稳定性和极低的温度飘移<br>
-MEMS振荡器是对传统石英晶振产品的一个升级更新换代,防震效果是传统石英晶振的25倍,温度稳定性也比传统晶振更好<br>
-
+DS3231M is a low-cost, extremely accurate, I2C real-time clock(RTC) module. It can provide ±5%ppm accuracy (no more than 0.432s error) within the whole temperature range and life span, and is compatible with 2.5-5.5V wide voltage range. The current comsuption of the module is as low as 2uA when powered by batteries. This module can be used to measure ambient temperature with ±3℃ accuracy. The integration of the microelectromechanical systems (MEMS) resonator enhances the stability and accuracy of the device. MEMS resonator is an upgraded version of traditional quartz crystal oscillator, and it has 25 times seismic resistance of the later as well as better temperature stability.   <br>
 
 ![正反面svg效果图](https://github.com/ouki-wang/DFRobot_Sensor/raw/master/resources/images/SEN0245svg1.png)
 
 
-## 产品链接（链接到英文商城）
+## Product Link （链接到英文商城）
     SKU：产品名称
    
 ## Table of Contents
@@ -24,9 +18,9 @@ MEMS振荡器是对传统石英晶振产品的一个升级更新换代,防震效
 
 ## Summary
 
-这个库可以读取当前时间，通过最后一次编译的时间进行校准<br>
-这个库可以用于设置闹钟在确定的时间触发<br>
-这个库可以用于测量环境温度<br>
+* Read the time the program was last compiled. <br>
+* Set a alarm clock to trigger at a specified time. <br>
+* Measure ambient temperature. <br>
 
 ## Installation
 
@@ -39,12 +33,12 @@ To use this library, first download the library file, paste it into the \Arduino
   DFRobot_DS3231M(TwoWire *pWire = &Wire){_pWire = pWire;};
   ~DFRobot_DS3231M();
   /*!
-   *@brief 初始化芯片
-   *@return True代表IIC通信成功，false代表通信失败
+   *@brief Init chip 
+   *@return True means IIC communication succeeds, false means it fails. 
    */
   bool begin(void);
   /*!
-   *@brief 获取当前时间数据
+   *@brief Get current time data
    */
   void getNowTime();
   
@@ -91,67 +85,67 @@ To use this library, first download the library file, paste it into the \Arduino
   uint8_t  dayOfTheWeek() const ;
   
   /*!
-   *@brief 设置年
-   *@param 年
+   *@brief Set year
+   *@param Year 
    */
   void setYear(uint8_t year);
   
   /*!
-   *@brief 设置月
-   *@param 月
+   *@brief Set month
+   *@param Month
    */
   void setMonth(uint8_t month);
   
   /*!
-   *@brief 设置日
-   *@param 日
+   *@brief Set Date 
+   *@param Date
    */
   void setDate(uint8_t date);
   
   /*!
-   *@brief 设置时
-   *@param 时
+   *@brief Set hour 
+   *@param Hour
    */
   void setHour(uint8_t hour);
   
   /*!
-   *@brief 设置分
-   *@param 分
+   *@brief Set minute 
+   *@param Minute
    */
   void setMinute(uint8_t minute);
   
   /*!
-   *@brief 设置秒
-   *@param 秒
+   *@brief Set second
+   *@param Second
    */
   void setSecond(uint8_t second);
   
   /*!
-   *@brief 设置最后一次编译的时间为当前时间
-   *@param date 传入编译时的日期
-   *@param time 传入编译时的时间
+   *@brief Set the last compiled time as the current time 
+   *@param date Input compiling  date 
+   *@param time Input compiling time 
    */
   void dateTime(const __FlashStringHelper* date, const __FlashStringHelper* time);
   
   /*!
-   *@brief 校准当前时间
+   *@brief Adjust current time 
    */
   void adjust();
   
   /*!
-   *@brief 获取当前温度
-   *@return 当前温度，单位为摄氏度
+   *@brief Get current temperature 
+   *@return Current temperautre, unit: ℃ 
    */
   float getTemperatureC();
   
   /*!
-   *@brief 判断是否掉电
-   *@return true为发生掉电，需要重设时间，false为未发生掉电
+   *@brief Judge if it is power-down 
+   *@return If retrun true, power down, needs to reset time; false, work well. 
    */
   bool lostPower(void);
   
   /*!
-   *@brief 读取sqw引脚的值
+   *@brief Read the value of pin sqw
    *@return eDS3231M_OFF             = 0x01 // Off
    *@n      eDS3231M_SquareWave_1Hz  = 0x00 // 1Hz square wave
    *@n      eDS3231M_SquareWave_1kHz = 0x08 // 1kHz square wave
@@ -161,7 +155,7 @@ To use this library, first download the library file, paste it into the \Arduino
   eDs3231MSqwPinMode_t readSqwPinMode();
   
   /*!
-   *@brief 设置sqw引脚的值
+   *@brief Set the vaule of pin sqw
    *@param mode eDS3231M_OFF             = 0x01 // Off
    *@n          eDS3231M_SquareWave_1Hz  = 0x00 // 1Hz square wave
    *@n          eDS3231M_SquareWave_1kHz = 0x08 // 1kHz square wave
@@ -171,36 +165,36 @@ To use this library, first download the library file, paste it into the \Arduino
   void writeSqwPinMode(eDs3231MSqwPinMode_t mode);
   
   /*!
-   *@brief 设置闹钟
-   *@param alarmType 闹钟的工作模式typedef enum{
-   *@n                                  eEverySecond,                         //每秒触发一次
-   *@n                                  eSecondsMatch,                        //每分钟触发一次
-   *@n                                  eSecondsMinutesMatch,                 //每小时触发一次
-   *@n                                  eSecondsMinutesHoursMatch,            //每天触发一次
-   *@n                                  eSecondsMinutesHoursDateMatch,        //每月触发一次
-   *@n                                  eSecondsMinutesHoursDayMatch,         //每周触发一次//Alarm1
-   *@n                                  eEveryMinute,                         //每分钟触发一次
-   *@n                                  eMinutesMatch,                        //每小时触发一次
-   *@n                                  eMinutesHoursMatch,                   //每天触发一次
-   *@n                                  eMinutesHoursDateMatch,               //每月触发一次
-   *@n                                  eMinutesHoursDayMatch,                //每周触发一次//Alarm2
+   *@brief Set alarm clock 
+   *@param alarmType Alarm working mode typedef enum{
+   *@n                                  eEverySecond,                         //repeat 
+   *@n                                  eSecondsMatch,                        //repeat
+   *@n                                  eSecondsMinutesMatch,                 //repeat
+   *@n                                  eSecondsMinutesHoursMatch,            //repeat
+   *@n                                  eSecondsMinutesHoursDateMatch,        //repeat
+   *@n                                  eSecondsMinutesHoursDayMatch,         //repeat//Alarm1
+   *@n                                  eEveryMinute,                         //repeat
+   *@n                                  eMinutesMatch,                        //repeat
+   *@n                                  eMinutesHoursMatch,                   //repeat
+   *@n                                  eMinutesHoursDateMatch,               //repeat
+   *@n                                  eMinutesHoursDayMatch,                //repeat//Alarm2
    *@n                                  eUnknownAlarm
    *@n                                  }eAlarmTypes;
-   *@param days    闹钟时间(天)
-   *@param hours   闹钟时间(小时)
-   *@param minutes 闹钟时间(分钟)
-   *@param seconds 闹钟时间(秒)
+   *@param days    Alarm clock Day (day)
+   *@param hours   Alarm clock Hour (hour)
+   *@param minutes Alarm clock (minute)
+   *@param seconds Alarm clock (second)
    */
   void setAlarm(const uint8_t alarmType,int16_t days,int8_t hours,
                 int8_t minutes,int8_t seconds, const bool state  = true);
   
   /*!
-   *@brief 判断闹钟是否触发
-   *@return true代表触发，false代表未触发
+   *@brief Judge if the alarm clock is triggered 
+   *@return true, triggered; false, not trigger
    */
   bool isAlarm();
   /*!
-   *@brief 清除触发flag
+   *@brief Clear trigger flag
    */
   void clearAlarm();
 ```
@@ -218,8 +212,8 @@ micro:bit        |      √       |              |             |
 
 ## History
 
-- data 2019-8-19
-- version V0.1
+- Data 2019-8-19
+- Version V0.1
 
 
 ## Credits
