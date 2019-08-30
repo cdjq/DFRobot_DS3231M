@@ -1,6 +1,6 @@
 /*!
  * @file DFRobot_DS3231M.cpp
- * @brief 定义DFRobot_DS3231M 类的基础结构，基础方法的实现
+ * @brief Define the basic structure of class DFRobot_DS3231M
  * @copyright	Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  * @licence     The MIT License (MIT)
  * @author [yufeng](yufeng.luo@dfrobot.com)
