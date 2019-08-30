@@ -1,7 +1,7 @@
 /*!
  * @file getCompileTime.ino
- * @brief 获取最后一次编译时间并显示当前时间
- * @n 实验现象：每秒读取一次数据，并打印到串口
+ * @brief Get the last compile time and show the current time 
+ * @n Experiment phenomenon: read data per second and print it out on serial port. 
  *
  * @copyright	Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  * @licence     The MIT License (MIT)
@@ -18,14 +18,14 @@ void setup(void)
 {
     Serial.begin(9600);
     delay(3000);
-    /*在这里一致等到芯片初始化完成才能退出*/
+    /*Wait for the chip to be initialized completely, and then exit*/
     while(rtc.begin() != true){
-        Serial.println("初始化芯片失败，请确认芯片连接是否正确");
+        Serial.println("Failed to init chip, please check if the chip connection is fine.");
         delay(1000);
     }
     /*!
-     *@brief 设置sqw引脚的值
-     *@param mode eDS3231M_OFF             = 0x01 // 不输出方波，进入中断模式
+     *@brief Set the vaule of pin sqw
+     *@param mode eDS3231M_OFF             = 0x01 // Not output square wave, enter interrupt mode
      *@n          eDS3231M_SquareWave_1Hz  = 0x00 // 1Hz square wave
      *@n          eDS3231M_SquareWave_1kHz = 0x08 // 1kHz square wave
      *@n          eDS3231M_SquareWave_4kHz = 0x10 // 4kHz square wave
@@ -33,7 +33,7 @@ void setup(void)
      */
     rtc.writeSqwPinMode(eDS3231M_SquareWave_1Hz);
     /*!
-     *@brief 设置sqw引脚的值
+     *@brief Read the value of pin sqw
      *@return mode eDS3231M_OFF             = 0x01 // Off
      *@n           eDS3231M_SquareWave_1Hz  = 0x00 // 1Hz square wave
      *@n           eDS3231M_SquareWave_1kHz = 0x08 // 1kHz square wave
@@ -42,13 +42,13 @@ void setup(void)
      */
     //Serial.println(rtc.readSqwPinMode,HEX);
     /*!
-     *@brief 判断是否掉电
-     *@return true为发生掉电，需要重设时间，false为未发生掉电
+     *@brief Judge if it is power-down
+     *@return If retrun true, power down, needs to reset time; false, work well. 
      */
     if (rtc.lostPower()) {
         Serial.println("RTC lost power, lets set the time!");
         /*!
-         *@brief 校准当前时间
+         *@brief Adjust current time 
          */
         rtc.dateTime(F(__DATE__), F(__TIME__));
         rtc.adjust();
@@ -56,8 +56,8 @@ void setup(void)
 }
 void loop() {
     /*!
-     *@brief 获取当前时间数据
-     *@return 当前时间数据
+     *@brief Get current time data
+     *@return Current time data
      */
     rtc.getNowTime();
     Serial.print(rtc.year(), DEC);//year
@@ -76,8 +76,8 @@ void loop() {
     Serial.println();
     Serial.print("Temperature: ");
     /*!
-     *@brief 获取当前温度
-     *@return 当前温度，单位为摄氏度
+     *@brief Get current temperature
+     *@return Current temperautre, unit: ℃ 
      */
     Serial.print(rtc.getTemperatureC());
     Serial.println(" C");
