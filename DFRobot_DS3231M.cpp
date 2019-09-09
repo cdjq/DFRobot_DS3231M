@@ -93,7 +93,7 @@ void DFRobot_DS3231M::dateTime (const char* date, const char* time)
 void DFRobot_DS3231M::dateTime (const __FlashStringHelper* date, const __FlashStringHelper* time){
     char buff[11];
     memcpy_P(buff, date, 11);
-    y = conv2d(buff + 9);
+    y = conv2d(buff + 9) + 30;
     // Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec
     switch (buff[0]) {
         case 'J': m = (buff[1] == 'a') ? 1 : ((buff[2] == 'n') ? 6 : 7); break;
