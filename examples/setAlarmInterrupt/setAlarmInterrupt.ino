@@ -1,9 +1,9 @@
 /*!
  * @file setAlarmInterrupt.ino
- * @brief ,设置闹钟,用中断引脚触发
- * @n 实验现象：设置闹钟在固定的时间触发
- * @n           将SQW脚与DIGITALPIN2连接
- * @n           闹钟触发后会在串口打印信息
+ * @brief Set alarm, and use interrput pin to trigger it
+ * @n Experiment phenomenon: set the alarm clock to trigger at a specified time 
+ * @n                        connect SQW pin with DIGITALPIN2
+ * @n                        print information on serial port after the alarm clock is triggered.
  * @copyright	Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  * @licence     The MIT License (MIT)
  * @author [LuoYufeng](yufeng.luo@dfrobot.com)
@@ -21,14 +21,14 @@ void setup(void)
 {
     Serial.begin(9600);
     delay(3000);
-    /*在这里一致等到芯片初始化完成才能退出*/
+    /*Wait for the chip to be initialized completely, and then exit*/
     while(rtc.begin() != true){
-        Serial.println("初始化芯片失败，请确认芯片连接是否正确");
+        Serial.println("failed to init chip, please check if the chip connection is correct. ");
         delay(1000);
     }
     /*!
-     *@brief 设置sqw引脚的值
-     *@param mode eDS3231M_OFF             = 0x01 // 不输出方波，进入中断模式
+     *@brief Set the value of pin sqw
+     *@param mode eDS3231M_OFF             = 0x01 // Not output square wave, enter interrupt mode
      *@n          eDS3231M_SquareWave_1Hz  = 0x00 // 1Hz square wave
      *@n          eDS3231M_SquareWave_1kHz = 0x08 // 1kHz square wave
      *@n          eDS3231M_SquareWave_4kHz = 0x10 // 4kHz square wave
@@ -36,8 +36,8 @@ void setup(void)
      */
     rtc.writeSqwPinMode(eDS3231M_OFF);
     /*!
-     *@brief 设置闹钟
-     *@param alarmType 闹钟的工作模式typedef enum{
+     *@brief Set alarm clock 
+     *@param alarmType Alarm clock working mode typedef enum{
      *@n                                  eEverySecond,
      *@n                                  eSecondsMatch,
      *@n                                  eSecondsMinutesMatch,
@@ -51,22 +51,22 @@ void setup(void)
      *@n                                  eMinutesHoursDayMatch,        //Alarm2
      *@n                                  eUnknownAlarm
      *@n                                  }eAlarmTypes;
-     *@param days    闹钟时间(天)
-     *@param hours   闹钟时间(小时)
-     *@param minutes 闹钟时间(分钟)
-     *@param seconds 闹钟时间(秒)
+     *@param days    Alarm clock (day)
+     *@param hours   Alarm clock (hour)
+     *@param minutes Alarm clock (minute)
+     *@param seconds Alarm clock (second)
      */
     rtc.setAlarm(eSecondsMinutesHoursDateMatch,/*date,0-30*/19,/*hour,0-23*/15,/*minute,0-59*/46,/*second,0-59*/12);
     /*!
-     *@brief 判断是否掉电
-     *@return true为发生掉电，需要重设时间，false为未发生掉电
+     *@brief Judge if it is power-down 
+     *@return if return true, power-down, time needs to reset; false, work well
      */
     if (rtc.lostPower()) {
         Serial.println("RTC lost power, lets set the time!");
         /*!
-         *@brief 校准当前时间
+         *@brief Adjust the current time
          */
-        rtc.setYear(19);//设置年，默认21世纪
+        rtc.setYear(19);//Set year, default in the 21st century. 
         rtc.setMonth(8);
         rtc.setDate(26);
         rtc.setHour(15);
@@ -78,8 +78,8 @@ void setup(void)
 }
 void loop() {
     /*!
-     *@brief 判断闹钟是否触发
-     *@return true代表触发，false代表未触发
+     *@brief Judge if the alarm clock is triggered
+     *@return true, triggered; false, not triggered
      */
     if(alarmFlag == 1){
         alarmFlag = 0;
