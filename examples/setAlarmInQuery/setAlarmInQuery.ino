@@ -81,7 +81,7 @@ void loop() {
     rtc.getNowTime();
     /*!
      *@brief Judge if the alarm clock is triggered
-     *@return true, triggered; false, not trigger
+     *@return true, triggered; false, not triggered
      */
     if (rtc.isAlarm()){ // If the alarm bit is set
         Serial.println("Alarm clock is triggered.");
