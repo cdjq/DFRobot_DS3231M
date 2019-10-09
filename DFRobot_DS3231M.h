@@ -60,17 +60,21 @@ typedef enum{
 }eDs3231MSqwPinMode_t;
 
 typedef enum{
-    eEverySecond,                  //repeat
-    eSecondsMatch,                 //repeat
-    eSecondsMinutesMatch,          //repeat
-    eSecondsMinutesHoursMatch,     //repeat
-    eSecondsMinutesHoursDateMatch, //repeat
-    eSecondsMinutesHoursDayMatch,  //repeat//Alarm1
-    eEveryMinute,                  //repeat
-    eMinutesMatch,                 //repeat
-    eMinutesHoursMatch,            //repeat
-    eMinutesHoursDateMatch,        //repeat
-    eMinutesHoursDayMatch,         //repeat//Alarm2
+    eEverySecond,                  //repeat in every second
+    eSecondsMatch,                 //repeat in every minute
+    eSecondsMinutesMatch,          //repeat in every hour
+    eSecondsMinutesHoursMatch,     //repeat in every day
+    eSecondsMinutesHoursDateMatch, //repeat in every month
+    eSecondsMinutesHoursDayMatch,  //repeat in every week
+    //Alarm1
+    
+    eEveryMinute,                  //repeat in every minute
+    eMinutesMatch,                 //repeat in every hour
+    eMinutesHoursMatch,            //repeat in every day
+    eMinutesHoursDateMatch,        //repeat in every month
+    eMinutesHoursDayMatch,         //repeat in every week
+    //Alarm2
+    
     eUnknownAlarm
 }eAlarmTypes;
 
@@ -158,7 +162,7 @@ public:
      *@brief get day of week
      *@return day of week
      */
-    char* getDayOfTheWeek();
+    const char* getDayOfTheWeek();
     /*!
      *@brief Adjust current time 
      */
@@ -200,16 +204,33 @@ public:
      *@param minutes Alarm clock (minute)
      *@param seconds Alarm clock (second)
      */
-    void setAlarm(const uint8_t alarmType,int16_t days,int8_t hours,int8_t minutes,int8_t seconds, const bool state  = true);
+    void setAlarm(eAlarmTypes alarmType,int16_t days,int8_t hours,int8_t minutes,int8_t seconds, const bool state  = true);
     /*!
      *@brief Judge if the alarm clock is triggered
      *@return true, triggered; false, not trigger
      */
+    
+    void enAbleAlarm1Int();
+    void disAbleAlarm1Int();
+    void enAbleAlarm2Int();
+    void disAbleAlarm2Int();
+    
     bool isAlarm();
     /*!
      *@brief Clear trigger 
      */
     void clearAlarm();
+    
+    /*!
+     *@brief enable the 32k output 
+     */
+    void enAble32k();
+    
+    /*!
+     *@brief disable the 32k output 
+     */
+    void disAble32k();
+    
     
     uint8_t rtc[7];
     

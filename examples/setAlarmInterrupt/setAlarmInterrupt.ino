@@ -35,6 +35,27 @@ void setup(void)
      *@n          eDS3231M_SquareWave_8kHz = 0x18 // 8kHz square wave
      */
     rtc.writeSqwPinMode(eDS3231M_OFF);
+    
+    /*!
+     *@brief enable Alarm1 interrupt
+     */
+    rtc.enAbleAlarm1Int();
+    
+    /*!
+     *@brief disable Alarm1 interrupt
+     */
+    //rtc.disAbleAlarm1Int();
+    
+    /*!
+     *@brief enable Alarm2 interrupt
+     */
+    rtc.enAbleAlarm2Int();
+    
+    /*!
+     *@brief disable Alarm2 interrupt
+     */
+    //rtc.disAbleAlarm2Int();
+    
     /*!
      *@brief Set alarm clock 
      *@param alarmType Alarm clock working mode typedef enum{
@@ -44,6 +65,7 @@ void setup(void)
      *@n                                  eSecondsMinutesHoursMatch,
      *@n                                  eSecondsMinutesHoursDateMatch,
      *@n                                  eSecondsMinutesHoursDayMatch, //Alarm1
+     *@n
      *@n                                  eEveryMinute,
      *@n                                  eMinutesMatch,
      *@n                                  eMinutesHoursMatch,
@@ -56,7 +78,10 @@ void setup(void)
      *@param minutes Alarm clock (minute)
      *@param seconds Alarm clock (second)
      */
-    rtc.setAlarm(eSecondsMinutesHoursDateMatch,/*date,0-30*/19,/*hour,0-23*/15,/*minute,0-59*/46,/*second,0-59*/12);
+    //Alarm1
+    rtc.setAlarm(eSecondsMatch,/*date,0-30*/30,/*hour,0-23*/15,/*minute,0-59*/12,/*second,0-59*/35);
+    //Alarm2
+    rtc.setAlarm(eMinutesHoursDayMatch,/*date,0-30*/30,/*hour,0-23*/15,/*minute,0-59*/13,/*second,0-59, this argument doesn't work in Alarm2*/42);
     /*!
      *@brief Judge if it is power-down 
      *@return if return true, power-down, time needs to reset; false, work well
@@ -67,8 +92,8 @@ void setup(void)
          *@brief Adjust the current time
          */
         rtc.setYear(19);//Set year, default in the 21st century. 
-        rtc.setMonth(8);
-        rtc.setDate(26);
+        rtc.setMonth(9);
+        rtc.setDate(30);
         rtc.setHour(15);
         rtc.setMinute(12);
         rtc.setSecond(30);
@@ -81,27 +106,44 @@ void loop() {
      *@brief Judge if the alarm clock is triggered
      *@return true, triggered; false, not triggered
      */
+    rtc.getNowTime();
+    Serial.print(rtc.year(), DEC);
+    Serial.print('/');
+    Serial.print(rtc.month(), DEC);
+    Serial.print('/');
+    Serial.print(rtc.day(), DEC);
+    Serial.print(" (");
+    Serial.print(rtc.getDayOfTheWeek());
+    Serial.print(") ");
+    Serial.print(rtc.hour(), DEC);
+    Serial.print(':');
+    Serial.print(rtc.minute(), DEC);
+    Serial.print(':');
+    Serial.print(rtc.second(), DEC);
+    Serial.println();
     if(alarmFlag == 1){
         alarmFlag = 0;
-        rtc.getNowTime();
-        Serial.print(rtc.year(), DEC);
-        Serial.print('/');
-        Serial.print(rtc.month(), DEC);
-        Serial.print('/');
-        Serial.print(rtc.day(), DEC);
-        Serial.print(" (");
-        Serial.print(rtc.getDayOfTheWeek());
-        Serial.print(") ");
-        Serial.print(rtc.hour(), DEC);
-        Serial.print(':');
-        Serial.print(rtc.minute(), DEC);
-        Serial.print(':');
-        Serial.print(rtc.second(), DEC);
-        Serial.println();
+        Serial.println("111111");
         delay(1000);
+        rtc.clearAlarm();
     }
     else
         delay(1000);
+    if (rtc.lostPower()) {
+        Serial.println("RTC lost power, lets set the time!");
+        /*!
+         *@brief Adjust current time
+         */
+		 //rtc.dateTime(F(__DATE__), F(__TIME__));//
+        
+		//rtc.setYear(19);
+        //rtc.setMonth(8);
+        //rtc.setDate(26);
+        //rtc.setHour(15);
+        //rtc.setMinute(12);
+        //rtc.setSecond(30);
+        //rtc.adjust();
+    }
 }
 
 int ledF = 0;
@@ -112,7 +154,7 @@ void interrupt(){
     digitalWrite(LED_BUILTIN, LOW);  
     ledF = 0;
   } else {
-    digitalWrite(LED_BUILTIN, HIGH);   
+    digitalWrite(LED_BUILTIN, HIGH);
     ledF = 1;
   }
 }

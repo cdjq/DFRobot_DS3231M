@@ -117,7 +117,7 @@ uint8_t DFRobot_DS3231M::dayOfTheWeek() const {
   return (day + 6) % 7;                 // Jan 1, 2000 is a Saturday
 } 
 
-char* DFRobot_DS3231M::getDayOfTheWeek(){
+const char* DFRobot_DS3231M::getDayOfTheWeek(){
     return daysOfTheWeek[dayOfTheWeek()];
 }
 
@@ -157,7 +157,7 @@ bool DFRobot_DS3231M::lostPower(void) {
     return status[0] >> 7;
 }
 
-void DFRobot_DS3231M::setAlarm(const uint8_t alarmType, int16_t date,int8_t hour,
+void DFRobot_DS3231M::setAlarm(eAlarmTypes alarmType, int16_t date,int8_t hour,
                                int8_t minute,int8_t second, const bool state ){
     int16_t dates[] = {bin2bcd(date)};
     int8_t hours[] = {bin2bcd(hour)};
@@ -250,6 +250,34 @@ void DFRobot_DS3231M::setAlarm(const uint8_t alarmType, int16_t date,int8_t hour
     return;
 }
 
+void DFRobot_DS3231M::enAbleAlarm1Int(){
+    uint8_t crtl[1];
+    readReg(DS3231M_REG_CONTROL, crtl, 1);
+    crtl[0] |= 0x01;
+    writeReg(DS3231M_REG_CONTROL, crtl, 1);
+}
+
+void DFRobot_DS3231M::disAbleAlarm1Int(){
+    uint8_t crtl[1];
+    readReg(DS3231M_REG_CONTROL, crtl, 1);
+    crtl[0] &= 0xFE;
+    writeReg(DS3231M_REG_CONTROL, crtl, 1);
+}
+
+void DFRobot_DS3231M::enAbleAlarm2Int(){
+    uint8_t crtl[1];
+    readReg(DS3231M_REG_CONTROL, crtl, 1);
+    crtl[0] |= 0x02;
+    writeReg(DS3231M_REG_CONTROL, crtl, 1);
+}
+
+void DFRobot_DS3231M::disAbleAlarm2Int(){
+    uint8_t crtl[1];
+    readReg(DS3231M_REG_CONTROL, crtl, 1);
+    crtl[0] &= 0xFD;
+    writeReg(DS3231M_REG_CONTROL, crtl, 1);
+}
+
 bool DFRobot_DS3231M::isAlarm() {
     uint8_t status[1];
     readReg(DS3231M_REG_STATUS, status, 1);
@@ -262,6 +290,20 @@ void DFRobot_DS3231M::clearAlarm(){
     status[0] &= 0xFC;
     writeReg(DS3231M_REG_STATUS, status, 1);
 } 
+
+void DFRobot_DS3231M::enAble32k(){
+    uint8_t status[1];
+    readReg(DS3231M_REG_STATUS, status, 1);
+    status[0] |= 0x08;
+    writeReg(DS3231M_REG_STATUS, status, 1);
+}
+
+void DFRobot_DS3231M::disAble32k(){
+    uint8_t status[1];
+    readReg(DS3231M_REG_STATUS, status, 1);
+    status[0] &= 0xF7;
+    writeReg(DS3231M_REG_STATUS, status, 1);
+}
 
 void DFRobot_DS3231M::writeReg(uint8_t reg, const void* pBuf, size_t size)
 {

@@ -8,7 +8,7 @@
  * @author [LuoYufeng](yufeng.luo@dfrobot.com)
  * @version  V0.1
  * @date  2019-08-19
- * @url https://github.com/DFRobot/DFRobot_CCS811
+ * @url https://github.com/DFRobot/DFRobot_DS3231M
  */
 #include "DFRobot_DS3231M.h"
 
@@ -46,20 +46,27 @@ void setup(void)
      *@brief Judge if it is power-down
      *@return If retrun true, power down, needs to reset time; false, work well.
      */
-    if (rtc.lostPower()) {
-        Serial.println("RTC lost power, lets set the time!");
-        /*!
-         *@brief Adjust current time
-         */
-        rtc.setYear(19);//Set year, default in the 21st century, input negative number for years in the 20th century.
-        rtc.setMonth(8);
-        rtc.setDate(26);
-        rtc.setHour(15);
-        rtc.setMinute(12);
-        rtc.setSecond(30);
-        rtc.adjust();
-    }
+	 
+    //rtc.dateTime(F(__DATE__), F(__TIME__));//
+    rtc.setYear(19);//Set year, default in the 21st century, input negative number for years in the 20th century.
+    rtc.setMonth(8);
+    rtc.setDate(26);
+    rtc.setHour(15);
+    rtc.setMinute(12);
+    rtc.setSecond(30);
+    rtc.adjust();
+
+    /*!
+     *@brief enable the 32k output (default is enable)
+     */
+    //rtc.disAble32k();
+
+    /*!
+     *@brief disable the 32k output 
+     */
+    //rtc.enAble32k();
 }
+
 void loop() {
     /*!
      *@brief Get current time data 
@@ -88,4 +95,20 @@ void loop() {
     Serial.print(rtc.getTemperatureC());
     Serial.println(" C");
     delay(3000);
+	
+    if (rtc.lostPower()) {
+        Serial.println("RTC lost power, lets set the time!");
+        /*!
+         *@brief Adjust current time
+         */
+		 //rtc.dateTime(F(__DATE__), F(__TIME__));//
+        
+		//rtc.setYear(19);//Set year, default in the 21st century, input negative number for years in the 20th century.
+        //rtc.setMonth(8);
+        //rtc.setDate(26);
+        //rtc.setHour(15);
+        //rtc.setMinute(12);
+        //rtc.setSecond(30);
+        //rtc.adjust();
+    }
 }
