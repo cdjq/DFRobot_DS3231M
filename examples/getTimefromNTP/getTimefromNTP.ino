@@ -2,6 +2,7 @@
  * @file getTimefromNTP.ino
  * @brief Get time from ntpServer and show current time 
  * @n Experiment phenomenon: read data every second and print it on serial port. 
+ * @n                        This demo only works on mpython
  *
  * @copyright	Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  * @licence     The MIT License (MIT)

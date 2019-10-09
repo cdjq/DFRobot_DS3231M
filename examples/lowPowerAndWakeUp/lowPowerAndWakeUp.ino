@@ -1,9 +1,10 @@
 /*!
  * @file lowPowerAndWakeUp.ino
  * @brief Set alarm, and use interrput pin to trigger MCU wake up
- * @n Experiment phenomenon: set the alarm clock to trigger at a specified time 
- * @n                        connect SQW pin with DIGITALPIN2
- * @n                        print information on serial port after the alarm clock is triggered.
+ * @n Experiment phenomenon: Set the alarm clock to trigger at a specified time.
+ * @n                        Connect SQW pin with DIGITALPIN2.
+ * @n                        Print information on serial port after the alarm clock is triggered.
+ * @n                        This demo only works on avr
  * @copyright	Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  * @licence     The MIT License (MIT)
  * @author [LuoYufeng](yufeng.luo@dfrobot.com)
