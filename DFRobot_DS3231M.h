@@ -59,6 +59,13 @@ typedef enum{
     eDS3231M_SquareWave_8kHz = 0x18  // 8kHz square wave
 }eDs3231MSqwPinMode_t;
 
+
+typedef enum{
+    e24hours = 0,
+    eAM = 2,
+    ePM = 3
+}ehours;
+
 typedef enum{
     eEverySecond,                  //repeat in every second
     eSecondsMatch,                 //repeat in every minute
@@ -126,7 +133,6 @@ public:
      *@return Second
      */
     uint8_t  second()       const { return _ss; }
-    void setCentury(uint8_t c);
     /*!
      *@brief Set year 
      *@param Year
@@ -143,10 +149,11 @@ public:
      */
     void setDate(uint8_t date)  { d = date; }
     /*!
-     *@brief Set hour
-     *@param Hour
+     *@brief Set the hours and 12hours or 24hours
+     *@param hour:1-12 in 12hours,0-23 in 24hours
+     *@param mode:e24hours, eAM, ePM
      */
-    void setHour(uint8_t hour)  { hh = hour; }
+    void setHour(uint8_t hour, ehours mode);
     /*!
      *@brief Set minute
      *@param Minute 
@@ -204,18 +211,27 @@ public:
      *@param minutes Alarm clock (minute)
      *@param seconds Alarm clock (second)
      */
-    void setAlarm(eAlarmTypes alarmType,int16_t days,int8_t hours,int8_t minutes,int8_t seconds, const bool state  = true);
-    /*!
-     *@brief Judge if the alarm clock is triggered
-     *@return true, triggered; false, not trigger
-     */
+    void setAlarm(eAlarmTypes alarmType,int16_t days,int8_t hours,ehours mode,int8_t minutes,int8_t seconds, const bool state  = true);
     
+    /*!
+     *@brief enable or disable the interrupt of alarm 
+     */
     void enAbleAlarm1Int();
     void disAbleAlarm1Int();
     void enAbleAlarm2Int();
     void disAbleAlarm2Int();
     
+    /*!
+     *@brief output AM or PM of time 
+     */
+    const char* getAMorPM();
+    
+    /*!
+     *@brief Judge if the alarm clock is triggered
+     *@return true, triggered; false, not trigger
+     */
     bool isAlarm();
+    
     /*!
      *@brief Clear trigger 
      */
@@ -273,6 +289,7 @@ private:
     uint8_t  _ss,_mm,_hh,_d,_m;
     uint16_t _y;
     const char* daysOfTheWeek[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"}; 
+    const char* hourOfAM[4] = {"", "", "AM", "PM"}; 
 };
 
 #endif

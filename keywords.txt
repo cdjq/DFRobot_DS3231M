@@ -34,6 +34,14 @@ setHour	KEYWORD2
 setMinute	KEYWORD2
 setSecond	KEYWORD2
 clearAlarm	KEYWORD2
+disAble32k	KEYWORD2
+enAble32k	KEYWORD2
+enAbleAlarm1Int	KEYWORD2
+disAbleAlarm1Int	KEYWORD2
+enAbleAlarm2Int	KEYWORD2
+disAbleAlarm2Int	KEYWORD2
+getAMorPM	KEYWORD2
+dateTime	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
@@ -56,3 +64,6 @@ eMinutesHoursMatch	LITERAL1
 eMinutesHoursDateMatch	LITERAL1
 eMinutesHoursDayMatch	LITERAL1
 eUnknownAlarm	LITERAL1
+e24hours	LITERAL1
+eAM	LITERAL1
+ePM	LITERAL1

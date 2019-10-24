@@ -23,7 +23,6 @@ int t = 0;
 void setup(void)
 {
     Serial.begin(9600);
-    delay(3000);
     /*Wait for the chip to be initialized completely, and then exit*/
     while(rtc.begin() != true){
         Serial.println("failed to init chip, please check if the chip connection is correct. ");
@@ -60,15 +59,21 @@ void setup(void)
      *@n                                  }eAlarmTypes;
      *@param days    Alarm clock (day)
      *@param hours   Alarm clock (hour)
+     *@param mode:   e24hours, eAM, ePM
      *@param minutes Alarm clock (minute)
      *@param seconds Alarm clock (second)
      */
-    rtc.setAlarm(eSecondsMatch,/*date,0-30*/29,/*hour,0-23*/9,/*minute,0-59*/10,/*second,0-59*/40);
+    rtc.setAlarm(eSecondsMatch,/*date,0-30*/29,/*hour,1-12 in 12hours,0-23 in 24hours*/9,e24hours,/*minute,0-59*/10,/*second,0-59*/40);
     
     rtc.setYear(19);//Set year, default in the 21st century. 
     rtc.setMonth(9);
     rtc.setDate(29);
-    rtc.setHour(9);
+    /*!
+     *@brief Set the hours and 12hours or 24hours
+     *@param hour:1-12 in 12hours,0-23 in 24hours
+     *@param mode:e24hours, eAM, ePM
+     */
+    rtc.setHour(9,e24hours);
     rtc.setMinute(10);
     rtc.setSecond(30);
     rtc.adjust();
@@ -106,6 +111,8 @@ void loop() {
             Serial.print(rtc.minute(), DEC);
             Serial.print(':');
             Serial.print(rtc.second(), DEC);
+            Serial.print(' ');
+            Serial.print(rtc.getAMorPM());
             Serial.println();
             delay(1000);
             t = t + 1;
@@ -119,19 +126,7 @@ void loop() {
      *@return if return true, power-down, time needs to reset; false, work well
      */
     if (rtc.lostPower()) {
-        Serial.println("RTC lost power, lets set the time!");
-        /*!
-         *@brief Adjust current time
-         */
-        //rtc.dateTime(F(__DATE__), F(__TIME__));
-        
-        //rtc.setYear(19);
-        //rtc.setMonth(8);
-        //rtc.setDate(26);
-        //rtc.setHour(15);
-        //rtc.setMinute(12);
-        //rtc.setSecond(30);
-        //rtc.adjust();
+        Serial.println("RTC lost power, please reset the time!");
     }
     sleep_enable();
     //energy.PowerDown();

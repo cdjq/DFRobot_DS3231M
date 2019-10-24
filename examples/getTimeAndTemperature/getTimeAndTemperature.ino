@@ -1,7 +1,7 @@
 /*!
  * @file getTimeAndTemperature.ino
  * @brief Show current time 
- * @n Experiment phenomenon: read data every 3 seconds and print it on serial port. 
+ * @n Experiment phenomenon: read data every 1 seconds and print it on serial port. 
  *
  * @copyright	Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  * @licence     The MIT License (MIT)
@@ -18,7 +18,6 @@ DFRobot_DS3231M rtc;
 void setup(void)
 {
     Serial.begin(9600);
-    delay(3000);
     /*Wait for the chip to be initialized completely, and then exit*/
     while(rtc.begin() != true){
         Serial.println("Failed to init chip, please check if the chip connection is fine. ");
@@ -41,7 +40,6 @@ void setup(void)
      *@n           eDS3231M_SquareWave_4kHz = 0x10 // 4kHz square wave
      *@n           eDS3231M_SquareWave_8kHz = 0x18 // 8kHz square wave
      */
-    //Serial.println(rtc.readSqwPinMode,HEX);
     /*!
      *@brief Judge if it is power-down
      *@return If retrun true, power down, needs to reset time; false, work well.
@@ -49,11 +47,16 @@ void setup(void)
 	 
     //rtc.dateTime(F(__DATE__), F(__TIME__));//
     rtc.setYear(19);//Set year, default in the 21st century, input negative number for years in the 20th century.
-    rtc.setMonth(8);
-    rtc.setDate(26);
-    rtc.setHour(15);
-    rtc.setMinute(12);
-    rtc.setSecond(30);
+    rtc.setMonth(10);
+    rtc.setDate(23);
+    /*!
+     *@brief Set the hours and 12hours or 24hours
+     *@param hour:1-12 in 12hours,0-23 in 24hours
+     *@param mode:e24hours, eAM, ePM
+     */
+    rtc.setHour(0,e24hours);
+    rtc.setMinute(59);
+    rtc.setSecond(40);
     rtc.adjust();
 
     /*!
@@ -86,6 +89,8 @@ void loop() {
     Serial.print(rtc.minute(), DEC);//minute
     Serial.print(':');
     Serial.print(rtc.second(), DEC);//second
+    Serial.print(' ');
+    Serial.print(rtc.getAMorPM());
     Serial.println();
     Serial.print("Temperature: ");
     /*!
@@ -94,21 +99,9 @@ void loop() {
      */
     Serial.print(rtc.getTemperatureC());
     Serial.println(" C");
-    delay(3000);
+    delay(1000);
 	
     if (rtc.lostPower()) {
-        Serial.println("RTC lost power, lets set the time!");
-        /*!
-         *@brief Adjust current time
-         */
-		 //rtc.dateTime(F(__DATE__), F(__TIME__));//
-        
-		//rtc.setYear(19);//Set year, default in the 21st century, input negative number for years in the 20th century.
-        //rtc.setMonth(8);
-        //rtc.setDate(26);
-        //rtc.setHour(15);
-        //rtc.setMinute(12);
-        //rtc.setSecond(30);
-        //rtc.adjust();
+        Serial.println("RTC lost power, plrase reset the time!");
     }
 }

@@ -20,7 +20,6 @@ DFRobot_DS3231M rtc;
 void setup(void)
 {
     Serial.begin(9600);
-    delay(3000);
     /*Wait for the chip to be initialized completely, and then exit*/
     while(rtc.begin() != true){
         Serial.println("failed to init chip, please check if the chip connection is correct. ");
@@ -75,13 +74,15 @@ void setup(void)
      *@n                                  }eAlarmTypes;
      *@param days    Alarm clock (day)
      *@param hours   Alarm clock (hour)
+     *@param mode:   e24hours, eAM, ePM
      *@param minutes Alarm clock (minute)
      *@param seconds Alarm clock (second)
      */
     //Alarm1
-    rtc.setAlarm(eSecondsMatch,/*date,0-30*/30,/*hour,0-23*/15,/*minute,0-59*/12,/*second,0-59*/35);
+    rtc.setAlarm(eSecondsMatch,/*date,0-30*/30,/*hour,1-12 in 12hours,0-23 in 24hours*/15,e24hours,/*minute,0-59*/12,/*second,0-59*/35);
     //Alarm2
-    rtc.setAlarm(eMinutesHoursDayMatch,/*date,0-30*/30,/*hour,0-23*/15,/*minute,0-59*/13,/*second,0-59, this argument doesn't work in Alarm2*/42);
+    rtc.setAlarm(eMinutesHoursDayMatch,/*date,0-30*/30,/*hour,1-12 in 12hours,0-23 in 24hours*/15,e24hours,
+                 /*minute,0-59*/13,/*second,0-59, this argument doesn't work in Alarm2*/42);
     /*!
      *@brief Judge if it is power-down 
      *@return if return true, power-down, time needs to reset; false, work well
@@ -94,7 +95,12 @@ void setup(void)
         rtc.setYear(19);//Set year, default in the 21st century. 
         rtc.setMonth(9);
         rtc.setDate(30);
-        rtc.setHour(15);
+        /*!
+         *@brief Set the hours and 12hours or 24hours
+         *@param hour:1-12 in 12hours,0-23 in 24hours
+         *@param mode:e24hours, eAM, ePM
+         */
+        rtc.setHour(15,e24hours);
         rtc.setMinute(12);
         rtc.setSecond(30);
         rtc.adjust();
@@ -120,6 +126,8 @@ void loop() {
     Serial.print(rtc.minute(), DEC);
     Serial.print(':');
     Serial.print(rtc.second(), DEC);
+    Serial.print(' ');
+    Serial.print(rtc.getAMorPM());
     Serial.println();
     if(alarmFlag == 1){
         alarmFlag = 0;
@@ -130,19 +138,7 @@ void loop() {
     else
         delay(1000);
     if (rtc.lostPower()) {
-        Serial.println("RTC lost power, lets set the time!");
-        /*!
-         *@brief Adjust current time
-         */
-		 //rtc.dateTime(F(__DATE__), F(__TIME__));//
-        
-		//rtc.setYear(19);
-        //rtc.setMonth(8);
-        //rtc.setDate(26);
-        //rtc.setHour(15);
-        //rtc.setMinute(12);
-        //rtc.setSecond(30);
-        //rtc.adjust();
+        Serial.println("RTC lost power, please reset the time!");
     }
 }
 

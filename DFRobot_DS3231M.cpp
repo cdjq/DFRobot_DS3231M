@@ -120,9 +120,49 @@ uint8_t DFRobot_DS3231M::dayOfTheWeek() const {
 const char* DFRobot_DS3231M::getDayOfTheWeek(){
     return daysOfTheWeek[dayOfTheWeek()];
 }
+/*
+void DFRobot_DS3231M::set24hours(){
+    uint8_t buffer[1];
+    readReg(DS3231M_REG_RTC_HOUR, buffer, 1);
+    buffer[0] &= 0xBF;
+    writeReg(DS3231M_REG_RTC_HOUR, buffer, 1);
+}
+
+void DFRobot_DS3231M::set12hours(){
+    uint8_t buffer[1];
+    readReg(DS3231M_REG_RTC_HOUR, buffer, 1);
+    buffer[0] |= 0x40;
+    writeReg(DS3231M_REG_RTC_HOUR, buffer, 1);
+}
+
+void DFRobot_DS3231M::setAM(){
+    uint8_t buffer[1];
+    readReg(DS3231M_REG_RTC_HOUR, buffer, 1);
+    buffer[0] &= 0xDF;
+    writeReg(DS3231M_REG_RTC_HOUR, buffer, 1);
+}
+
+void DFRobot_DS3231M::setPM(){
+    uint8_t buffer[1];
+    readReg(DS3231M_REG_RTC_HOUR, buffer, 1);
+    buffer[0] |= 0x20;
+    writeReg(DS3231M_REG_RTC_HOUR, buffer, 1);
+}
+*/
+void DFRobot_DS3231M::setHour(uint8_t hour, ehours mode){
+    hh = (mode << 5|bin2bcd(hour));
+}
+
+const char* DFRobot_DS3231M::getAMorPM(){
+    uint8_t buffer[1];
+    readReg(DS3231M_REG_RTC_HOUR, buffer, 1);
+    buffer[0] = buffer[0] << 1;
+    buffer[0] = buffer[0] >> 6;
+    return hourOfAM[buffer[0]];
+}
 
 void DFRobot_DS3231M::adjust(){
-    uint8_t buffer[] = {bin2bcd(ss),bin2bcd(mm),bin2bcd(hh),dayOfTheWeek(),bin2bcd(d),bin2bcd(m),bin2bcd(y)};
+    uint8_t buffer[] = {bin2bcd(ss),bin2bcd(mm),hh,dayOfTheWeek(),bin2bcd(d),bin2bcd(m),bin2bcd(y)};
     //dateTime(F(__DATE__), F(__TIME__));
     writeReg(DS3231M_REG_RTC_SEC, buffer, 7);
     uint8_t statreg[1];
@@ -135,7 +175,8 @@ void DFRobot_DS3231M::getNowTime(){
     readReg(DS3231M_REG_RTC_SEC, bcd, 7);
     _ss = bcd2bin(bcd[0] & 0x7F);
     _mm = bcd2bin(bcd[1]);
-    _hh = bcd2bin(bcd[2]);
+    bcd[2] = bcd[2] << 3;
+    _hh = bcd2bin(bcd[2] >> 3);
     _d = bcd2bin(bcd[4]);
     _m = bcd2bin(bcd[5]);
     _y = bcd2bin(bcd[6]) + 1970;
@@ -157,10 +198,10 @@ bool DFRobot_DS3231M::lostPower(void) {
     return status[0] >> 7;
 }
 
-void DFRobot_DS3231M::setAlarm(eAlarmTypes alarmType, int16_t date,int8_t hour,
+void DFRobot_DS3231M::setAlarm(eAlarmTypes alarmType, int16_t date,int8_t hour, ehours mode,
                                int8_t minute,int8_t second, const bool state ){
     int16_t dates[] = {bin2bcd(date)};
-    int8_t hours[] = {bin2bcd(hour)};
+    int8_t hours[] = {mode << 5|bin2bcd(hour)};
     int8_t minutes[] = {bin2bcd(minute)};
     int8_t seconds[] = {bin2bcd(second)};
     uint8_t days[] = {bin2bcd(dayOfTheWeek())};

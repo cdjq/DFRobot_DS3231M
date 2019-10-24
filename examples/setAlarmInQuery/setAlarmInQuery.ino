@@ -18,7 +18,6 @@ DFRobot_DS3231M rtc;
 void setup(void)
 {
     Serial.begin(9600);
-    delay(3000);
     /*Wait for the chip to be initialized completely, and then exit*/
     while(rtc.begin() != true){
         Serial.println("failed to init chip, please check if the chip connection is fine");
@@ -51,17 +50,24 @@ void setup(void)
      *@n                                  }eAlarmTypes;
      *@param days    Alarm clock Day (day)
      *@param hours   Alarm clock Hour (hour)
+     *@param mode:   e24hours, eAM, ePM
      *@param minutes Alarm clock (minute)
      *@param seconds Alarm clock (second)
      */
-    rtc.setAlarm(eEverySecond,/*date,0-30*/19,/*hour,0-23*/15,/*minute,0-59*/46,/*second,0-59*/12);
+    rtc.setAlarm(eSecondsMatch,/*date,0-30*/27,/*hour,1-12 in 12hours,0-23 in 24hours*/12,eAM,/*minute,0-59*/0,/*second,0-59*/0);
+    rtc.setAlarm(eMinutesHoursDateMatch,/*date,0-30*/27,/*hour,1-12 in 12hours,0-23 in 24hours*/12,eAM,/*minute,0-59*/0,/*second,0-59*/0);
     
     rtc.setYear(19);//Set year, default in the 21st century,
     rtc.setMonth(8);
     rtc.setDate(26);
-    rtc.setHour(15);
-    rtc.setMinute(12);
-    rtc.setSecond(30);
+    /*!
+     *@brief Set the hours and 12hours or 24hours
+     *@param hour:1-12 in 12hours,0-23 in 24hours
+     *@param mode:e24hours, eAM, ePM
+     */
+    rtc.setHour(11,ePM);//1-12 in 12hours,0-23 in 24hours
+    rtc.setMinute(59);
+    rtc.setSecond(50);
     rtc.adjust();
 }
 void loop() {
@@ -94,21 +100,11 @@ void loop() {
     Serial.print(rtc.minute(), DEC);
     Serial.print(':');
     Serial.print(rtc.second(), DEC);
+    Serial.print(' ');
+    Serial.print(rtc.getAMorPM());
     Serial.println();
     if (rtc.lostPower()) {
-        Serial.println("RTC lost power, lets set the time!");
-        /*!
-         *@brief Adjust current time
-         */
-		 //rtc.dateTime(F(__DATE__), F(__TIME__));//
-        
-		//rtc.setYear(19);//Set year, default in the 21st century, input negative number for years in the 20th century.
-        //rtc.setMonth(8);
-        //rtc.setDate(26);
-        //rtc.setHour(15);
-        //rtc.setMinute(12);
-        //rtc.setSecond(30);
-        //rtc.adjust();
+        Serial.println("RTC lost power, please reset the time!");
     }
     delay(1000);
 }

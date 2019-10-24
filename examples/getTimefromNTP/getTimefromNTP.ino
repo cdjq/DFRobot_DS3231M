@@ -36,7 +36,7 @@ void getTimeFromNTP()
     rtc.setYear(timeinfo.tm_year - 100);
     rtc.setMonth(timeinfo.tm_mon + 1);
     rtc.setDate(timeinfo.tm_mday);
-    rtc.setHour(timeinfo.tm_hour);
+    rtc.setHour(timeinfo.tm_hour, e24hours);
     rtc.setMinute(timeinfo.tm_min);
     rtc.setSecond(timeinfo.tm_sec);
     rtc.adjust();
@@ -62,7 +62,6 @@ void setup()
     //init and get the time
     configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
     getTimeFromNTP();
-    
     //disconnect WiFi as it's no longer needed
     WiFi.disconnect(true);
     WiFi.mode(WIFI_OFF);

@@ -103,10 +103,11 @@ To use this library, first download the library file, paste it into the \Arduino
   void setDate(uint8_t date);
   
   /*!
-   *@brief Set hour 
-   *@param Hour
+   *@brief Set the hours and 12hours or 24hours
+   *@param hour:1-12 in 12hours,0-23 in 24hours
+   *@param mode:e24hours, eAM, ePM
    */
-  void setHour(uint8_t hour);
+  void setHour(uint8_t hour, ehours mode);
   
   /*!
    *@brief Set minute 
@@ -131,6 +132,11 @@ To use this library, first download the library file, paste it into the \Arduino
    *@brief Adjust current time 
    */
   void adjust();
+  
+  /*!
+   *@brief output AM or PM of time 
+   */
+  const char* getAMorPM();
   
   /*!
    *@brief Get current temperature 
@@ -165,27 +171,28 @@ To use this library, first download the library file, paste it into the \Arduino
   void writeSqwPinMode(eDs3231MSqwPinMode_t mode);
   
   /*!
-   *@brief Set alarm clock 
-   *@param alarmType Alarm working mode typedef enum{
-   *@n                                  eEverySecond,                         //repeat 
-   *@n                                  eSecondsMatch,                        //repeat
-   *@n                                  eSecondsMinutesMatch,                 //repeat
-   *@n                                  eSecondsMinutesHoursMatch,            //repeat
-   *@n                                  eSecondsMinutesHoursDateMatch,        //repeat
-   *@n                                  eSecondsMinutesHoursDayMatch,         //repeat//Alarm1
-   *@n                                  eEveryMinute,                         //repeat
-   *@n                                  eMinutesMatch,                        //repeat
-   *@n                                  eMinutesHoursMatch,                   //repeat
-   *@n                                  eMinutesHoursDateMatch,               //repeat
-   *@n                                  eMinutesHoursDayMatch,                //repeat//Alarm2
+   *@brief Set alarm clock
+   *@param alarmType Alarm clock working mode typedef enum{
+   *@n                                  eEverySecond,
+   *@n                                  eSecondsMatch,
+   *@n                                  eSecondsMinutesMatch,
+   *@n                                  eSecondsMinutesHoursMatch,
+   *@n                                  eSecondsMinutesHoursDateMatch,
+   *@n                                  eSecondsMinutesHoursDayMatch, //Alarm1
+   *@n                                  eEveryMinute,
+   *@n                                  eMinutesMatch,
+   *@n                                  eMinutesHoursMatch,
+   *@n                                  eMinutesHoursDateMatch,
+   *@n                                  eMinutesHoursDayMatch,        //Alarm2
    *@n                                  eUnknownAlarm
    *@n                                  }eAlarmTypes;
    *@param days    Alarm clock Day (day)
    *@param hours   Alarm clock Hour (hour)
+   *@param mode:   e24hours, eAM, ePM
    *@param minutes Alarm clock (minute)
    *@param seconds Alarm clock (second)
    */
-  void setAlarm(const uint8_t alarmType,int16_t days,int8_t hours,
+  void setAlarm(const uint8_t alarmType,int16_t days,int8_t hours,ehours mode,
                 int8_t minutes,int8_t seconds, const bool state  = true);
   
   /*!
@@ -197,6 +204,24 @@ To use this library, first download the library file, paste it into the \Arduino
    *@brief Clear trigger flag
    */
   void clearAlarm();
+  
+  /*!
+   *@brief enable or disable the interrupt of alarm 
+   */
+  void enAbleAlarm1Int();
+  void disAbleAlarm1Int();
+  void enAbleAlarm2Int();
+  void disAbleAlarm2Int();
+  
+  /*!
+   *@brief enable the 32k output 
+   */
+  void enAble32k();
+  
+  /*!
+   *@brief disable the 32k output 
+   */
+  void disAble32k();
 ```
 
 ## Compatibility
