@@ -127,11 +127,12 @@ void loop() {
     Serial.print(':');
     Serial.print(rtc.second(), DEC);
     Serial.print(' ');
+    /*if rtc works in 24hours mode,this function doesn't print anything*/
     Serial.print(rtc.getAMorPM());
     Serial.println();
     if(alarmFlag == 1){
         alarmFlag = 0;
-        Serial.println("111111");
+        Serial.println("Alarm clock is triggered.");
         delay(1000);
         rtc.clearAlarm();
     }
@@ -142,15 +143,6 @@ void loop() {
     }
 }
 
-int ledF = 0;
-
 void interrupt(){
   alarmFlag = 1;
-  if(ledF) {
-    digitalWrite(LED_BUILTIN, LOW);  
-    ledF = 0;
-  } else {
-    digitalWrite(LED_BUILTIN, HIGH);
-    ledF = 1;
-  }
 }

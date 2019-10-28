@@ -112,6 +112,7 @@ void loop() {
             Serial.print(':');
             Serial.print(rtc.second(), DEC);
             Serial.print(' ');
+            /*if rtc works in 24hours mode,this function doesn't print anything*/
             Serial.print(rtc.getAMorPM());
             Serial.println();
             delay(1000);
@@ -132,16 +133,8 @@ void loop() {
     //energy.PowerDown();
 }
 
-int ledF = 0;
 
 void interrupt(){
     alarmFlag = 1;
     sleep_disable();
-    if(ledF) {
-        digitalWrite(2, LOW);
-        ledF = 0;
-    } else {
-        digitalWrite(2, HIGH);
-        ledF = 1;
-    }
 }

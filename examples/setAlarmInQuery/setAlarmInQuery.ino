@@ -101,6 +101,7 @@ void loop() {
     Serial.print(':');
     Serial.print(rtc.second(), DEC);
     Serial.print(' ');
+    /*if rtc works in 24hours mode,this function doesn't print anything*/
     Serial.print(rtc.getAMorPM());
     Serial.println();
     if (rtc.lostPower()) {
