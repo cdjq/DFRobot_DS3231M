@@ -41,7 +41,10 @@ void setup(void)
      *@n           eDS3231M_SquareWave_8kHz = 0x18 // 8kHz square wave
      */
     //rtc.readSqwPinMode();
-    //rtc.dateTime(F(__DATE__), F(__TIME__));//
+    /*!
+     *@brief Set the last compiled time as the current time
+     */
+    //rtc.dateTime();//If users use this function, please don't set time by other way
     rtc.setYear(19);//Set year, default in the 21st century, input negative number for years in the 20th century.
     rtc.setMonth(10);
     rtc.setDate(23);
@@ -53,6 +56,7 @@ void setup(void)
     rtc.setHour(0,e24hours);
     rtc.setMinute(59);
     rtc.setSecond(40);
+    
     rtc.adjust();
 
     /*!

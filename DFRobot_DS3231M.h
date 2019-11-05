@@ -198,10 +198,8 @@ public:
     
     /*!
      *@brief Set the last compiled time as the current time
-     *@param date Input compiling  date
-     *@param time Input compiling time
      */
-    void dateTime(const __FlashStringHelper* date, const __FlashStringHelper* time);
+    void dateTime();
     
     /*!
      *@brief Set alarm clock 

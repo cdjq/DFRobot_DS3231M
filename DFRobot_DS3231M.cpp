@@ -90,9 +90,9 @@ void DFRobot_DS3231M::dateTime (const char* date, const char* time)
   ss = conv2d(time + 6);
 }
 */
-void DFRobot_DS3231M::dateTime (const __FlashStringHelper* date, const __FlashStringHelper* time){
+void DFRobot_DS3231M::dateTime (){
     char buff[11];
-    memcpy_P(buff, date, 11);
+    memcpy_P(buff, F(__DATE__), 11);
     y = conv2d(buff + 9) + 30;
     // Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec
     switch (buff[0]) {
@@ -106,8 +106,8 @@ void DFRobot_DS3231M::dateTime (const __FlashStringHelper* date, const __FlashSt
         case 'D': m = 12; break;
     }
     d = conv2d(buff + 4);
-    memcpy_P(buff, time, 8);
-    hh = conv2d(buff);
+    memcpy_P(buff, F(__TIME__), 8);
+    hh = bin2bcd(conv2d(buff));
     mm = conv2d(buff + 3);
     ss = conv2d(buff + 6);
 }
@@ -120,35 +120,7 @@ uint8_t DFRobot_DS3231M::dayOfTheWeek() const {
 const char* DFRobot_DS3231M::getDayOfTheWeek(){
     return daysOfTheWeek[dayOfTheWeek()];
 }
-/*
-void DFRobot_DS3231M::set24hours(){
-    uint8_t buffer[1];
-    readReg(DS3231M_REG_RTC_HOUR, buffer, 1);
-    buffer[0] &= 0xBF;
-    writeReg(DS3231M_REG_RTC_HOUR, buffer, 1);
-}
 
-void DFRobot_DS3231M::set12hours(){
-    uint8_t buffer[1];
-    readReg(DS3231M_REG_RTC_HOUR, buffer, 1);
-    buffer[0] |= 0x40;
-    writeReg(DS3231M_REG_RTC_HOUR, buffer, 1);
-}
-
-void DFRobot_DS3231M::setAM(){
-    uint8_t buffer[1];
-    readReg(DS3231M_REG_RTC_HOUR, buffer, 1);
-    buffer[0] &= 0xDF;
-    writeReg(DS3231M_REG_RTC_HOUR, buffer, 1);
-}
-
-void DFRobot_DS3231M::setPM(){
-    uint8_t buffer[1];
-    readReg(DS3231M_REG_RTC_HOUR, buffer, 1);
-    buffer[0] |= 0x20;
-    writeReg(DS3231M_REG_RTC_HOUR, buffer, 1);
-}
-*/
 void DFRobot_DS3231M::setHour(uint8_t hour, ehours mode){
     hh = (mode << 5|bin2bcd(hour));
 }
