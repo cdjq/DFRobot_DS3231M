@@ -40,11 +40,7 @@ void setup(void)
      *@n           eDS3231M_SquareWave_4kHz = 0x10 // 4kHz square wave
      *@n           eDS3231M_SquareWave_8kHz = 0x18 // 8kHz square wave
      */
-    /*!
-     *@brief Judge if it is power-down
-     *@return If retrun true, power down, needs to reset time; false, work well.
-     */
-	 
+    //rtc.readSqwPinMode();
     //rtc.dateTime(F(__DATE__), F(__TIME__));//
     rtc.setYear(19);//Set year, default in the 21st century, input negative number for years in the 20th century.
     rtc.setMonth(10);
@@ -102,6 +98,10 @@ void loop() {
     Serial.println(" C");
     delay(1000);
 	
+    /*!
+     *@brief Judge if it is power-down
+     *@return If retrun true, power down, needs to reset time; false, work well.
+     */
     if (rtc.lostPower()) {
         Serial.println("RTC lost power, plrase reset the time!");
     }
