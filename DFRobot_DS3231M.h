@@ -50,7 +50,6 @@
 #else
 #define DBG(...)
 #endif
-
 typedef enum{
     eDS3231M_OFF             = 0x01, // Not output square wave, enter interrupt mode 
     eDS3231M_SquareWave_1Hz  = 0x00, // 1Hz square wave
@@ -87,7 +86,91 @@ typedef enum{
 
 class DFRobot_DS3231M
 {
+    typedef struct {
+        uint8_t   hour: 6;
+        uint8_t   mode: 2;
+    } __attribute__ ((packed)) sNow24Hour_t;
+    
+    typedef struct {
+        uint8_t   hour: 5;
+        uint8_t   mode: 3;
+    } __attribute__ ((packed)) sNow12Hour_t;
+    
+    typedef struct {
+        uint8_t   century: 1;
+        uint8_t   month: 7;
+    } __attribute__ ((packed)) sNowMonth_t;
+    
+    typedef struct {
+        uint8_t   second: 7;
+        uint8_t   able: 1;
+    } __attribute__ ((packed)) sAlarmSecond_t;
+    
+    typedef struct {
+        uint8_t   minute: 7;
+        uint8_t   able: 1;
+    } __attribute__ ((packed)) sAlarmMinute_t;
+    
+    typedef struct {
+        uint8_t   hour: 6;
+        uint8_t   mode: 1;
+        uint8_t   able: 1;
+    } __attribute__ ((packed)) sAlarm24Hour_t;
+    
+    typedef struct {
+        uint8_t   hour: 5;
+        uint8_t   mode: 2;
+        uint8_t   able: 1;
+    } __attribute__ ((packed)) sAlarm12Hour_t;
+    
+    typedef struct {
+        uint8_t   hour;
+        uint8_t   mode;
+        uint8_t   able;
+    } __attribute__ ((packed)) sAlarmxxHour_t;
+    
+    
+    typedef struct {
+        uint8_t   date: 6;
+        uint8_t   dayOrDate: 1;
+        uint8_t   able: 1;
+    } __attribute__ ((packed)) sAlarmDate_t;
+    
+    /*
+    register of control
+        * ------------------------------------------------------------------------------------------
+        * |    b7    |    b6    |    b5    |    b4    |    b3    |    b2    |    b1     |    b0    |
+        * ------------------------------------------------------------------------------------------
+        * |   ESOC   |   BBSQW  |   CONV   |          NA         |   INTCN  |   A2IE    |   A1IE   |
+        * ------------------------------------------------------------------------------------------
+    */
+    typedef struct {
+        uint8_t   A1IE: 1;
+        uint8_t   A2IE: 1;
+        uint8_t   Interrupt: 3;
+        uint8_t   ConvTemperature: 1;
+        uint8_t   SQW: 1;
+        uint8_t   oscillator: 1;
+    } __attribute__ ((packed)) sControl_t;
+    
+    /*
+    register of status
+        * ------------------------------------------------------------------------------------------
+        * |    b7    |    b6    |    b5    |    b4    |    b3    |    b2    |    b1     |    b0    |
+        * ------------------------------------------------------------------------------------------
+        * |   OSF    |               NA               |  EN32KHZ |    BSY   |    A2F    |    A1F   |
+        * ------------------------------------------------------------------------------------------
+    */
+    typedef struct {
+        uint8_t   A1F: 1;
+        uint8_t   A2F: 1;
+        uint8_t   BSY: 1;
+        uint8_t   en32kHZ: 4;
+        uint8_t   OSF: 1;
+    } __attribute__ ((packed)) sStatus_t;
+    
 public:
+    
     /**
      * @brief Constructor 
      * @param Input Wire address
@@ -137,17 +220,17 @@ public:
      *@brief Set year 
      *@param Year
      */
-    void setYear(uint8_t year)  { y = year + 30; }
+    void setYear(uint8_t year);
     /*!
      *@brief Set month 
      *@param Month
      */
-    void setMonth(uint8_t month)  { m = month; }
+    void setMonth(uint8_t month);
     /*!
      *@brief Set date
      *@param Date
      */
-    void setDate(uint8_t date)  { d = date; }
+    void setDate(uint8_t date);
     /*!
      *@brief Set the hours and 12hours or 24hours
      *@param hour:1-12 in 12hours,0-23 in 24hours
@@ -158,12 +241,12 @@ public:
      *@brief Set minute
      *@param Minute 
      */
-    void setMinute(uint8_t minute)  { mm = minute; }
+    void setMinute(uint8_t minute);
     /*!
      *@brief Set second
      *@param Second
      */
-    void setSecond(uint8_t second)  { ss = second; }
+    void setSecond(uint8_t second);
     
     /*!
      *@brief get day of week
@@ -272,20 +355,15 @@ protected:
      */
     
     uint8_t  dayOfTheWeek() const ;
-    uint8_t y,   ///< Year Offset
-            m,  ///< Months
-            d,    ///< Days
-            hh,   ///< Hours
-            mm, ///< Minutes
-            ss; ///< Seconds
 
 private:
     TwoWire *_pWire;
     uint8_t _deviceAddr = DS3231M_IIC_ADDRESS;
-    uint8_t rtc_bcd[7];
     uint8_t bcd[7];
     uint8_t  _ss,_mm,_hh,_d,_m;
     uint16_t _y;
+    sControl_t conReg;
+    sStatus_t staReg;
     const char* daysOfTheWeek[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"}; 
     const char* hourOfAM[4] = {"", "", "AM", "PM"}; 
 };
