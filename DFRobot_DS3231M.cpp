@@ -244,7 +244,7 @@ void DFRobot_DS3231M::setAlarm(eAlarmTypes alarmType, int16_t date,int8_t hour, 
         if (state)
             conReg.A2IE = 1;
         else
-            conReg.A2IE = 1;
+            conReg.A2IE = 0;
         writeReg(DS3231M_REG_ALM2_MIN, &minutes, sizeof(minutes));
         writeReg(DS3231M_REG_ALM2_HOUR, &hours, sizeof(hours));
     } // of if-then-else use alarm 1 or 2
@@ -278,7 +278,6 @@ void DFRobot_DS3231M::disAbleAlarm2Int(){
 
 bool DFRobot_DS3231M::isAlarm() {
     readReg(DS3231M_REG_STATUS, &staReg, 1);
-    Serial.println(staReg.A1F | staReg.A2F);
     return (staReg.A1F | staReg.A2F);
 }
 

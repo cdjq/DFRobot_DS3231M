@@ -74,7 +74,127 @@ class DFRobot_DS3231M:
     _y = 0
     daysOfTheWeek[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"}
     hourOfAM[4] = {"", "", "AM", "PM"} 
+    '''
+    class NowTime():
+        def __init__(self, year, month, date, hour, minute, second):
+            self._y = year
+            self._m = month
+            self._d = date
+            self._hh = hour
+            self._mm = minute
+            self._ss = second
+    '''
+    class sNow24Hour_t():
+        _pack_ = 1
+        _fields_=[('hour',c_ubyte,6),
+                ('mode',c_ubyte,2)]
+        def __init__(self, hour, mode):
+            self.hour = hour
+            self.mode = mode
 
+    class sNow12Hour_t():
+        _pack_ = 1
+        _fields_=[('hour',c_ubyte,5),
+                ('mode',c_ubyte,3)]
+        def __init__(self, hour, mode):
+            self.hour = hour
+            self.mode = mode
+    
+    class sNowMonth_t():
+        _pack_ = 1
+        _fields_=[('century',c_ubyte,1),
+                ('month',c_ubyte,7)]
+        def __init__(self, century, month):
+            self.century = century
+            self.month = month
+    
+    class sAlarmSecond_t():
+        _pack_ = 1
+        _fields_=[('second',c_ubyte,7),
+                ('able',c_ubyte,1)]
+        def __init__(self, second, able):
+            self.second = second
+            self.able = able
+    
+    class sAlarmMinute_t():
+        _pack_ = 1
+        _fields_=[('minute',c_ubyte,7),
+                ('able',c_ubyte,1)]
+        def __init__(self, minute, able):
+            self.minute = minute
+            self.able = able
+    
+    class sAlarm24Hour_t():
+        _pack_ = 1
+        _fields_=[('hour',c_ubyte,6),
+                ('mode',c_ubyte,1)
+                ('able',c_ubyte,1)]
+        def __init__(self, hour, mode, able):
+            self.hour = hour
+            self.mode = mode
+            self.able = able
+    
+    class sAlarm12Hour_t():
+        _pack_ = 1
+        _fields_=[('hour',c_ubyte,5),
+                ('mode',c_ubyte,2)
+                ('able',c_ubyte,1)]
+        def __init__(self, hour, mode, able):
+            self.hour = hour
+            self.mode = mode
+            self.able = able
+    
+    class sAlarmxxHour_t():
+        _pack_ = 1
+        _fields_=[('hour'),
+                ('mode')
+                ('able')]
+        def __init__(self, hour, mode, able):
+            self.hour = hour
+            self.mode = mode
+            self.able = able
+    
+    
+    class sAlarmDate_t():
+        _pack_ = 1
+        _fields_=[('date',c_ubyte,6),
+                ('dayOrDate',c_ubyte,1)
+                ('able',c_ubyte,1)]
+        def __init__(self, date, dayOrDate, able):
+            self.date = date
+            self.dayOrDate = dayOrDate
+            self.able = able
+
+    class sControl_t():
+        _pack_ = 1
+        _fields_=[('A1IE',c_ubyte,1),
+                ('A2IE',c_ubyte,1),
+                ('INTCN',c_ubyte,3),
+                ('CONV',c_ubyte,1),
+                ('BBSQW',c_ubyte,1)],
+                ('EOSC',c_ubyte,1)]
+        def __init__(self, EOSC, BBSQW, CONV, INTCN, A2IE, A1IE):
+            self.A1IE = A1IE
+            self.A2IE = A2IE
+            self.INTCN = INTCN
+            self.CONV = CONV
+            self.BBSQW = BBSQW
+            self.EOSC = EOSC
+
+
+    class sStatus_t():
+        _pack_ = 1
+        _fields_=[('A1F',c_ubyte,1),
+                ('A2F',c_ubyte,1),
+                ('BSY ',c_ubyte,1),
+                ('EN32KHZ',c_ubyte,1),
+                ('OSF',c_ubyte,4)]
+        def __init__(self, A1F, A2F, BSY, EN32KHZ, OSF):
+            self.A1F = A1F
+            self.A2F = A2F
+            self.BSY = BSY
+            self.EN32KHZ = EN32KHZ
+            self.OSF = OSF
 
     def __init__():
         _deviceAddr = self._DS3231M_IIC_ADDRESS
@@ -104,12 +224,12 @@ class DFRobot_DS3231M:
         return val + 6 * (val / 10)
 
     def read_sqw_pin_mode(self):
-        mode[1]
+        sControl_t mode
         read_reg(_DS3231M_REG_CONTROL, mode, 1)
         mode[0] &= 0x93
         return mode[0]
 
-    def writeSqwPinMode(self, mode):
+    def write_sqw_pin_mode(self, mode):
         ctrl[1] = 0
         read_reg(_DS3231M_REG_CONTROL, ctrl, 1)
         ctrl[0] &= ~0x04
@@ -120,17 +240,38 @@ class DFRobot_DS3231M:
             ctrl[0] |= mode
         write_reg(_DS3231M_REG_CONTROL, ctrl, 1);
 
-    def dayOfTheWeek(self):
+    def day_of_the_week(self):
         day = self.date2days(_y, _m, _d)
         return (day + 6) % 7
     
     def getDayOfTheWeek(self):
         return self.daysOfTheWeek[self.dayOfTheWeek()]
+
+	def setYear(self, year){
+		data = self.bin2bcd(year + 30);
+		write_reg(_DS3231M_REG_RTC_YEAR, data, 1);
+	
+	def setMonth(self, month){
+		data = self.bin2bcd(month); 
+		write_reg(_DS3231M_REG_RTC_MONTH, data, 1);
+	
+	def setDate(self, date){
+		data = self.bin2bcd(date);
+		write_reg(_DS3231M_REG_RTC_DATE, data, 1);
+
+    def set_hour(self, hour, mode):
+        if mode == 0:
+            data = sNow24Hour_t()
+			data.hour = bin2bcd(hour)
+			data.mode = mode
+            write_reg(_DS3231M_REG_RTC_HOUR, data, 1)
+        else:
+            data = sNow12Hour_t()
+			data.hour = bin2bcd(hour)
+			data.mode = mode
+            write_reg(_DS3231M_REG_RTC_HOUR, data, 1)
     
-    def setHour(self, hour, mode):
-        self.hh = (mode << 5|self.bin2bcd(hour))
-    
-    def getAMorPM(self):
+    def get_AM_or_PM(self):
         buffer[1]
         read_reg(DS3231M_REG_RTC_HOUR, buffer, 1)
         buffer[0] = buffer[0] << 1
@@ -145,7 +286,7 @@ class DFRobot_DS3231M:
         statreg[0] &= ~0x80
         write_reg(_DS3231M_REG_STATUS, statreg, 1)
     
-    def getNowTime(self):
+    def get_now_time(self):
         read_reg(_DS3231M_REG_RTC_SEC, self.bcd, 7)
         self._ss = self.bcd2bin(self.bcd[0] & 0x7F)
         self._mm = self.bcd2bin(self.bcd[1])
@@ -158,24 +299,34 @@ class DFRobot_DS3231M:
             self._y += 100
             self._m -= 80
     
-    def getTemperatureC(self):
+    def get_temperature_C(self):
         buf[2]
         read_reg(_DS3231M_REG_TEMPERATURE, buf, 2)
         return ((float)buf[0] + (buf[1]>>6)*0.25f)
     
-    def lostPower(self):
+    def lost_power(self):
         status[1]
         read_reg(DS3231M_REG_STATUS, status, 1)
         return status[0] >> 7
     }
     
-    def setAlarm(self, alarmType, date, hour, mode, minute, second, state ):
-        dates[] = {self.bin2bcd(date)}
-        hours[] = {mode << 5|self.bin2bcd(hour)}
-        minutes[] = {self.bin2bcd(minute)}
-        seconds[] = {self.bin2bcd(second)}
-        days[] = {self.bin2bcd(dayOfTheWeek())}
-        buffer[1]
+    def set_alarm(self, alarmType, date, hour, mode, minute, second, state ):
+		conReg = sControl_t()
+		read_reg(_DS3231M_REG_CONTROL, conReg, 1)
+        dates = sAlarmDate_t()
+		hours = sAlarmxxHour_t()
+        if mode == 0:
+            hours24 = sAlarm24Hour_t()
+            hours.hour = hours24.hour
+            hours.mode = hours24.mode
+            hours.able = hours24.able
+        else:
+            hours12 = sAlarm12Hour_t()
+            hours.hour = hours12.hour
+            hours.mode = hours12.mode
+            hours.able = hours12.able
+        minutes = sAlarmMinute_t()
+		seconds = sAlarmSecond_t()
         if alarmType >= UnknownAlarm:
             return
         if alarmType < EveryMinute:
@@ -187,110 +338,88 @@ class DFRobot_DS3231M:
             else:
                 write_reg(_DS3231M_REG_ALM1_DAY, days, 1);
             if alarmType < SecondsMinutesHoursDateMatch:
-                read_reg(_DS3231M_REG_ALM1_DAY, buffer, 1)
-                buffer[0] |= 0x80
-                write_reg(_DS3231M_REG_ALM1_DAY, buffer, 1)
+                dates.able = 1
             if alarmType < SecondsMinutesHoursMatch:
-                read_reg(_DS3231M_REG_ALM1_HOUR, buffer, 1)
-                buffer[0] |= 0x80
-                write_reg(_DS3231M_REG_ALM1_HOUR, buffer, 1)
+                hours.able = 1
             if alarmType < SecondsMinutesMatch):
-                read_reg(_DS3231M_REG_ALM1_MIN, buffer, 1)
-                buffer[0] |= 0x80
-                write_reg(_DS3231M_REG_ALM1_MIN, buffer, 1)
+                minutes.able = 1
             if(alarmType == eEverySecond):
-                read_reg(_DS3231M_REG_ALM1_SEC, buffer, 1)
-                buffer[0] |= 0x80
-                write_reg(_DS3231M_REG_ALM1_SEC, buffer, 1)
+                seconds.able = 1
             if(alarmType == eSecondsMinutesHoursDayMatch):
-                read_reg(_DS3231M_REG_ALM1_DAY, buffer, 1)
-                buffer[0] |= 0x40
-                write_reg(_DS3231M_REG_ALM1_DAY, buffer, 1)
+                dates.dayOrDate = 1
             if state == True:
-                read_reg(_DS3231M_REG_CONTROL, buffer, 1)
-                buffer[0] |= 1
-                write_reg(_DS3231M_REG_CONTROL, buffer, 1)
+                conReg.A1IE = 0
             else:
-                read_reg(_DS3231M_REG_CONTROL, buffer, 1)
-                buffer[0] &= 0xFE
-                write_reg(_DS3231M_REG_CONTROL, buffer, 1)
+                conReg.A1IE = 0
         else:
-            write_reg(_DS3231M_REG_ALM2_MIN, minutes, 1)
-            write_reg(_DS3231M_REG_ALM2_HOUR, hours, 1)
-            if alarmType == MinutesHoursDateMatch:
-                write_reg(_DS3231M_REG_ALM2_DAY, dates, 1)
-            elif alarmType == MinutesHoursDayMatch:
-                days[0] |= 0x80
-                write_reg(_DS3231M_REG_ALM2_DAY, days, 1)
-            if alarmType < MinutesHoursDateMatch:
-                read_reg(DS3231M_REG_ALM2_DAY, buffer, 1)
-                buffer[0] |= 0x80;
-                write_reg(DS3231M_REG_ALM2_DAY, buffer, 1)
-            if alarmType < MinutesHoursMatch:
-                read_reg(_DS3231M_REG_ALM2_HOUR, buffer, 1)
-                buffer[0] |= 0x80
-                write_reg(_DS3231M_REG_ALM2_HOUR, buffer, 1)
-            if alarmType == EveryMinute:
-                read_reg(_DS3231M_REG_ALM2_MIN, buffer, 1)
-                buffer[0] |= 0x80
-                write_reg(_DS3231M_REG_ALM2_MIN, buffer, 1)
-            if state == True:
-                read_reg(_DS3231M_REG_CONTROL, buffer, 1)
-                buffer[0] |= 2
-                write_reg(_DS3231M_REG_CONTROL, buffer, 1)
-            else:
-                read_reg(_DS3231M_REG_CONTROL, buffer, 1)
-                buffer[0] &= 0xFD
-                write_reg(_DS3231M_REG_CONTROL, buffer, 1)
-        self.clearAlarm()
+			if alarmType == MinutesHoursDateMatch:
+				write_reg(DS3231M_REG_ALM2_DAY, &dates, 1);
+			else if alarmType == eMinutesHoursDayMatch:
+				days[0] |= 0x80;
+				write_reg(DS3231M_REG_ALM2_DAY, &days, 1);
+			}
+			if alarmType < MinutesHoursDateMatch:
+				dates.able = 1
+			if alarmType < MinutesHoursMatch:
+				hours.able = 1
+			if alarmType == EveryMinute:
+				minutes.able = 1
+			if (state)
+				conReg.A2IE = 1;
+			else
+				conReg.A2IE = 0;
+			write_reg(DS3231M_REG_ALM2_MIN, &minutes, sizeof(minutes));
+			write_reg(DS3231M_REG_ALM2_HOUR, &hours, sizeof(hours));
+        self.clear_alarm()
         return
     
-    def enAbleAlarm1Int(self):
-        crtl[1]
-        read_reg(_DS3231M_REG_CONTROL, crtl, 1)
-        crtl[0] |= 0x01
-        write_reg(_DS3231M_REG_CONTROL, crtl, 1)
+    def enable_alarm1_int(self):
+        conReg = sControl_t()
+		read_reg(_DS3231M_REG_CONTROL, conReg, 1)
+        conReg.A1IE = 1
+        write_reg(_DS3231M_REG_CONTROL, conReg, 1)
     
-    def disAbleAlarm1Int(self):
-        crtl[1]
-        read_reg(_DS3231M_REG_CONTROL, crtl, 1)
-        crtl[0] &= 0xFE
-        write_reg(_DS3231M_REG_CONTROL, crtl, 1)
+    def disable_alarm1_int(self):
+        conReg = sControl_t()
+		read_reg(_DS3231M_REG_CONTROL, conReg, 1)
+        onReg.A1IE = 0
+        write_reg(_DS3231M_REG_CONTROL, conReg, 1)
     
-    def enAbleAlarm2Int(self:
-        crtl[1]
-        read_reg(_DS3231M_REG_CONTROL, crtl, 1)
-        crtl[0] |= 0x02
-        write_reg(_DS3231M_REG_CONTROL, crtl, 1)
+    def enable_alarm2_int(self:
+        conReg = sControl_t()
+        read_reg(_DS3231M_REG_CONTROL, conReg, 1)
+        conReg.A2IE = 1
+        write_reg(_DS3231M_REG_CONTROL, conReg, 1)
     
-    def disAbleAlarm2Int(self):
-        crtl[1]
-        read_reg(_DS3231M_REG_CONTROL, crtl, 1)
-        crtl[0] &= 0xFD
-        write_reg(_DS3231M_REG_CONTROL, crtl, 1)
+    def disable_alarm2_int(self):
+        conReg = sControl_t()
+        read_reg(_DS3231M_REG_CONTROL, conReg, 1)
+        conReg.A2IE = 0
+        write_reg(_DS3231M_REG_CONTROL, conReg, 1)
     
-    def isAlarm(self):
-        status[1]
-        read_reg(_DS3231M_REG_STATUS, status, 1)
-        return status[0]&3
+    def is_alarm(self):
+        staReg = sStatus_t()
+        read_reg(_DS3231M_REG_STATUS, staReg, 1)
+        return staReg.A1F & staReg.A2F 
     
-    def clearAlarm(self):
-        status[1]
-        read_reg(_DS3231M_REG_STATUS, status, 1)
-        status[0] &= 0xFC
-        write_reg(_DS3231M_REG_STATUS, status, 1)
+    def clear_alarm(self):
+        staReg = sStatus_t()
+		read_reg(_DS3231M_REG_STATUS, staReg, 1)
+		staReg.A1F = 0;
+        staReg.A2F = 0;
+        write_reg(_DS3231M_REG_STATUS, staReg, 1)
     
-    def enAble32k(self):
-        status[1]
-        read_reg(_DS3231M_REG_STATUS, status, 1)
-        status[0] |= 0x08
-        write_reg(_DS3231M_REG_STATUS, status, 1)
+    def enable_32k(self):
+        staReg = sStatus_t()
+		read_reg(_DS3231M_REG_STATUS, staReg, 1)
+        staReg.en32kHZ = 1
+        write_reg(_DS3231M_REG_STATUS, staReg, 1)
     
-    def disAble32k(self):
-        status[1]
-        read_reg(_DS3231M_REG_STATUS, status, 1)
-        status[0] &= 0xF7
-        write_reg(_DS3231M_REG_STATUS, status, 1)
+    def disable_32k(self):
+        staReg = sStatus_t()
+		read_reg(_DS3231M_REG_STATUS, staReg, 1)
+        staReg.en32kHZ = 0
+        write_reg(_DS3231M_REG_STATUS, staReg, 1)
 
 
 class DFRobot_Sensor_IIC(DFRobot_DS3231M):
