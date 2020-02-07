@@ -202,6 +202,9 @@ class DFRobot_DS3231M:
         
     
     def begin(self):
+        if not self.scan():
+            return False
+        else:
             return True
 
     def date2days(self, y, m, d):
