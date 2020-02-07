@@ -73,7 +73,8 @@ def main():
     while True:
         data = rtc.get_now_time()
         temp = rtc.get_temperature_C()
-        print("{0:.2f}/{1:.2f}/{2:.2f},{3:.2f},{4:.2f}:{5:.2f}:{6:.2f},{7:.2f}".format(data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]))
+        print("{0:.2f}/{1:.2f}/{2:.2f},{3:.2f},{4:.2f}:{5:.2f}:{6:.2f},{7:.2f}".format(rtc.year(),\
+        rtc.month(),rtc.date(),rtc.day_of_the_week(),rtc.hour(),rtc.minute(),rtc.second(),rtc.get_AM_or_PM())
         print(temp)
         print(" ")
         time.sleep(1)

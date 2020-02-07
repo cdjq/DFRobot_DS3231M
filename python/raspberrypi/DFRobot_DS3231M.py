@@ -249,7 +249,7 @@ class DFRobot_DS3231M:
         day = self.date2days(_y, _m, _d)
         return (day + 6) % 7
     
-    def getDayOfTheWeek(self):
+    def get_day_of_the_week(self):
         return self.daysOfTheWeek[self.dayOfTheWeek()]
 
     def set_year(self, year):
@@ -307,6 +307,24 @@ class DFRobot_DS3231M:
         if(self.bcd[5] > 80):
             self._y += 100
             self._m -= 80
+    
+    def year(self):
+        return self._y
+    
+    def month(self):
+        return self._m
+    
+    def date(self):
+        return self._d
+    
+    def hour(self):
+        return self._hh
+    
+    def minute(self):
+        return self._mm
+    
+    def second(self):
+        return self._ss
     
     def get_temperature_C(self):
         buf = self.read_reg(self._REG_TEMPERATURE)
