@@ -244,9 +244,9 @@ class DFRobot_DS3231M:
         else:
             ctrl[0] |= mode
         self.write_reg(self._REG_CONTROL, ctrl);
-
+    
     def day_of_the_week(self):
-        day = self.date2days(_y, _m, _d)
+        day = self.date2days(self._y, self._m, self._d)
         return (day + 6) % 7
     
     def get_day_of_the_week(self):
@@ -288,7 +288,7 @@ class DFRobot_DS3231M:
         buffer = self.read_reg(self._REG_RTC_HOUR)
         buffer[0] = buffer[0] << 1
         buffer[0] = buffer[0] >> 6
-        return hourOfAM[buffer[0]]
+        return self.hourOfAM[buffer[0]]
         
     def adjust(self):
         statreg = self.read_reg(self._REG_STATUS)
