@@ -50,7 +50,17 @@ rtc.write_sqw_pin_mode(DS3231M_SquareWave_1Hz)
 '''
 @brief Set the last compiled time as the current time
 '''
-
+rtc.set_year(response.tx_time.year - 100)#Set year, default in the 21st century, input negative number for years in the 20th century.
+rtc.set_month(response.tx_time.month)
+rtc.set_date(response.tx_time.date)
+'''
+@brief Set the hours and 12hours or 24hours
+@param hour:1-12 in 12hours,0-23 in 24hours
+@param mode:e24hours, eAM, ePM
+'''
+rtc.set_hour(response.tx_time.hour,DS3231M_24hours)
+rtc.set_minute(response.tx_time.minute)
+rtc.set_second(response.tx_time.second)
 rtc.adjust()
 
 '''
