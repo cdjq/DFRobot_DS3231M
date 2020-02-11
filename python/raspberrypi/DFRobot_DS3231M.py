@@ -1,6 +1,6 @@
 """ file DFRobot_DS3231M.py
   #
-  # 定义DFRobot_Sensor 类的基础结构，基础方法的实现
+  # 
   #
   # @copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
   # @licence     The MIT License (MIT)
@@ -73,8 +73,9 @@ class DFRobot_DS3231M:
     _d = 0
     _m = 0
     _y = 0
+    daysInMonth = [31,28,31,30,31,30,31,31,30,31,30,31]
     daysOfTheWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-    hourOfAM = ["", "", "AM", "PM"] 
+    hourOfAM = [" ", " ", "AM", "PM"] 
     '''
     class NowTime():
         def __init__(self, year, month, date, hour, minute, second):
@@ -113,7 +114,7 @@ class DFRobot_DS3231M:
         _pack_ = 1
         _fields_=[('second',c_ubyte,7),
                 ('able',c_ubyte,1)]
-        def __init__(self, second = 0, able = 0):
+        def __init__(self, second, able = 0):
             self.second = second
             self.able = able
     
@@ -121,7 +122,7 @@ class DFRobot_DS3231M:
         _pack_ = 1
         _fields_=[('minute',c_ubyte,7),
                 ('able',c_ubyte,1)]
-        def __init__(self, minute = 0, able = 0):
+        def __init__(self, minute, able = 0):
             self.minute = minute
             self.able = able
     
@@ -212,10 +213,10 @@ class DFRobot_DS3231M:
             y -= 2000
         days = d
         for i in range(1, m):
-            days += pgm_read_byte(daysInMonth + i - 1)
+            days += self.daysInMonth[i - 1]
         if (m > 2 and y % 4) == 0:
             ++days
-        return days + 365 * y + (y + 3) / 4 - 1
+        return days + 365 * y + int((y + 3) / 4) - 1
 
     def conv2d(self, p):
         v = 0
@@ -228,7 +229,7 @@ class DFRobot_DS3231M:
         return val - 6 * (val >> 4)
 
     def bin2bcd (self, val):
-        return val + 6 * (val / 10)
+        return val + 6 * int(val / 10)
 
     def read_sqw_pin_mode(self):
         mode = self.Control()
@@ -250,44 +251,41 @@ class DFRobot_DS3231M:
         return (day + 6) % 7
     
     def get_day_of_the_week(self):
-        return self.daysOfTheWeek[self.dayOfTheWeek()]
+        return self.daysOfTheWeek[self.day_of_the_week()]
 
     def set_year(self, year):
-        data = self.bin2bcd(year + 30)
+        data = [self.bin2bcd(year + 30)]
         self.write_reg(self._REG_RTC_YEAR, data)
     
     def set_month(self, month):
-        data = self.bin2bcd(month);
+        data = [self.bin2bcd(month)]
         self.write_reg(self._REG_RTC_MONTH, data)
     
     def set_date(self, date):
-        data = self.bin2bcd(date)
+        data = [self.bin2bcd(date)]
         self.write_reg(self._REG_RTC_DATE, data);
 
     def set_hour(self, hour, mode):
         if mode == 0:
-            data = self.Now24Hour()
-            data.hour = self.bin2bcd(hour)
-            data.mode = mode
+            data = [self.bin2bcd(hour) | (mode >> 6)]
             self.write_reg(self._REG_RTC_HOUR, data)
         else:
-            data = self.Now12Hour()
-            data.hour = bin2bcd(hour)
-            data.mode = mode
+            data = [self.bin2bcd(hour) | (mode >> 5)]
             self.write_reg(self._REG_RTC_HOUR, data)
     
     def set_minute(self,minute):
-        data = self.bin2bcd(minute)
+        data = [self.bin2bcd(minute)]
         self.write_reg(self._REG_RTC_MIN, data)
     
     def set_second(self, second):
-        data = self.bin2bcd(second)
+        data = [self.bin2bcd(second)]
         self.write_reg(self._REG_RTC_SEC, data)
     
     def get_AM_or_PM(self):
         buffer = self.read_reg(self._REG_RTC_HOUR)
         buffer[0] = buffer[0] << 1
         buffer[0] = buffer[0] >> 6
+        print(buffer[0])
         return self.hourOfAM[buffer[0]]
         
     def adjust(self):
@@ -334,58 +332,60 @@ class DFRobot_DS3231M:
         status = self.read_reg(DS3231M_REG_STATUS)
         return status[0] >> 7
     
-    def set_alarm(self, alarmType, date, hour, mode, minute, second, state ):
+    def set_alarm(self, alarmType, date, hour, mode, minute, second, state = True):
         conReg = self.Control()
-        conReg = self.read_reg(_REG_CONTROL)
-        dates = AlarmDate()
-        hours = AlarmxxHour()
+        conReg = self.read_reg(self._REG_CONTROL)
+        dates = [self.bin2bcd(date) | (dayOrDate >> 6) | (able >> 7)]
+        hours = [self.bin2bcd(hour) | (mode >> 6) | (able >> 7)]
         if mode == 0:
-            hours24 = Alarm24Hour()
-            hours.hour = hours24.hour
+            hours24 = self.Alarm24Hour(hour)
+            #hours.hour = hours24.hour
             hours.mode = hours24.mode
             hours.able = hours24.able
         else:
-            hours12 = Alarm12Hour()
-            hours.hour = hours12.hour
+            hours12 = self.Alarm12Hour(hour)
+            #hours.hour = hours12.hour
             hours.mode = hours12.mode
             hours.able = hours12.able
-        minutes = AlarmMinute()
-        seconds = AlarmSecond()
+        minutes = self.AlarmMinute(minute)
+        minutes = [self.bin2bcd(hour) | (mode >> 6) | (able >> 7)]
+        seconds = self.AlarmSecond(second)
+        seconds = [self.bin2bcd(second) | (mode >> 6) | (able >> 7)]
         if alarmType >= UnknownAlarm:
             return
-        if alarmType < EveryMinute:
+        if alarmType < DS3231M_EveryMinute:
             self.write_reg(self._REG_ALM1_SEC, seconds)
             self.write_reg(self._REG_ALM1_MIN, minutes)
             self.write_reg(self._REG_ALM1_HOUR, hours)
-            if alarmType == SecondsMinutesHoursDateMatch:
+            if alarmType == DS3231M_SecondsMinutesHoursDateMatch:
                 self.write_reg(self._REG_ALM1_DAY, dates)
             else:
                 self.write_reg(self._REG_ALM1_DAY, days);
-            if alarmType < SecondsMinutesHoursDateMatch:
+            if alarmType < DS3231M_SecondsMinutesHoursDateMatch:
                 dates.able = 1
-            if alarmType < SecondsMinutesHoursMatch:
+            if alarmType < DS3231M_SecondsMinutesHoursMatch:
                 hours.able = 1
-            if alarmType < SecondsMinutesMatch:
+            if alarmType < DS3231M_SecondsMinutesMatch:
                 minutes.able = 1
-            if alarmType == eEverySecond:
+            if alarmType == DS3231M_EverySecond:
                 seconds.able = 1
-            if alarmType == eSecondsMinutesHoursDayMatch:
+            if alarmType == DS3231M_SecondsMinutesHoursDayMatch:
                 dates.dayOrDate = 1
             if state == True:
                 conReg.A1IE = 0
             else:
                 conReg.A1IE = 0
         else:
-            if alarmType == MinutesHoursDateMatch:
+            if alarmType == DS3231M_MinutesHoursDateMatch:
                 self.write_reg(self._DS3231M_REG_ALM2_DAY, dates)
-            elif alarmType == eMinutesHoursDayMatch:
+            elif alarmType == DS3231M_MinutesHoursDayMatch:
                 days[0] |= 0x80
                 self.write_reg(self._DS3231M_REG_ALM2_DAY)
-            if alarmType < MinutesHoursDateMatch:
+            if alarmType < DS3231M_MinutesHoursDateMatch:
                 dates.able = 1
-            if alarmType < MinutesHoursMatch:
+            if alarmType < DS3231M_MinutesHoursMatch:
                 hours.able = 1
-            if alarmType == EveryMinute:
+            if alarmType == DS3231M_EveryMinute:
                 minutes.able = 1
             if state == True:
                 conReg.A2IE = 1;
@@ -446,10 +446,10 @@ class DFRobot_DS3231M:
 
 
 class DFRobot_Sensor_IIC(DFRobot_DS3231M):
-    def __init__(self, bus, mode):
+    def __init__(self, bus):
         self.i2cbus=smbus.SMBus(bus)
         self.i2c_addr = DFRobot_DS3231M._IIC_ADDRESS
-        super().__init__()
+        super(DFRobot_Sensor_IIC, self).__init__()
 
     def write_reg(self, reg, buff):
         self.i2cbus.write_i2c_block_data(self.i2c_addr, reg, buff)

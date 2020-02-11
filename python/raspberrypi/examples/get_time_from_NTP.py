@@ -23,7 +23,7 @@ client = ntplib.NTPClient()
 response = client.request('ch.pool.ntp.org')
 print(datetime.datetime.fromtimestamp(response.tx_time))
 
-rtc = DFRobot_Sensor_IIC(0,DFRobot_Sensor_IIC)
+rtc = DFRobot_Sensor_IIC(1)
 
 #begin return True if succeed, otherwise return False
 while not rtc.begin():
@@ -76,8 +76,8 @@ rtc.adjust()
 def main():
     while True:
         data = rtc.get_now_time()
-        print("{0:.2f}/{1:.2f}/{2:.2f},{3:.2f},{4:.2f}:{5:.2f}:{6:.2f},{7:.2f}".format(rtc.year(),\
-        rtc.month(),rtc.date(),rtc.day_of_the_week(),rtc.hour(),rtc.minute(),rtc.second(),rtc.get_AM_or_PM()))
+        print("{0}/{1}/{2},{3},{4}:{5}:{6},{7}".format(rtc.year(),rtc.month(),rtc.date(),\
+        rtc.day_of_the_week(),rtc.hour(),rtc.minute(),rtc.second(),rtc.get_AM_or_PM()))
         print(" ")
         time.sleep(1)
 

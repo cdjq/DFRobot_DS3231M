@@ -15,9 +15,14 @@ date  2019-7-9
 import sys
 sys.path.append('../')
 import time
+import threading
+from gpio import GPIO
 from DFRobot_DS3231M import *
 
-rtc = DFRobot_Sensor_IIC(0,DFRobot_Sensor_IIC)
+rtc = DFRobot_Sensor_IIC(1)
+IRQ_PIN = 7
+
+GPIO.setmode(GPIO.BOARD)
 
 #begin return True if succeed, otherwise return False
 while not rtc.begin():
@@ -74,14 +79,31 @@ rtc.set_alarm(DS3231M_SecondsMatch,27,'''hour,1-12 in 12hours,0-23 in 24hours'''
 '''
 #rtc.enAble32k();
 
+IO1 = 21
+IO1Lock = threading.Lock()
+IO1Flag = False
+
+def IO1CallBack():
+  global IO1Lock, IO1Flag
+  IO1Lock.acquire() # wait key A lock release
+  IO1Flag = True
+  IO1Lock.release()
+ 
+io1 = GPIO(IO1, GPIO.IN)
+io1.setInterrupt(GPIO.RISING, IO1CallBack)
+
 def main():
     while True:
+        global IO1Lock, IO1Flag
         data = rtc.get_now_time()
-        if rtc.isAlarm() == True:
+        while IO1Flag:
+            IO1Lock.acquire() # wait io1 release
+            IO1Flag = False
+            IO1Lock.release()
             print("Alarm clock is triggered.")
             rtc.clearAlarm()
-        print("{0:.2f}/{1:.2f}/{2:.2f},{3:.2f},{4:.2f}:{5:.2f}:{6:.2f},{7:.2f}".format(rtc.year(),\
-        rtc.month(),rtc.date(),rtc.day_of_the_week(),rtc.hour(),rtc.minute(),rtc.second(),rtc.get_AM_or_PM()))
+        print("{0}/{1}/{2},{3},{4}:{5}:{6},{7}".format(rtc.year(),rtc.month(),rtc.date(),\
+        rtc.day_of_the_week(),rtc.hour(),rtc.minute(),rtc.second(),rtc.get_AM_or_PM()))
         print(temp)
         print(" ")
         time.sleep(1)

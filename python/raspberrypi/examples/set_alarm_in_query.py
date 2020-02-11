@@ -17,7 +17,7 @@ sys.path.append('../')
 import time
 from DFRobot_DS3231M import *
 
-rtc = DFRobot_Sensor_IIC(0,DFRobot_Sensor_IIC)
+rtc = DFRobot_Sensor_IIC(1)
 
 #begin return True if succeed, otherwise return False
 while not rtc.begin():
@@ -58,7 +58,7 @@ rtc.set_minute(59)
 rtc.set_second(40)
 
 rtc.adjust()
-rtc.set_alarm(DS3231M_SecondsMatch,27,'''hour,1-12 in 12hours,0-23 in 24hours'''12,DS3231M_AM,'''minute,0-59'''0,'''second,0-59'''0)
+rtc.set_alarm(DS3231M_SecondsMatch,27,12,DS3231M_AM,0,0)
 '''
 @brief enable the 32k output (default is enable)
 '''
@@ -75,8 +75,8 @@ def main():
         if rtc.isAlarm() == True:
             print("Alarm clock is triggered.")
             rtc.clearAlarm()
-        print("{0:.2f}/{1:.2f}/{2:.2f},{3:.2f},{4:.2f}:{5:.2f}:{6:.2f},{7:.2f}".format(rtc.year(),\
-        rtc.month(),rtc.date(),rtc.day_of_the_week(),rtc.hour(),rtc.minute(),rtc.second(),rtc.get_AM_or_PM()))
+        print("{0}/{1}/{2},{3},{4}:{5}:{6},{7}".format(rtc.year(),rtc.month(),rtc.date(),\
+        rtc.day_of_the_week(),rtc.hour(),rtc.minute(),rtc.second(),rtc.get_AM_or_PM()))
         print(" ")
         time.sleep(1)
 

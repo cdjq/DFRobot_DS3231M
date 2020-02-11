@@ -17,7 +17,7 @@ sys.path.append('../')
 import time
 from DFRobot_DS3231M import *
 
-rtc = DFRobot_Sensor_IIC(0,DFRobot_Sensor_IIC)
+rtc = DFRobot_Sensor_IIC(1)
 
 #begin return True if succeed, otherwise return False
 while not rtc.begin():
@@ -45,15 +45,15 @@ rtc.write_sqw_pin_mode(DS3231M_SquareWave_1Hz)
 @brief Set the last compiled time as the current time
 '''
 #rtc.dateTime()#If users use this function, please don't set time by other way
-rtc.set_year(19)#Set year, default in the 21st century, input negative number for years in the 20th century.
-rtc.set_month(10)
-rtc.set_date(23)
+rtc.set_year(20)#Set year, default in the 21st century, input negative number for years in the 20th century.
+rtc.set_month(2)
+rtc.set_date(11)
 '''
 @brief Set the hours and 12hours or 24hours
 @param hour:1-12 in 12hours,0-23 in 24hours
 @param mode:e24hours, eAM, ePM
 '''
-rtc.set_hour(0,DS3231M_24hours)
+rtc.set_hour(12,DS3231M_AM)
 rtc.set_minute(59)
 rtc.set_second(40)
 
@@ -73,8 +73,8 @@ def main():
     while True:
         data = rtc.get_now_time()
         temp = rtc.get_temperature_C()
-        print("{0:.2f}/{1:.2f}/{2:.2f},{3:.2f},{4:.2f}:{5:.2f}:{6:.2f},{7:.2f}".format(rtc.year(),\
-        rtc.month(),rtc.date(),rtc.day_of_the_week(),rtc.hour(),rtc.minute(),rtc.second(),rtc.get_AM_or_PM()))
+        print("{0}/{1}/{2},{3},{4}:{5}:{6},{7}".format(rtc.year(),rtc.month(),rtc.date(),\
+        rtc.day_of_the_week(),rtc.hour(),rtc.minute(),rtc.second(),rtc.get_AM_or_PM()))
         print(temp)
         print(" ")
         time.sleep(1)
