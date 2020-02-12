@@ -17,32 +17,34 @@ import smbus
 from ctypes import *
 import time
 
-DS3231M_OFF                = 0x01
-DS3231M_SquareWave_1Hz     = 0x00
-DS3231M_SquareWave_1kHz    = 0x08
-DS3231M_SquareWave_4kHz    = 0x10
-DS3231M_SquareWave_8kHz    = 0x18
-
-DS3231M_24hours            = 0
-DS3231M_AM                 = 2
-DS3231M_PM                 = 3
-
-DS3231M_EverySecond                  = 0
-DS3231M_SecondsMatch                 = 1
-DS3231M_SecondsMinutesMatch          = 2
-DS3231M_SecondsMinutesHoursMatch     = 3
-DS3231M_SecondsMinutesHoursDateMatch = 4
-DS3231M_SecondsMinutesHoursDayMatch  = 5
-
-DS3231M_EveryMinute                  = 6
-DS3231M_MinutesMatch                 = 7
-DS3231M_MinutesHoursMatch            = 8
-DS3231M_MinutesHoursDateMatch        = 9
-DS3231M_MinutesHoursDayMatch         = 10
-
-UnknownAlarm                 = 11
 
 class DFRobot_DS3231M:
+    
+    _OFF                = 0x01
+    _SquareWave_1Hz     = 0x00
+    _SquareWave_1kHz    = 0x08
+    _SquareWave_4kHz    = 0x10
+    _SquareWave_8kHz    = 0x18
+    
+    _24hours            = 0
+    _AM                 = 2
+    _PM                 = 3
+    
+    _EverySecond                  = 0
+    _SecondsMatch                 = 1
+    _SecondsMinutesMatch          = 2
+    _SecondsMinutesHoursMatch     = 3
+    _SecondsMinutesHoursDateMatch = 4
+    _SecondsMinutesHoursDayMatch  = 5
+    
+    _EveryMinute                  = 6
+    _MinutesMatch                 = 7
+    _MinutesHoursMatch            = 8
+    _MinutesHoursDateMatch        = 9
+    _MinutesHoursDayMatch         = 10
+
+    _UnknownAlarm                 = 11
+
     _IIC_ADDRESS        = 0x68
 
     _SECONDS_FROM_1970_TO_2000  = 946684800
@@ -198,9 +200,10 @@ class DFRobot_DS3231M:
             self.EN32KHZ = EN32KHZ
             self.OSF = OSF
 
-    def __init__(self):
+    def __init__(self, bus):
         _deviceAddr = self._IIC_ADDRESS
-        
+        self.i2cbus=smbus.SMBus(bus)
+        self.i2c_addr = self._IIC_ADDRESS
     
     def begin(self):
         if not self.scan():
@@ -240,7 +243,7 @@ class DFRobot_DS3231M:
         ctrl = self.read_reg(self._REG_CONTROL)
         ctrl[0] &= 0x04
         ctrl[0] &= 0x18
-        if mode == DS3231M_OFF:
+        if mode == self._OFF:
             ctrl[0] |= 0x04
         else:
             ctrl[0] |= mode
@@ -351,48 +354,48 @@ class DFRobot_DS3231M:
         minutes = [self.bin2bcd(hour) | (mode >> 6) | (able >> 7)]
         seconds = self.AlarmSecond(second)
         seconds = [self.bin2bcd(second) | (mode >> 6) | (able >> 7)]
-        if alarmType >= UnknownAlarm:
+        if alarmType >= _UnknownAlarm:
             return
-        if alarmType < DS3231M_EveryMinute:
+        if alarmType < _EveryMinute:
             self.write_reg(self._REG_ALM1_SEC, seconds)
             self.write_reg(self._REG_ALM1_MIN, minutes)
             self.write_reg(self._REG_ALM1_HOUR, hours)
-            if alarmType == DS3231M_SecondsMinutesHoursDateMatch:
+            if alarmType == _SecondsMinutesHoursDateMatch:
                 self.write_reg(self._REG_ALM1_DAY, dates)
             else:
                 self.write_reg(self._REG_ALM1_DAY, days);
-            if alarmType < DS3231M_SecondsMinutesHoursDateMatch:
+            if alarmType < _SecondsMinutesHoursDateMatch:
                 dates.able = 1
-            if alarmType < DS3231M_SecondsMinutesHoursMatch:
+            if alarmType < _SecondsMinutesHoursMatch:
                 hours.able = 1
-            if alarmType < DS3231M_SecondsMinutesMatch:
+            if alarmType < _SecondsMinutesMatch:
                 minutes.able = 1
-            if alarmType == DS3231M_EverySecond:
+            if alarmType == _EverySecond:
                 seconds.able = 1
-            if alarmType == DS3231M_SecondsMinutesHoursDayMatch:
+            if alarmType == _SecondsMinutesHoursDayMatch:
                 dates.dayOrDate = 1
             if state == True:
                 conReg.A1IE = 0
             else:
                 conReg.A1IE = 0
         else:
-            if alarmType == DS3231M_MinutesHoursDateMatch:
+            if alarmType == _MinutesHoursDateMatch:
                 self.write_reg(self._DS3231M_REG_ALM2_DAY, dates)
-            elif alarmType == DS3231M_MinutesHoursDayMatch:
+            elif alarmType == _MinutesHoursDayMatch:
                 days[0] |= 0x80
                 self.write_reg(self._DS3231M_REG_ALM2_DAY)
-            if alarmType < DS3231M_MinutesHoursDateMatch:
+            if alarmType < _MinutesHoursDateMatch:
                 dates.able = 1
-            if alarmType < DS3231M_MinutesHoursMatch:
+            if alarmType < _MinutesHoursMatch:
                 hours.able = 1
-            if alarmType == DS3231M_EveryMinute:
+            if alarmType == _EveryMinute:
                 minutes.able = 1
             if state == True:
                 conReg.A2IE = 1;
             else:
                 conReg.A2IE = 0;
-            self.write_reg(self._DS3231M_REG_ALM2_MIN, minutes);
-            self.write_reg(self._DS3231M_REG_ALM2_HOUR, hours);
+            self.write_reg(self._REG_ALM2_MIN, minutes);
+            self.write_reg(self._REG_ALM2_HOUR, hours);
         self.clear_alarm()
         return
     
@@ -443,13 +446,6 @@ class DFRobot_DS3231M:
         staReg = self.read_reg(self._REG_STATUS)
         staReg.en32kHZ = 0
         self.write_reg(self._REG_STATUS, staReg)
-
-
-class DFRobot_Sensor_IIC(DFRobot_DS3231M):
-    def __init__(self, bus):
-        self.i2cbus=smbus.SMBus(bus)
-        self.i2c_addr = DFRobot_DS3231M._IIC_ADDRESS
-        super(DFRobot_Sensor_IIC, self).__init__()
 
     def write_reg(self, reg, buff):
         self.i2cbus.write_i2c_block_data(self.i2c_addr, reg, buff)
