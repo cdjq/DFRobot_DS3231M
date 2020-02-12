@@ -72,13 +72,20 @@ def main():
     while True:
         data = rtc.get_now_time()
         '''
-        print(rtc.year()),print("/"),
-        print(rtc.month()),print("/"),
-        print(rtc.date()),print(","),
-        print(rtc.get_day_of_the_week()),print(","),
-        print(rtc.hour()),print(":"),
-        print(rtc.minute()),print(":"),
-        print(rtc.second()),print(","),
+        print(rtc.year()),
+        print("/"),
+        print(rtc.month()),
+        print("/"),
+        print(rtc.date()),
+        print(","),
+        print(rtc.get_day_of_the_week()),
+        print(","),
+        print(rtc.hour()),
+        print(":"),
+        print(rtc.minute()),
+        print(":"),
+        print(rtc.second()),
+        print(","),
         print(rtc.get_AM_or_PM())
         '''
         print("{0}/{1}/{2},{3},{4}:{5}:{6},{7}".format(rtc.year(),rtc.month(),rtc.date(),\

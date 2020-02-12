@@ -73,18 +73,27 @@ def main():
     while True:
         data = rtc.get_now_time()
         temp = rtc.get_temperature_C()
+        #if you are a beginner of python,you can run this code
         '''
-        print(rtc.year()),print("/"),
-        print(rtc.month()),print("/"),
-        print(rtc.date()),print(","),
-        print(rtc.get_day_of_the_week()),print(","),
-        print(rtc.hour()),print(":"),
-        print(rtc.minute()),print(":"),
-        print(rtc.second()),print(","),
+        print(rtc.year()),
+        print("/"),
+        print(rtc.month()),
+        print("/"),
+        print(rtc.date()),
+        print(","),
+        print(rtc.get_day_of_the_week()),
+        print(","),
+        print(rtc.hour()),
+        print(":"),
+        print(rtc.minute()),
+        print(":"),
+        print(rtc.second()),
+        print(","),
         print(rtc.get_AM_or_PM())
         '''
         print("{0}/{1}/{2},{3},{4}:{5}:{6},{7}".format(rtc.year(),rtc.month(),rtc.date(),\
         rtc.get_day_of_the_week(),rtc.hour(),rtc.minute(),rtc.second(),rtc.get_AM_or_PM()))
+        
         print(temp)
         print(" ")
         time.sleep(1)
