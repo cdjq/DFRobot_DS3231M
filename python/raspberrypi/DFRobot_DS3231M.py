@@ -1,12 +1,12 @@
 """ file DFRobot_DS3231M.py
   #
-  # 
+  # brief Define the basic structure of class DFRobot_DS3231M
   #
   # @copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
   # @licence     The MIT License (MIT)
-  # @author      Alexander(ouki.wang@dfrobot.com)
+  # author [LuoYufeng](yufeng.luo@dfrobot.com)
   # version  V1.0
-  # date  2017-10-9
+  # date  2020-2-12
   # @get from https://www.dfrobot.com
   # @url https://github.com/DFRobot/DFRobot_DS3231M
 """
@@ -20,30 +20,30 @@ import time
 
 class DFRobot_DS3231M:
     
-    _OFF                = 0x01
-    _SquareWave_1Hz     = 0x00
-    _SquareWave_1kHz    = 0x08
-    _SquareWave_4kHz    = 0x10
-    _SquareWave_8kHz    = 0x18
+    OFF                = 0x01
+    SquareWave_1Hz     = 0x00
+    SquareWave_1kHz    = 0x08
+    SquareWave_4kHz    = 0x10
+    SquareWave_8kHz    = 0x18
     
-    _24hours            = 0
-    _AM                 = 2
-    _PM                 = 3
+    H24hours            = 0
+    AM                 = 2
+    PM                 = 3
     
-    _EverySecond                  = 0
-    _SecondsMatch                 = 1
-    _SecondsMinutesMatch          = 2
-    _SecondsMinutesHoursMatch     = 3
-    _SecondsMinutesHoursDateMatch = 4
-    _SecondsMinutesHoursDayMatch  = 5
+    EverySecond                  = 0
+    SecondsMatch                 = 1
+    SecondsMinutesMatch          = 2
+    SecondsMinutesHoursMatch     = 3
+    SecondsMinutesHoursDateMatch = 4
+    SecondsMinutesHoursDayMatch  = 5
     
-    _EveryMinute                  = 6
-    _MinutesMatch                 = 7
-    _MinutesHoursMatch            = 8
-    _MinutesHoursDateMatch        = 9
-    _MinutesHoursDayMatch         = 10
+    EveryMinute                  = 6
+    MinutesMatch                 = 7
+    MinutesHoursMatch            = 8
+    MinutesHoursDateMatch        = 9
+    MinutesHoursDayMatch         = 10
 
-    _UnknownAlarm                 = 11
+    UnknownAlarm                 = 11
 
     _IIC_ADDRESS        = 0x68
 
@@ -243,7 +243,7 @@ class DFRobot_DS3231M:
         ctrl = self.read_reg(self._REG_CONTROL)
         ctrl[0] &= 0x04
         ctrl[0] &= 0x18
-        if mode == self._OFF:
+        if mode == self.OFF:
             ctrl[0] |= 0x04
         else:
             ctrl[0] |= mode
@@ -288,7 +288,6 @@ class DFRobot_DS3231M:
         buffer = self.read_reg(self._REG_RTC_HOUR)
         buffer[0] = buffer[0] << 1
         buffer[0] = buffer[0] >> 6
-        print(buffer[0])
         return self.hourOfAM[buffer[0]]
         
     def adjust(self):
@@ -336,103 +335,110 @@ class DFRobot_DS3231M:
         return status[0] >> 7
     
     def set_alarm(self, alarmType, date, hour, mode, minute, second, state = True):
-        conReg = self.Control()
-        conReg = self.read_reg(self._REG_CONTROL)
-        dates = [self.bin2bcd(date) | (dayOrDate >> 6) | (able >> 7)]
-        hours = [self.bin2bcd(hour) | (mode >> 6) | (able >> 7)]
-        if mode == 0:
-            hours24 = self.Alarm24Hour(hour)
-            #hours.hour = hours24.hour
-            hours.mode = hours24.mode
-            hours.able = hours24.able
-        else:
-            hours12 = self.Alarm12Hour(hour)
-            #hours.hour = hours12.hour
-            hours.mode = hours12.mode
-            hours.able = hours12.able
-        minutes = self.AlarmMinute(minute)
-        minutes = [self.bin2bcd(hour) | (mode >> 6) | (able >> 7)]
-        seconds = self.AlarmSecond(second)
-        seconds = [self.bin2bcd(second) | (mode >> 6) | (able >> 7)]
-        if alarmType >= _UnknownAlarm:
+        dates = [self.bin2bcd(date)]
+        hours = [mode >> 6|self.bin2bcd(hour)]
+        minutes = [self.bin2bcd(minute)]
+        seconds = [self.bin2bcd(second)]
+        days = [self.bin2bcd(self.day_of_the_week())]
+        buffer = []
+        if alarmType >= self.UnknownAlarm:
             return
-        if alarmType < _EveryMinute:
+        if alarmType < self.EveryMinute:
             self.write_reg(self._REG_ALM1_SEC, seconds)
             self.write_reg(self._REG_ALM1_MIN, minutes)
             self.write_reg(self._REG_ALM1_HOUR, hours)
-            if alarmType == _SecondsMinutesHoursDateMatch:
+            if alarmType == self.SecondsMinutesHoursDateMatch:
                 self.write_reg(self._REG_ALM1_DAY, dates)
             else:
                 self.write_reg(self._REG_ALM1_DAY, days);
-            if alarmType < _SecondsMinutesHoursDateMatch:
-                dates.able = 1
-            if alarmType < _SecondsMinutesHoursMatch:
-                hours.able = 1
-            if alarmType < _SecondsMinutesMatch:
-                minutes.able = 1
-            if alarmType == _EverySecond:
-                seconds.able = 1
-            if alarmType == _SecondsMinutesHoursDayMatch:
-                dates.dayOrDate = 1
+            if alarmType < self.SecondsMinutesHoursDateMatch:
+                buffer = self.read_reg(self._REG_ALM1_DAY)
+                buffer[0] |= 0x80
+                self.write_reg(self._REG_ALM1_DAY, buffer)
+            if alarmType < self.SecondsMinutesHoursMatch:
+                buffer = self.read_reg(self._REG_ALM1_HOUR)
+                buffer[0] |= 0x80
+                self.write_reg(self._REG_ALM1_HOUR, buffer)
+            if alarmType < self.SecondsMinutesMatch:
+                buffer = self.read_reg(self._REG_ALM1_MIN)
+                buffer[0] |= 0x80
+                self.write_reg(self._REG_ALM1_MIN, buffer)
+            if(alarmType == self.EverySecond):
+                buffer = self.read_reg(self._REG_ALM1_SEC)
+                buffer[0] |= 0x80
+                self.write_reg(self._REG_ALM1_SEC, buffer)
+            if(alarmType == self.SecondsMinutesHoursDayMatch):
+                buffer = self.read_reg(self._REG_ALM1_DAY)
+                buffer[0] |= 0x40
+                self.write_reg(self._REG_ALM1_DAY, buffer)
             if state == True:
-                conReg.A1IE = 0
+                buffer = self.read_reg(self._REG_CONTROL)
+                buffer[0] |= 1
+                self.write_reg(self._REG_CONTROL, buffer)
             else:
-                conReg.A1IE = 0
+                buffer = self.read_reg(self._REG_CONTROL)
+                buffer[0] &= 0xFE
+                self.write_reg(self._REG_CONTROL, buffer)
         else:
-            if alarmType == _MinutesHoursDateMatch:
-                self.write_reg(self._DS3231M_REG_ALM2_DAY, dates)
-            elif alarmType == _MinutesHoursDayMatch:
-                days[0] |= 0x80
+            self.write_reg(self._REG_ALM2_MIN, minutes)
+            self.write_reg(self._REG_ALM2_HOUR, hours)
+            if alarmType == self.MinutesHoursDateMatch:
                 self.write_reg(self._DS3231M_REG_ALM2_DAY)
-            if alarmType < _MinutesHoursDateMatch:
-                dates.able = 1
-            if alarmType < _MinutesHoursMatch:
-                hours.able = 1
-            if alarmType == _EveryMinute:
-                minutes.able = 1
+            elif alarmType == self.MinutesHoursDayMatch:
+                days[0] |= 0x80
+                self.write_reg(self._REG_ALM2_DAY, days)
+            if alarmType < self.MinutesHoursDateMatch:
+                buffer = self.read_reg(self._REG_ALM2_DAY)
+                buffer[0] |= 0x80;
+                self.write_reg(self._REG_ALM2_DAY, buffer)
+            if alarmType < self.MinutesHoursMatch:
+                buffer = self.read_reg(self._REG_ALM2_HOUR)
+                buffer[0] |= 0x80
+                self.write_reg(self._REG_ALM2_HOUR, buffer)
+            if alarmType == self.EveryMinute:
+                buffer = self.read_reg(self._REG_ALM2_MIN,)
+                buffer[0] |= 0x80
+                self.write_reg(self._REG_ALM2_MIN, buffer)
             if state == True:
-                conReg.A2IE = 1;
+                buffer = self.read_reg(self._REG_CONTROL)
+                buffer[0] |= 2
+                self.write_reg(self._REG_CONTROL, buffer)
             else:
-                conReg.A2IE = 0;
-            self.write_reg(self._REG_ALM2_MIN, minutes);
-            self.write_reg(self._REG_ALM2_HOUR, hours);
+                buffer = self.read_reg(self._REG_CONTROL)
+                buffer[0] &= 0xFD
+                self.write_reg(self._REG_CONTROL, buffer)
+        buf = self.read_reg(self._REG_ALM1_HOUR)
+        print(buf[0])
         self.clear_alarm()
         return
     
     def enable_alarm1_int(self):
-        conReg = self.Control()
         conReg = self.read_reg(self._REG_CONTROL)
-        conReg.A1IE = 1
+        conReg[0] |= 0x01
         self.write_reg(self._REG_CONTROL, conReg)
     
     def disable_alarm1_int(self):
-        conReg = self.Control()
         conReg = self.read_reg(self._REG_CONTROL)
-        conReg.A1IE = 0
+        conReg[0] &= 0xFE
         self.write_reg(self._REG_CONTROL, conReg)
     
     def enable_alarm2_int(self):
-        conReg = self.Control()
         conReg = self.read_reg(self._REG_CONTROL)
-        conReg.A2IE = 1
+        conReg[0] |= 0x02
         self.write_reg(self._REG_CONTROL, conReg)
     
     def disable_alarm2_int(self):
-        conReg = self.Control()
         conReg = self.read_reg(self._REG_CONTROL)
-        conReg.A2IE = 0
+        conReg[0] &= 0xFD
         self.write_reg(self._REG_CONTROL, conReg)
     
     def is_alarm(self):
-        staReg = self.Status()
         staReg = self.read_reg(self._REG_STATUS)
-        return staReg.A1F & staReg.A2F 
+        return staReg[0]&3
     
     def clear_alarm(self):
-        staReg = self.Status()
         staReg = self.read_reg(self._REG_STATUS)
-        staReg.A1F = 0;
-        staReg.A2F = 0;
+        staReg[0] &= 0xFC
         self.write_reg(self._REG_STATUS, staReg)
     
     def enable_32k(self):

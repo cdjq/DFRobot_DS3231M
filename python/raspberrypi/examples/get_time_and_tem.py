@@ -25,20 +25,20 @@ while not rtc.begin():
 
 '''
 @brief Set the vaule of pin sqw
-@param mode _OFF             = 0x01 // Not output square wave, enter interrupt mode
-@n          _SquareWave_1Hz  = 0x00 // 1Hz square wave
-@n          _SquareWave_1kHz = 0x08 // 1kHz square wave
-@n          _SquareWave_4kHz = 0x10 // 4kHz square wave
-@n          _SquareWave_8kHz = 0x18 // 8kHz square wave
+@param mode OFF             = 0x01 # Not output square wave, enter interrupt mode
+@n          SquareWave_1Hz  = 0x00 # 1Hz square wave
+@n          SquareWave_1kHz = 0x08 # 1kHz square wave
+@n          SquareWave_4kHz = 0x10 # 4kHz square wave
+@n          SquareWave_8kHz = 0x18 # 8kHz square wave
 '''
-rtc.write_sqw_pin_mode(rtc._SquareWave_1Hz)
+rtc.write_sqw_pin_mode(rtc.SquareWave_1Hz)
 '''
 @brief Read the value of pin sqw
-@return mode _OFF             = 0x01 // Off
-@n           _SquareWave_1Hz  = 0x00 // 1Hz square wave
-@n           _SquareWave_1kHz = 0x08 // 1kHz square wave
-@n           _SquareWave_4kHz = 0x10 // 4kHz square wave
-@n           _SquareWave_8kHz = 0x18 // 8kHz square wave
+@return mode OFF             = 0x01 # Off
+@n           SquareWave_1Hz  = 0x00 # 1Hz square wave
+@n           SquareWave_1kHz = 0x08 # 1kHz square wave
+@n           SquareWave_4kHz = 0x10 # 4kHz square wave
+@n           SquareWave_8kHz = 0x18 # 8kHz square wave
 '''
 #rtc.read_sqw_pin_mode()
 '''
@@ -51,9 +51,9 @@ rtc.set_date(11)
 '''
 @brief Set the hours and 12hours or 24hours
 @param hour:1-12 in 12hours,0-23 in 24hours
-@param mode:_24hours, _AM, _PM
+@param mode:H24hours, AM, PM
 '''
-rtc.set_hour(12,rtc._AM)
+rtc.set_hour(12,rtc.AM)
 rtc.set_minute(59)
 rtc.set_second(40)
 
