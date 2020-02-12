@@ -19,7 +19,7 @@ import threading
 import RPi.GPIO as GPIO
 from DFRobot_DS3231M import *
 
-rtc = DFRobot_DS3231M(1)
+rtc = DFRobot_DS3231M(bus=1)
 
 GPIO.setmode(GPIO.BOARD)
 

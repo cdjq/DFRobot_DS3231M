@@ -19,7 +19,7 @@ import datetime
 import ntplib
 from DFRobot_DS3231M import *
 
-rtc = DFRobot_DS3231M(1)
+rtc = DFRobot_DS3231M(bus=1)
 
 #begin return True if succeed, otherwise return False
 while not rtc.begin():
