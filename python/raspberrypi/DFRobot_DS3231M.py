@@ -1,14 +1,14 @@
 """ file DFRobot_DS3231M.py
-  #
-  # brief Define the basic structure of class DFRobot_DS3231M
-  #
-  # @copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
-  # @licence     The MIT License (MIT)
-  # author [LuoYufeng](yufeng.luo@dfrobot.com)
-  # version  V1.0
-  # date  2020-2-12
-  # @get from https://www.dfrobot.com
-  # @url https://github.com/DFRobot/DFRobot_DS3231M
+@
+@brief Define the basic structure of class DFRobot_DS3231M
+@
+@copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
+@licence     The MIT License (MIT)
+@author [LuoYufeng](yufeng.luo@dfrobot.com)
+@version  V1.0
+@date  2020-2-12
+@get from https://www.dfrobot.com
+@url https://github.com/DFRobot/DFRobot_DS3231M
 """
 
 import sys

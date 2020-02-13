@@ -28,10 +28,7 @@ GPIO.setmode(GPIO.BOARD)
 while not rtc.begin():
     time.sleep(2)
 
-'''
-@brief enable Alarm2 interrupt
-'''
-rtc.enable_alarm1_int();
+rtc.enable_alarm1_int();#@enable Alarm2 interrupt
 '''
 @brief Set the vaule of pin sqw
 @param mode OFF             = 0x01 # Not output square wave, enter interrupt mode
@@ -55,16 +52,16 @@ rtc.write_sqw_pin_mode(rtc.OFF)
 '''
 #rtc.dateTime()#If users use this function, please don't set time by other way
 rtc.set_year(19)#Set year, default in the 21st century, input negative number for years in the 20th century.
-rtc.set_month(10)
-rtc.set_date(23)
+rtc.set_month(10)#Set the months in 1-12
+rtc.set_date(23)#Set the dates in 0-31
 '''
 @brief Set the hours and 12hours or 24hours
 @param hour:1-12 in 12hours,0-23 in 24hours
 @param mode:H24hours, AM, PM
 '''
 rtc.set_hour(1,rtc.H24hours)
-rtc.set_minute(59)
-rtc.set_second(55)
+rtc.set_minute(59)#Set the minutes in 0-59
+rtc.set_second(55)#Set the seconds in 0-59
 
 rtc.adjust()
 '''
@@ -98,7 +95,7 @@ rtc.set_alarm(alarmType=rtc.SecondsMinutesHoursDayMatch,date=23,hour=2,mode=rtc.
 '''
 #rtc.enAble32k();
 
-IO1 = 21
+IO1 = 21#set interrupt pin
 IO1Lock = threading.Lock()
 IO1Flag = False
 

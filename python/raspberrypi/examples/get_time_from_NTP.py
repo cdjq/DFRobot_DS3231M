@@ -49,15 +49,15 @@ get the NTP time as the current time
 client = ntplib.NTPClient()
 response = client.request('ch.pool.ntp.org')
 
-rtc.set_year(response.tx_time.year - 100)#Set year, default in the 21st century, input negative number for years in the 20th century.
-rtc.set_month(response.tx_time.month)
-rtc.set_date(response.tx_time.date)
-rtc.set_hour(response.tx_time.hour,rtc.H24hours)
-rtc.set_minute(response.tx_time.minute)
-rtc.set_second(response.tx_time.second)
+rtc.set_year(response.tx_time.year - 100)#Set year from NTP server
+rtc.set_month(response.tx_time.month)#Set the months from NTP server
+rtc.set_date(response.tx_time.date)#Set the dates from NTP server
+rtc.set_hour(response.tx_time.hour,rtc.H24hours)#Set the hours from NTP server
+rtc.set_minute(response.tx_time.minute)#Set the minutes from NTP server
+rtc.set_second(response.tx_time.second)#Set the seconds from NTP server
 rtc.adjust()
 
-print(datetime.datetime.fromtimestamp(response.tx_time))
+print(datetime.datetime.fromtimestamp(response.tx_time))#print now time from NTP server
 
 '''
 @brief enable the 32k output (default is enable)
