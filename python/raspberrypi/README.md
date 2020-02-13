@@ -22,7 +22,7 @@ To use this library, first download the library file, paste it into the Raspberr
 ## Methods
 
 ```Python
-
+class DFRobot_DS3231M:
   '''
   @brief Init chip 
   @return True means IIC communication succeeds, False means it fails. 
@@ -115,42 +115,42 @@ To use this library, first download the library file, paste it into the Raspberr
   '''
   @brief Adjust current time 
   '''
-  def adjust()
+  def adjust(self)
   
   '''
   @brief output AM or PM of time 
   '''
-  def get_AM_or_PM()
+  def get_AM_or_PM(self)
   
   '''
   @brief Get current temperature 
   @return Current temperautre, unit: ℃ 
   '''
-  def get_temperature_C()
+  def get_temperature_C(self)
   
   '''
   @brief Judge if it is power-down 
   @return If retrun true, power down, time needs to reset false, work well. 
   '''
-  def lost_power(def)
+  def lost_power(self)
   
   '''
   @brief Read the value of pin sqw
-  @return eDS3231M_OFF             = 0x01 # Off
-  @n      eDS3231M_SquareWave_1Hz  = 0x00 # 1Hz square wave
-  @n      eDS3231M_SquareWave_1kHz = 0x08 # 1kHz square wave
-  @n      eDS3231M_SquareWave_4kHz = 0x10 # 4kHz square wave
-  @n      eDS3231M_SquareWave_8kHz = 0x18 # 8kHz square wave
+  @return OFF             = 0x01 # Off
+  @n      SquareWave_1Hz  = 0x00 # 1Hz square wave
+  @n      SquareWave_1kHz = 0x08 # 1kHz square wave
+  @n      SquareWave_4kHz = 0x10 # 4kHz square wave
+  @n      SquareWave_8kHz = 0x18 # 8kHz square wave
   '''
   def read_sqw_pin_mode(self)
   
   '''
   @brief Set the vaule of pin sqw
-  @param mode eDS3231M_OFF             = 0x01 # Off
-  @n          eDS3231M_SquareWave_1Hz  = 0x00 # 1Hz square wave
-  @n          eDS3231M_SquareWave_1kHz = 0x08 # 1kHz square wave
-  @n          eDS3231M_SquareWave_4kHz = 0x10 # 4kHz square wave
-  @n          eDS3231M_SquareWave_8kHz = 0x18 # 8kHz square wave
+  @param mode OFF             = 0x01 # Off
+  @n          SquareWave_1Hz  = 0x00 # 1Hz square wave
+  @n          SquareWave_1kHz = 0x08 # 1kHz square wave
+  @n          SquareWave_4kHz = 0x10 # 4kHz square wave
+  @n          SquareWave_8kHz = 0x18 # 8kHz square wave
   '''
   def write_sqw_pin_mode(self, mode)
   
