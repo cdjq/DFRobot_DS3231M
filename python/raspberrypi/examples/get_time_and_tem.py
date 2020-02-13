@@ -1,12 +1,12 @@
 '''
-file get_time_and_tem.py
+@file get_time_and_tem.py
 
-@Through the example, you can get the time and temperature:
-@Experiment phenomenon: read data every 1 seconds and print it on serial port .
-@
+@brief Through the example, you can get the time and temperature:
+@n     Experiment phenomenon: read data every 1 second and print it on serial port .
+
 @Copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
 @licence   The MIT License (MIT)
-@
+
 @author [LuoYufeng](yufeng.luo@dfrobot.com)
 @url https://github.com/DFRobot/DFRobot_DS3231M
 @version  V1.0
@@ -57,17 +57,11 @@ rtc.set_hour(12,rtc.AM)
 rtc.set_minute(59)#Set the minutes in 0-59
 rtc.set_second(40)#Set the seconds in 0-59
 
-rtc.adjust()
+rtc.adjust()#Set status on work
 
-'''
-@brief enable the 32k output (default is enable)
-'''
-#rtc.disAble32k();
+#rtc.disAble32k();#disable the 32k output (default is enable)
 
-'''
-@brief disable the 32k output 
-'''
-#rtc.enAble32k();
+#rtc.enAble32k();#enable the 32k output 
 
 def main():
     while True:

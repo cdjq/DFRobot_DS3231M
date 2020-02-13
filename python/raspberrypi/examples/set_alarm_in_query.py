@@ -1,12 +1,12 @@
 '''
 file set_alarm_in_query.py
 
-@Through the example, you can set alarm clock in query:
-@Experiment phenomenon: read data every 1 seconds and print it on serial port .
-@
+@brief Through the example, you can set alarm clock in query:
+@n     Experiment phenomenon: read data every 1 seconds and print it on serial port .
+
 @Copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
 @licence   The MIT License (MIT)
-@
+
 @author [LuoYufeng](yufeng.luo@dfrobot.com)
 @url https://github.com/DFRobot/DFRobot_DS3231M
 @version  V1.0
@@ -57,7 +57,7 @@ rtc.set_hour(1,rtc.H24hours)
 rtc.set_minute(59)#Set the minutes in 0-59
 rtc.set_second(55)#Set the seconds in 0-59
 
-rtc.adjust()
+rtc.adjust()#Set status on work
 '''
 @brief Set alarm clock
 @param alarmType:EverySecond,
@@ -80,12 +80,12 @@ rtc.adjust()
 '''
 rtc.set_alarm(alarmType=rtc.SecondsMinutesHoursDayMatch,date=23,hour=2,mode=rtc.H24hours,minute=0,second=0)
 '''
-@brief enable the 32k output (default is enable)
+@brief disable the 32k output (default is enable)
 '''
 #rtc.disAble32k();
 
 '''
-@brief disable the 32k output 
+@brief enable the 32k output 
 '''
 #rtc.enAble32k();
 

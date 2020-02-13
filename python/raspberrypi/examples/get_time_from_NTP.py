@@ -1,12 +1,12 @@
 '''
-file get_time_from_NTP.py
+@file get_time_from_NTP.py
 
-@Through the example, you can get the accurate time from NTP server:
-@Experiment phenomenon: read data every 1 seconds and print it on serial port .
-@
-@Copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
+@brief Through the example, you can get the accurate time from NTP server:
+@n     Experiment phenomenon: read data every 1 seconds and print it on serial port .
+
+@Copyright Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
 @licence   The MIT License (MIT)
-@
+
 @author [LuoYufeng](yufeng.luo@dfrobot.com)
 @url https://github.com/DFRobot/DFRobot_DS3231M
 @version  V1.0
@@ -55,19 +55,15 @@ rtc.set_date(response.tx_time.date)#Set the dates from NTP server
 rtc.set_hour(response.tx_time.hour,rtc.H24hours)#Set the hours from NTP server
 rtc.set_minute(response.tx_time.minute)#Set the minutes from NTP server
 rtc.set_second(response.tx_time.second)#Set the seconds from NTP server
-rtc.adjust()
+rtc.adjust()#Set status on work
 
+print("Get NTP time from 'ch.pool.ntp.org' is")
 print(datetime.datetime.fromtimestamp(response.tx_time))#print now time from NTP server
+print("Now this time has been input to DS3231M")
 
-'''
-@brief enable the 32k output (default is enable)
-'''
-#rtc.disAble32k();
+#rtc.disAble32k();#disable the 32k output (default is enable)
 
-'''
-@brief disable the 32k output 
-'''
-#rtc.enAble32k();
+#rtc.enAble32k();#enable the 32k output 
 
 def main():
     while True:

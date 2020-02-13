@@ -1,7 +1,8 @@
-""" file DFRobot_DS3231M.py
-@
+""" 
+@file DFRobot_DS3231M.py
+
 @brief Define the basic structure of class DFRobot_DS3231M
-@
+
 @copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
 @licence     The MIT License (MIT)
 @author [LuoYufeng](yufeng.luo@dfrobot.com)
