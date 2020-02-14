@@ -17,122 +17,121 @@
 
 ## Installation
 
-To use this library, first download the library file, paste it into the RaspberryPi, then open the examples folder and run the demo in the folder.
+To use this library, first download into the RaspberryPi, then open the examples folder and run the demo in the folder.
 
 ## Methods
 
 ```Python
-class DFRobot_DS3231M:
   '''
   @brief Init chip 
   @return True means IIC communication succeeds, False means it fails. 
   '''
-  def begin(self)
+  begin()
   '''
   @brief Get current time data
   '''
-  def get_now_time(self)
+  get_now_time()
   
   '''
-  @brief get year
+  @brief get year of now
   @return year
   '''
-  def year(self)
+  year()
   
   '''
-  @brief get month
+  @brief get month of now
   @return month
   '''
-  def  month(self)
+  month()
   
   '''
-  @brief get date
+  @brief get date of now
   @return date
   '''
-  def  day(self)
+  day()
   
   '''
-  @brief get hour
+  @brief get hour of now
   @return hour
   '''
-  def hour(self)
+  hour()
   
   '''
-  @brief get minute
+  @brief get minute of now
   @return minute
   '''
-  def minute(self)
+  minute()
   
   '''
-  @brief get second
+  @brief get second of now
   @return second
   '''
-  def  second(self)
+  second()
   
   '''
   @brief get day of week
   @return day of week
   '''
-  def get_day_of_the_week(self)
+  get_day_of_the_week()
   
   '''
-  @brief Set year
+  @brief Set year + 2000 (2020 is 20, 1970 is -30)
   @param Year 
   '''
-  def set_year(self, year)
+  set_year(year)
   
   '''
   @brief Set month
-  @param Month
+  @param Month(1-12)
   '''
-  def set_month(self, month)
+  set_month(month)
   
   '''
   @brief Set Date 
-  @param Date
+  @param Date(1-31)
   '''
-  def set_date(self, date)
+  set_date(date)
   
   '''
   @brief Set the hours and 12hours or 24hours
   @param hour:1-12 in 12hours,0-23 in 24hours
   @param mode:e24hours, eAM, ePM
   '''
-  def set_hour(self, hour, mode)
+  set_hour(hour, mode)
   
   '''
-  @brief Set minute 
-  @param Minute
+  @brief Set minute
+  @param Minute(0-59)
   '''
-  def set_minute(self, minute)
+  set_minute(minute)
   
   '''
   @brief Set second
-  @param Second
+  @param Second(0-59)
   '''
-  def set_second(self, second)
+  set_second(second)
   
   '''
   @brief Adjust current time 
   '''
-  def adjust(self)
+  adjust()
   
   '''
   @brief output AM or PM of time 
   '''
-  def get_AM_or_PM(self)
+  get_AM_or_PM()
   
   '''
   @brief Get current temperature 
   @return Current temperautre, unit: ℃ 
   '''
-  def get_temperature_C(self)
+  get_temperature_C()
   
   '''
   @brief Judge if it is power-down 
   @return If retrun true, power down, time needs to reset false, work well. 
   '''
-  def lost_power(self)
+  lost_power()
   
   '''
   @brief Read the value of pin sqw
@@ -142,7 +141,7 @@ class DFRobot_DS3231M:
   @n      SquareWave_4kHz = 0x10 # 4kHz square wave
   @n      SquareWave_8kHz = 0x18 # 8kHz square wave
   '''
-  def read_sqw_pin_mode(self)
+  read_sqw_pin_mode()
   
   '''
   @brief Set the vaule of pin sqw
@@ -152,7 +151,7 @@ class DFRobot_DS3231M:
   @n          SquareWave_4kHz = 0x10 # 4kHz square wave
   @n          SquareWave_8kHz = 0x18 # 8kHz square wave
   '''
-  def write_sqw_pin_mode(self, mode)
+  write_sqw_pin_mode(mode)
   
   '''
   @brief Set alarm clock
@@ -174,42 +173,49 @@ class DFRobot_DS3231M:
   @param minutes Alarm clock (minute)
   @param seconds Alarm clock (second)
   '''
-  def set_alarm(self, alarmType, date, hour, mode, minute, second, state = True)
+  set_alarm(alarmType, date, hour, mode, minute, second, state = True)
   
   '''
   @brief Judge if the alarm clock is triggered 
   @return true, triggered false, not trigger
   '''
-  def is_alarm(self)
+  is_alarm()
   '''
   @brief Clear trigger flag
   '''
-  def clear_alarm(self)
+  clear_alarm()
   
   '''
   @brief enable or disable the interrupt of alarm 
   '''
-  def enable_alarm1_int(self)
-  def disable_alarm1_int(self)
-  def enable_alarm2_int(self)
-  def disable_alarm2_int(self)
+  enable_alarm1_int()
+  disable_alarm1_int()
+  enable_alarm2_int()
+  disable_alarm2_int()
   
   '''
-  @brief enable the 32k output 
+  @brief This module has a pin can output 32kHz wave, enable the 32k output 
   '''
-  def enable_32k(self)
+  enable_32k()
   
   '''
-  @brief disable the 32k output 
+  @brief This module has a pin can output 32kHz wave, disable the 32k output 
   '''
-  def disable_32k(self)
+  disable_32k()
 ```
 
 ## Compatibility
 
 MCU                | Work Well    | Work Wrong   | Untested    | Remarks
 ------------------ | :----------: | :----------: | :---------: | -----
-RaspberryPi        |      √       |              |             | 
+RaspberryPi2       |              |              |     √       | 
+RaspberryPi3       |      √       |              |             | 
+RaspberryPi4       |              |              |     √       | 
+
+Python                | Work Well    | Work Wrong   | Untested    | Remarks
+------------------ | :----------: | :----------: | :---------: | -----
+Python2            |      √       |              |             | 
+Python3            |      √       |              |             | 
 
 ## History
 
