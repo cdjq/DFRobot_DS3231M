@@ -105,39 +105,27 @@ const char* DFRobot_DS3231M::getDayOfTheWeek(){
 }
 
 void DFRobot_DS3231M::setYear(uint8_t year){
-    uint8_t data = bin2bcd(year + 30);
-    writeReg(DS3231M_REG_RTC_YEAR, &data, sizeof(data));
+    y = bin2bcd(year + 30);
 }
 
 void DFRobot_DS3231M::setMonth(uint8_t month){
-    uint8_t data = bin2bcd(month); 
-    writeReg(DS3231M_REG_RTC_MONTH, &data, sizeof(data));
+    m = bin2bcd(month); 
 }
 
 void DFRobot_DS3231M::setDate(uint8_t date){
-    uint8_t data = bin2bcd(date);
-    writeReg(DS3231M_REG_RTC_DATE, &data, sizeof(data));
+    d = bin2bcd(date);
 }
 
 void DFRobot_DS3231M::setHour(uint8_t hour, ehours mode){
-    if (mode == 0){
-        sNow24Hour_t data = {.hour = bin2bcd(hour),.mode = mode};
-        writeReg(DS3231M_REG_RTC_HOUR, &data, sizeof(data));
-    }
-    else{
-        sNow12Hour_t data = {.hour = bin2bcd(hour),.mode = mode};
-        writeReg(DS3231M_REG_RTC_HOUR, &data, sizeof(data));
-    }
+    hh = (mode << 5|bin2bcd(hour));
 }
 
 void DFRobot_DS3231M::setMinute(uint8_t minute){
-    uint8_t data = bin2bcd(minute);
-    writeReg(DS3231M_REG_RTC_MIN, &data, sizeof(data));
+    mm = bin2bcd(minute);
 }
 
 void DFRobot_DS3231M::setSecond(uint8_t second){
-    uint8_t data = bin2bcd(second);
-    writeReg(DS3231M_REG_RTC_SEC, &data, sizeof(data));
+    ss = bin2bcd(second);
 }
 
 const char* DFRobot_DS3231M::getAMorPM(){
@@ -149,6 +137,8 @@ const char* DFRobot_DS3231M::getAMorPM(){
 }
 
 void DFRobot_DS3231M::adjust(){
+    uint8_t data[] = {ss, mm, hh, dayOfTheWeek(), d, m, y};
+    writeReg(DS3231M_REG_RTC_YEAR, &data, sizeof(data));
     uint8_t statreg[1];
     readReg(DS3231M_REG_STATUS, statreg, 1);
     statreg[0] &= ~0x80; // flip OSF bit
@@ -176,7 +166,7 @@ float DFRobot_DS3231M::getTemperatureC(){
     return ((float)buf[0] + (buf[1]>>6)*0.25f);
 }
 
-bool DFRobot_DS3231M::lostPower(void) {
+bool DFRobot_DS3231M::isLostPower(void) {
     uint8_t status[1];
     readReg(DS3231M_REG_STATUS, status, 1);
     return status[0] >> 7;

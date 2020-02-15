@@ -85,20 +85,20 @@ To use this library, first download the library file, paste it into the \Arduino
   uint8_t  dayOfTheWeek() const ;
   
   /*!
-   *@brief Set year
+   *@brief Set year +2000(2020 is 20, 1970 is -30)
    *@param Year 
    */
   void setYear(uint8_t year);
   
   /*!
    *@brief Set month
-   *@param Month
+   *@param Month(1-12)
    */
   void setMonth(uint8_t month);
   
   /*!
    *@brief Set Date 
-   *@param Date
+   *@param Date(1-31)
    */
   void setDate(uint8_t date);
   
@@ -111,13 +111,13 @@ To use this library, first download the library file, paste it into the \Arduino
   
   /*!
    *@brief Set minute 
-   *@param Minute
+   *@param Minute(0-60)
    */
   void setMinute(uint8_t minute);
   
   /*!
    *@brief Set second
-   *@param Second
+   *@param Second(0-60)
    */
   void setSecond(uint8_t second);
   
@@ -148,7 +148,7 @@ To use this library, first download the library file, paste it into the \Arduino
    *@brief Judge if it is power-down 
    *@return If retrun true, power down, time needs to reset; false, work well. 
    */
-  bool lostPower(void);
+  bool isLostPower(void);
   
   /*!
    *@brief Read the value of pin sqw

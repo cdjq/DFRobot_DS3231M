@@ -266,7 +266,7 @@ public:
      *@brief Judge if it is power-down 
      *@return If retrun true, power down, time needs to reset; false, work well. 
      */
-    bool lostPower(void);
+    bool isLostPower(void);
     /*!
      *@brief Read the value of pin sqw
      *@return Explanation of the readings in enumeration variable eDs3231MSqwPinMode_t
@@ -361,6 +361,12 @@ private:
     uint8_t _deviceAddr = DS3231M_IIC_ADDRESS;
     uint8_t bcd[7];
     uint8_t  _ss,_mm,_hh,_d,_m;
+    uint8_t y,   ///< Year Offset
+            m,  ///< Months
+            d,    ///< Days
+            hh,   ///< Hours
+            mm, ///< Minutes
+            ss; ///< Seconds
     uint16_t _y;
     sControl_t conReg;
     sStatus_t staReg;

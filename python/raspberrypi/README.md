@@ -18,13 +18,14 @@
 ## Installation
 
 To use this library, first download into the RaspberryPi, then open the examples folder and run the demo in the folder.
+* python get_time_and _tem.py
 
 ## Methods
 
 ```Python
   '''
   @brief Init chip 
-  @return True means IIC communication succeeds, False means it fails. 
+  @return True means chip init succeeds, False means it fails. 
   '''
   begin()
   '''
@@ -95,7 +96,7 @@ To use this library, first download into the RaspberryPi, then open the examples
   '''
   @brief Set the hours and 12hours or 24hours
   @param hour:1-12 in 12hours,0-23 in 24hours
-  @param mode:e24hours, eAM, ePM
+  @param mode:H24hours, AM, PM
   '''
   set_hour(hour, mode)
   
@@ -131,7 +132,7 @@ To use this library, first download into the RaspberryPi, then open the examples
   @brief Judge if it is power-down 
   @return If retrun true, power down, time needs to reset false, work well. 
   '''
-  lost_power()
+  is_lost_power()
   
   '''
   @brief Read the value of pin sqw
@@ -173,7 +174,7 @@ To use this library, first download into the RaspberryPi, then open the examples
   @param minutes Alarm clock (minute)
   @param seconds Alarm clock (second)
   '''
-  set_alarm(alarmType, date, hour, mode, minute, second, state = True)
+  set_alarm(alarmType, date, hour, mode, minute, second)
   
   '''
   @brief Judge if the alarm clock is triggered 
@@ -206,12 +207,14 @@ To use this library, first download into the RaspberryPi, then open the examples
 
 ## Compatibility
 
-MCU                | Work Well    | Work Wrong   | Untested    | Remarks
+RaspberryPi Version
+Board                | Work Well    | Work Wrong   | Untested    | Remarks
 ------------------ | :----------: | :----------: | :---------: | -----
 RaspberryPi2       |              |              |     √       | 
 RaspberryPi3       |      √       |              |             | 
 RaspberryPi4       |              |              |     √       | 
 
+Python Version
 Python                | Work Well    | Work Wrong   | Untested    | Remarks
 ------------------ | :----------: | :----------: | :---------: | -----
 Python2            |      √       |              |             | 

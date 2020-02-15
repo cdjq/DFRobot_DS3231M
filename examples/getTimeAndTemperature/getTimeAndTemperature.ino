@@ -106,7 +106,7 @@ void loop() {
      *@brief Judge if it is power-down
      *@return If retrun true, power down, needs to reset time; false, work well.
      */
-    if (rtc.lostPower()) {
+    if (rtc.isLostPower()) {
         Serial.println("RTC lost power, plrase reset the time!");
     }
 }

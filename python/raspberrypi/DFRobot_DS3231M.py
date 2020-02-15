@@ -76,6 +76,12 @@ class DFRobot_DS3231M:
     _d = 0
     _m = 0
     _y = 0
+    ss = 0
+    mm = 0
+    hh = 0
+    d = 0
+    m = 0
+    y = 0
     daysInMonth = [31,28,31,30,31,30,31,31,30,31,30,31]
     daysOfTheWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     hourOfAM = [" ", " ", "AM", "PM"] 
@@ -258,32 +264,25 @@ class DFRobot_DS3231M:
         return self.daysOfTheWeek[self.day_of_the_week()]
 
     def set_year(self, year):
-        data = [self.bin2bcd(year + 30)]
-        self.write_reg(self._REG_RTC_YEAR, data)
+        self.y = [self.bin2bcd(year + 30)]
     
     def set_month(self, month):
-        data = [self.bin2bcd(month)]
-        self.write_reg(self._REG_RTC_MONTH, data)
+        self.m = [self.bin2bcd(month)]
     
     def set_date(self, date):
-        data = [self.bin2bcd(date)]
-        self.write_reg(self._REG_RTC_DATE, data);
+        self.d = [self.bin2bcd(date)]
 
     def set_hour(self, hour, mode):
         if mode == 0:
-            data = [self.bin2bcd(hour) | (mode >> 6)]
-            self.write_reg(self._REG_RTC_HOUR, data)
+            self.hh = [self.bin2bcd(hour) | (mode >> 6)]
         else:
-            data = [self.bin2bcd(hour) | (mode >> 5)]
-            self.write_reg(self._REG_RTC_HOUR, data)
+            self.hh = [self.bin2bcd(hour) | (mode >> 5)]
     
     def set_minute(self,minute):
-        data = [self.bin2bcd(minute)]
-        self.write_reg(self._REG_RTC_MIN, data)
+        self.mm = [self.bin2bcd(minute)]
     
     def set_second(self, second):
-        data = [self.bin2bcd(second)]
-        self.write_reg(self._REG_RTC_SEC, data)
+        self.ss = [self.bin2bcd(second)]
     
     def get_AM_or_PM(self):
         buffer = self.read_reg(self._REG_RTC_HOUR)
@@ -292,6 +291,8 @@ class DFRobot_DS3231M:
         return self.hourOfAM[buffer[0]]
         
     def adjust(self):
+        data = [self.ss, self.mm, self.hh, self.day_of_the_week(), self.d, self.m, self.y]
+        self.write_reg(self._REG_RTC_YEAR, data)
         statreg = self.read_reg(self._REG_STATUS)
         statreg[0] &= ~0x80
         self.write_reg(self._REG_STATUS, statreg)
@@ -331,7 +332,7 @@ class DFRobot_DS3231M:
         buf = self.read_reg(self._REG_TEMPERATURE)
         return (buf[0] + (buf[1]>>6)*0.25)
     
-    def lost_power(self):
+    def is_lost_power(self):
         status = self.read_reg(DS3231M_REG_STATUS)
         return status[0] >> 7
     
