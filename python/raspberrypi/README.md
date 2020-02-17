@@ -207,14 +207,16 @@ To use this library, first download into the RaspberryPi, then open the examples
 
 ## Compatibility
 
-RaspberryPi Version
+* RaspberryPi Version
+
 Board                | Work Well    | Work Wrong   | Untested    | Remarks
 ------------------ | :----------: | :----------: | :---------: | -----
 RaspberryPi2       |              |              |     √       | 
 RaspberryPi3       |      √       |              |             | 
 RaspberryPi4       |              |              |     √       | 
 
-Python Version
+* Python Version
+
 Python                | Work Well    | Work Wrong   | Untested    | Remarks
 ------------------ | :----------: | :----------: | :---------: | -----
 Python2            |      √       |              |             | 
