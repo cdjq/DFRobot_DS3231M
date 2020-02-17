@@ -72,11 +72,6 @@ void setup(void)
 }
 void loop() {
     /*!
-     *@brief Get current time data 
-     *@return Current time data
-     */
-    rtc.getNowTime();
-    /*!
      *@brief Judge if the alarm clock is triggered
      *@return true, triggered; false, not triggered
      */
@@ -87,19 +82,19 @@ void loop() {
          */
         rtc.clearAlarm();
     }
-    Serial.print(rtc.year(), DEC);
+    Serial.print(rtc.getYear(), DEC);//year
     Serial.print('/');
-    Serial.print(rtc.month(), DEC);
+    Serial.print(rtc.getMonth(), DEC);//month
     Serial.print('/');
-    Serial.print(rtc.day(), DEC);
+    Serial.print(rtc.getDate(), DEC);//date
     Serial.print(" (");
-    Serial.print(rtc.getDayOfTheWeek());
+    Serial.print(rtc.getDayOfTheWeek());//day of week
     Serial.print(") ");
-    Serial.print(rtc.hour(), DEC);
+    Serial.print(rtc.getHour(), DEC);//hour
     Serial.print(':');
-    Serial.print(rtc.minute(), DEC);
+    Serial.print(rtc.getMinute(), DEC);//minute
     Serial.print(':');
-    Serial.print(rtc.second(), DEC);
+    Serial.print(rtc.getSecond(), DEC);//second
     Serial.print(' ');
     /*if rtc works in 24hours mode,this function doesn't print anything*/
     Serial.print(rtc.getAMorPM());

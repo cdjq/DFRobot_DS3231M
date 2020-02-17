@@ -70,9 +70,6 @@ class DFRobot_DS3231M:
     
     rtc_bcd = []
     bcd = []
-    _ss = 0
-    _mm = 0
-    _hh = 0
     _d = 0
     _m = 0
     _y = 0
@@ -310,27 +307,42 @@ class DFRobot_DS3231M:
             self._y += 100
             self._m -= 80
     
-    def year(self):
+    def get_year(self):
+        self._y = self.bcd2bin(self.read_reg(self._REG_RTC_YEAR)) + 1970
+        century = self.read_reg(self._REG_RTC_MONTH)
+        if century > 80:
+            self._y += 100
         return self._y
     
-    def month(self):
+    def get_month(self):
+        self._m = self.bcd2bin(self.read_reg(self._REG_RTC_MONTH))
+        if self._m > 80:
+            self._m -= 80
         return self._m
     
-    def date(self):
-        return self._d
+    def get_date(self):
+        self._d = self.bcd2bin(self.read_reg(self._REG_RTC_DATE))
     
-    def hour(self):
-        return self._hh
+    def get_hour(self):
+        _hh = self.read_reg(self._REG_RTC_HOUR)] << 3
+        _hh = _hh >> 3
+        return _hh
     
-    def minute(self):
-        return self._mm
+    def get_minute(self):
+        return self.bcd2bin(self.read_reg(self._REG_RTC_MIN))
     
-    def second(self):
-        return self._ss
+    def get_second(self):
+        _ss = self.read_reg(self._REG_RTC_SEC)
+        self.bcd2bin(_ss & 0x7F)
     
     def get_temperature_C(self):
         buf = self.read_reg(self._REG_TEMPERATURE)
         return (buf[0] + (buf[1]>>6)*0.25)
+    
+    def get_temperature_F(self):
+        buf = self.read_reg(self._REG_TEMPERATURE)
+        c = (buf[0] + (buf[1]>>6)*0.25)
+        return c * 9 / 5 + 32
     
     def is_lost_power(self):
         status = self.read_reg(DS3231M_REG_STATUS)

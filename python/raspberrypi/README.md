@@ -19,7 +19,7 @@
 
 To use this library, first download into the RaspberryPi, then open the examples folder and run the demo in the folder.
 ```Python
-python get_time_and _tem.py
+python xxx.py
 ```
 ## Methods
 
@@ -29,46 +29,42 @@ python get_time_and _tem.py
   @return True means chip init succeeds, False means it fails. 
   '''
   begin()
-  '''
-  @brief Get current time data
-  '''
-  get_now_time()
   
   '''
-  @brief get year of now
+  @brief get year of now in sensor
   @return year
   '''
-  year()
+  get_year()
   
   '''
-  @brief get month of now
+  @brief get month of now in sensor
   @return month
   '''
-  month()
+  get_month()
   
   '''
-  @brief get date of now
+  @brief get date of now in sensor
   @return date
   '''
-  day()
+  get_date()
   
   '''
-  @brief get hour of now
+  @brief get hour of now in sensor
   @return hour
   '''
-  hour()
+  get_hour()
   
   '''
-  @brief get minute of now
+  @brief get minute of now in sensor
   @return minute
   '''
-  minute()
+  get_minute()
   
   '''
-  @brief get second of now
+  @brief get second of now in sensor
   @return second
   '''
-  second()
+  get_second()
   
   '''
   @brief get day of week
@@ -77,8 +73,8 @@ python get_time_and _tem.py
   get_day_of_the_week()
   
   '''
-  @brief Set year + 2000 (2020 is 20, 1970 is -30)
-  @param Year 
+  @brief Set year + 2000
+  @param Year (20 means 2020, -30 means 1970)
   '''
   set_year(year)
   
@@ -114,7 +110,7 @@ python get_time_and _tem.py
   set_second(second)
   
   '''
-  @brief Adjust current time 
+  @brief 将设定好的时间写入rtc
   '''
   adjust()
   
@@ -128,6 +124,12 @@ python get_time_and _tem.py
   @return Current temperautre, unit: ℃ 
   '''
   get_temperature_C()
+  
+  '''
+  @brief Get current temperature 
+  @return Current temperautre, unit: ℉ 
+  '''
+  get_temperature_F()
   
   '''
   @brief Judge if it is power-down 

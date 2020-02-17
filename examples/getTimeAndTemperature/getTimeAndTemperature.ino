@@ -75,20 +75,19 @@ void loop() {
      *@brief Get current time data 
      *@return Current time data
      */
-    rtc.getNowTime();
-    Serial.print(rtc.year(), DEC);//year
+    Serial.print(rtc.getYear(), DEC);//year
     Serial.print('/');
-    Serial.print(rtc.month(), DEC);//month
+    Serial.print(rtc.getMonth(), DEC);//month
     Serial.print('/');
-    Serial.print(rtc.day(), DEC);//date
+    Serial.print(rtc.getDate(), DEC);//date
     Serial.print(" (");
     Serial.print(rtc.getDayOfTheWeek());//day of week
     Serial.print(") ");
-    Serial.print(rtc.hour(), DEC);//hour
+    Serial.print(rtc.getHour(), DEC);//hour
     Serial.print(':');
-    Serial.print(rtc.minute(), DEC);//minute
+    Serial.print(rtc.getMinute(), DEC);//minute
     Serial.print(':');
-    Serial.print(rtc.second(), DEC);//second
+    Serial.print(rtc.getSecond(), DEC);//second
     Serial.print(' ');
     /*if rtc works in 24hours mode,this function doesn't print anything*/
     Serial.print(rtc.getAMorPM());

@@ -37,46 +37,42 @@ To use this library, first download the library file, paste it into the \Arduino
    *@return True means IIC communication succeeds, false means it fails. 
    */
   bool begin(void);
-  /*!
-   *@brief Get current time data
-   */
-  void getNowTime();
   
   /*!
-   *@brief get year
+   *@brief get year of now in sensor
    *@return year
    */
-  uint16_t year();
+  uint8_t getYear();
   
   /*!
-   *@brief get month
+   *@brief get month of now in sensor
    *@return month
    */
-  uint8_t  month();
+  uint8_t  getMonth();
   
   /*!
-   *@brief get date
+   *@brief get date of now in sensor
    *@return date
    */
-  uint8_t  day();
+  uint8_t  getDate();
   
   /*!
-   *@brief get hour
+   *@brief get hour of now in sensor
    *@return hour
    */
-  uint8_t  hour();
+  uint8_t  getHour();
   
   /*!
-   *@brief get minute
+   *@brief get minute of now in sensor
    *@return minute
    */
-  uint8_t  minute();
+  uint8_t  getMinute();
   
   /*!
-   *@brief get second
+   *@brief get second of now in sensor
    *@return second
    */
-  uint8_t  second();
+  uint8_t  getSecond();
   
   /*!
    *@brief get day of week
@@ -85,20 +81,20 @@ To use this library, first download the library file, paste it into the \Arduino
   uint8_t  dayOfTheWeek() const ;
   
   /*!
-   *@brief Set year +2000(2020 is 20, 1970 is -30)
-   *@param Year 
+   *@brief Set year + 2000
+   *@param year (20 means 2020, -30 means 1970)
    */
   void setYear(uint8_t year);
   
   /*!
    *@brief Set month
-   *@param Month(1-12)
+   *@param month(1-12)
    */
   void setMonth(uint8_t month);
   
   /*!
    *@brief Set Date 
-   *@param Date(1-31)
+   *@param date(1-31)
    */
   void setDate(uint8_t date);
   
@@ -129,7 +125,7 @@ To use this library, first download the library file, paste it into the \Arduino
   void dateTime(const __FlashStringHelper* date, const __FlashStringHelper* time);
   
   /*!
-   *@brief Adjust current time 
+   *@brief 将设定好的时间写入rtc
    */
   void adjust();
   
@@ -143,6 +139,12 @@ To use this library, first download the library file, paste it into the \Arduino
    *@return Current temperautre, unit: ℃ 
    */
   float getTemperatureC();
+  
+  /*!
+   *@brief Get current temperature 
+   *@return Current temperautre, unit: ℉ 
+   */
+  float getTemperatureF();
   
   /*!
    *@brief Judge if it is power-down 

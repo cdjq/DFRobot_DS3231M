@@ -187,35 +187,35 @@ public:
      */
     void getNowTime();
     /*!
-     *@brief Get year
+     *@brief Get year of now
      *@return Year
      */
-    uint16_t year()         const { return _y; }
+    uint8_t getYear();
     /*!
-     *@brief Get month
+     *@brief Get month of now
      *@return Month
      */
-    uint8_t  month()        const { return _m; }
+    uint8_t  getMonth();
     /*!
-     *@brief Get day
+     *@brief Get day of now
      *@return Day
      */
-    uint8_t  day()          const { return _d; }
+    uint8_t  getDate();
     /*!
-     *@brief Get hour
+     *@brief Get hour of now
      *@return Hour
      */
-    uint8_t  hour()         const { return _hh; }
+    uint8_t  getHour();
     /*!
-     *@brief Get minute
+     *@brief Get minute of now
      *@return Minute
      */
-    uint8_t  minute()       const { return _mm; }
+    uint8_t  getMinute();
     /*!
-     *@brief Get second
+     *@brief Get second of now
      *@return Second
      */
-    uint8_t  second()       const { return _ss; }
+    uint8_t  getSecond();
     /*!
      *@brief Set year 
      *@param Year
@@ -262,6 +262,11 @@ public:
      *@return Current temperautre, unit: ℃ 
      */
     float getTemperatureC();
+    /*!
+     *@brief Get current temperature 
+     *@return Current temperautre, unit: ℉ 
+     */
+    float getTemperatureF();
     /*!
      *@brief Judge if it is power-down 
      *@return If retrun true, power down, time needs to reset; false, work well. 
@@ -360,14 +365,13 @@ private:
     TwoWire *_pWire;
     uint8_t _deviceAddr = DS3231M_IIC_ADDRESS;
     uint8_t bcd[7];
-    uint8_t  _ss,_mm,_hh,_d,_m;
+    uint8_t year, month, date;
     uint8_t y,   ///< Year Offset
             m,  ///< Months
             d,    ///< Days
             hh,   ///< Hours
             mm, ///< Minutes
             ss; ///< Seconds
-    uint16_t _y;
     sControl_t conReg;
     sStatus_t staReg;
     const char* daysOfTheWeek[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"}; 

@@ -97,24 +97,20 @@ void loop() {
         rtc.clearAlarm();
         alarmFlag = 0;
         while (t < 10){
-            rtc.getNowTime();
-            Serial.print(rtc.year(), DEC);
+            Serial.print(rtc.getYear(), DEC);//year
             Serial.print('/');
-            Serial.print(rtc.month(), DEC);
+            Serial.print(rtc.getMonth(), DEC);//month
             Serial.print('/');
-            Serial.print(rtc.day(), DEC);
+            Serial.print(rtc.getDate(), DEC);//date
             Serial.print(" (");
-            Serial.print(rtc.getDayOfTheWeek());
+            Serial.print(rtc.getDayOfTheWeek());//day of week
             Serial.print(") ");
-            Serial.print(rtc.hour(), DEC);
+            Serial.print(rtc.getHour(), DEC);//hour
             Serial.print(':');
-            Serial.print(rtc.minute(), DEC);
+            Serial.print(rtc.getMinute(), DEC);//minute
             Serial.print(':');
-            Serial.print(rtc.second(), DEC);
+            Serial.print(rtc.getSecond(), DEC);//second
             Serial.print(' ');
-            /*if rtc works in 24hours mode,this function doesn't print anything*/
-            Serial.print(rtc.getAMorPM());
-            Serial.println();
             delay(1000);
             t = t + 1;
         }

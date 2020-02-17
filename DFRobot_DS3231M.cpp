@@ -96,7 +96,7 @@ void DFRobot_DS3231M::dateTime (){
 }
 
 uint8_t DFRobot_DS3231M::dayOfTheWeek() const {
-  uint16_t day = date2days(_y, _m, _d); // compute the number of days
+  uint16_t day = date2days(year, month, date); // compute the number of days
   return (day + 6) % 7;                 // Jan 1, 2000 is a Saturday
 } 
 
@@ -144,7 +144,7 @@ void DFRobot_DS3231M::adjust(){
     statreg[0] &= ~0x80; // flip OSF bit
     writeReg(DS3231M_REG_STATUS, statreg, 1);
 }
-
+/*
 void DFRobot_DS3231M::getNowTime(){
     readReg(DS3231M_REG_RTC_SEC, bcd, 7);
     _ss = bcd2bin(bcd[0] & 0x7F);
@@ -159,11 +159,64 @@ void DFRobot_DS3231M::getNowTime(){
         _m -= 80;
     }
 }
+*/
+uint8_t DFRobot_DS3231M::getYear(){
+    uint8_t year;
+    uint8_t century;
+    readReg(DS3231M_REG_RTC_YEAR, &year, 1);
+    readReg(DS3231M_REG_RTC_MONTH, &century, 1);
+    year = bcd2bin(year) + 1970;
+    if(century > 80)
+        year+= 100;
+    return year;
+}
+
+uint8_t DFRobot_DS3231M::getMonth(){
+    uint8_t month;
+    readReg(DS3231M_REG_RTC_MONTH, &month, 1);
+    month = bcd2bin(month);
+    if(month > 80)
+        month -= 80;
+    return month;
+}
+
+uint8_t DFRobot_DS3231M::getDate(){
+    uint8_t date;
+    readReg(DS3231M_REG_RTC_DATE, &date, 1);
+    return bcd2bin(date);
+}
+
+uint8_t DFRobot_DS3231M::getHour(){
+    uint8_t hour;
+    readReg(DS3231M_REG_RTC_HOUR, &hour, 1);
+    hour = bcd2bin(hour) << 3;
+    hour = hour >> 3;
+    return hour;
+}
+
+uint8_t DFRobot_DS3231M::getMinute(){
+    uint8_t minute;
+    readReg(DS3231M_REG_RTC_MIN, &minute, 1);
+    return bcd2bin(minute);
+}
+
+uint8_t DFRobot_DS3231M::getSecond(){
+    uint8_t second;
+    readReg(DS3231M_REG_RTC_SEC, &second, 1);
+    return bcd2bin(second) & 0x7F;
+}
 
 float DFRobot_DS3231M::getTemperatureC(){
     uint8_t buf[2];
     readReg(DS3231M_REG_TEMPERATURE, buf, 2);
     return ((float)buf[0] + (buf[1]>>6)*0.25f);
+}
+
+float DFRobot_DS3231M::getTemperatureF(){
+    uint8_t buf[2];
+    readReg(DS3231M_REG_TEMPERATURE, buf, 2);
+    float c = ((float)buf[0] + (buf[1]>>6)*0.25f);
+    return c * 9 / 5 + 32;
 }
 
 bool DFRobot_DS3231M::isLostPower(void) {

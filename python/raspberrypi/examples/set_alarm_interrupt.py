@@ -1,3 +1,4 @@
+#-*- coding: utf-8 -*-
 '''
 @file set_alarm_interrupt.py
 
@@ -104,32 +105,34 @@ def IO1CallBack():#callback function
  
 GPIO.setup(IO1, GPIO.IN)
 '''
-@brief When interrupt pin get rising will run callback function
+@brief 当中断引脚变为高电平时，运行IO1CallBack()方法
 '''
 GPIO.add_event_detect(IO1, GPIO.RISING, callback = IO1CallBack)
 
 def main():
     while True:
-        data = rtc.get_now_time()
+        #if you are a beginner of python,you can run this code
         '''
-        print(rtc.year()),
+        print(rtc.get_year()),
         print("/"),
-        print(rtc.month()),
+        print(rtc.get_month()),
         print("/"),
-        print(rtc.date()),
+        print(rtc.get_date()),
         print(","),
         print(rtc.get_day_of_the_week()),
         print(","),
-        print(rtc.hour()),
+        print(rtc.get_hour()),
         print(":"),
-        print(rtc.minute()),
+        print(rtc.get_minute()),
         print(":"),
-        print(rtc.second()),
+        print(rtc.get_second()),
         print(","),
         print(rtc.get_AM_or_PM())
         '''
-        print("{0}/{1}/{2},{3},{4}:{5}:{6},{7}".format(rtc.year(),rtc.month(),rtc.date(),\
-        rtc.get_day_of_the_week(),rtc.hour(),rtc.minute(),rtc.second(),rtc.get_AM_or_PM()))
+        #If you have been learning Python for a while,you can run this code
+        print("{0}/{1}/{2},{3},{4}:{5}:{6},{7}".format(rtc.get_year(),rtc.get_month(),rtc.get_date(),\
+        rtc.get_day_of_the_week(),rtc.get_hour(),rtc.get_minute(),rtc.get_second(),rtc.get_AM_or_PM()))#print now time
+        
         print(" ")
         time.sleep(1)
 
