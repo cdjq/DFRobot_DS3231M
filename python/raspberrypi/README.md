@@ -18,8 +18,9 @@
 ## Installation
 
 To use this library, first download into the RaspberryPi, then open the examples folder and run the demo in the folder.
-* python get_time_and _tem.py
-
+```Python
+python get_time_and _tem.py
+```
 ## Methods
 
 ```Python
