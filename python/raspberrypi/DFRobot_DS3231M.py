@@ -79,9 +79,9 @@ class DFRobot_DS3231M:
     d = 0
     m = 0
     y = 0
-    daysInMonth = [31,28,31,30,31,30,31,31,30,31,30,31]
-    daysOfTheWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-    hourOfAM = [" ", " ", "AM", "PM"] 
+    days_in_month = [31,28,31,30,31,30,31,31,30,31,30,31]
+    days_of_the_week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    hour_of_am = [" ", " ", "AM", "PM"] 
     '''
     class NowTime():
         def __init__(self, year, month, date, hour, minute, second):
@@ -220,7 +220,7 @@ class DFRobot_DS3231M:
             y -= 2000
         days = d
         for i in range(1, m):
-            days += self.daysInMonth[i - 1]
+            days += self.days_in_month[i - 1]
         if (m > 2 and y % 4) == 0:
             ++days
         return days + 365 * y + int((y + 3) / 4) - 1
@@ -258,82 +258,77 @@ class DFRobot_DS3231M:
         return (day + 6) % 7
     
     def get_day_of_the_week(self):
-        return self.daysOfTheWeek[self.day_of_the_week()]
+        return self.days_of_the_week[self.day_of_the_week()]
 
     def set_year(self, year):
-        self.y = [self.bin2bcd(year + 30)]
+        self.y = self.bin2bcd(year + 30)
     
     def set_month(self, month):
-        self.m = [self.bin2bcd(month)]
+        self.m = self.bin2bcd(month)
     
     def set_date(self, date):
-        self.d = [self.bin2bcd(date)]
+        self.d = self.bin2bcd(date)
 
     def set_hour(self, hour, mode):
         if mode == 0:
-            self.hh = [self.bin2bcd(hour) | (mode >> 6)]
+            self.hh = self.bin2bcd(hour) | (mode << 6)
         else:
-            self.hh = [self.bin2bcd(hour) | (mode >> 5)]
+            self.hh = self.bin2bcd(hour) | (mode << 5)
     
     def set_minute(self,minute):
-        self.mm = [self.bin2bcd(minute)]
+        self.mm = self.bin2bcd(minute)
     
     def set_second(self, second):
-        self.ss = [self.bin2bcd(second)]
+        self.ss = self.bin2bcd(second)
     
     def get_AM_or_PM(self):
         buffer = self.read_reg(self._REG_RTC_HOUR)
-        buffer[0] = buffer[0] << 1
-        buffer[0] = buffer[0] >> 6
-        return self.hourOfAM[buffer[0]]
+        buffer[0] = buffer[0] & 0x60
+        buffer[0] = buffer[0] >> 5
+        return self.hour_of_am[buffer[0]]
         
     def adjust(self):
         data = [self.ss, self.mm, self.hh, self.day_of_the_week(), self.d, self.m, self.y]
-        self.write_reg(self._REG_RTC_YEAR, data)
+        self.write_reg(self._REG_RTC_SEC, data)
         statreg = self.read_reg(self._REG_STATUS)
         statreg[0] &= ~0x80
         self.write_reg(self._REG_STATUS, statreg)
     
-    def get_now_time(self):
-        self.bcd = self.read_reg(self._REG_RTC_SEC)
-        self._ss = self.bcd2bin(self.bcd[0] & 0x7F)
-        self._mm = self.bcd2bin(self.bcd[1])
-        self.bcd[2] = self.bcd[2] << 3
-        self._hh = self.bcd2bin(self.bcd[2] >> 3)
-        self._d = self.bcd2bin(self.bcd[4])
-        self._m = self.bcd2bin(self.bcd[5])
-        self._y = self.bcd2bin(self.bcd[6]) + 1970
-        if(self.bcd[5] > 80):
-            self._y += 100
-            self._m -= 80
-    
     def get_year(self):
-        self._y = self.bcd2bin(self.read_reg(self._REG_RTC_YEAR)) + 1970
+        year = self.read_reg(self._REG_RTC_YEAR)
+        self._y = self.bcd2bin(year[0]) + 1970
         century = self.read_reg(self._REG_RTC_MONTH)
-        if century > 80:
+        if century[0] > 80:
             self._y += 100
         return self._y
     
     def get_month(self):
-        self._m = self.bcd2bin(self.read_reg(self._REG_RTC_MONTH))
+        month = self.read_reg(self._REG_RTC_MONTH)
+        self._m = self.bcd2bin(month[0])
         if self._m > 80:
             self._m -= 80
         return self._m
     
     def get_date(self):
-        self._d = self.bcd2bin(self.read_reg(self._REG_RTC_DATE))
+        date = self.read_reg(self._REG_RTC_DATE)
+        self._d = self.bcd2bin(date[0])
+        return self._d 
     
     def get_hour(self):
-        _hh = self.read_reg(self._REG_RTC_HOUR)] << 3
-        _hh = _hh >> 3
-        return _hh
+        hour = self.read_reg(self._REG_RTC_HOUR)
+        self._hh = self.bcd2bin(hour[0] & 0x1F)
+        #self._hh = self._hh >> 3
+        return self._hh
     
     def get_minute(self):
-        return self.bcd2bin(self.read_reg(self._REG_RTC_MIN))
+        minute = self.read_reg(self._REG_RTC_MIN)
+        self._mm = self.bcd2bin(minute[0])
+        return self._mm
     
     def get_second(self):
-        _ss = self.read_reg(self._REG_RTC_SEC)
-        self.bcd2bin(_ss & 0x7F)
+        second = self.read_reg(self._REG_RTC_SEC)
+        self._ss = self.bcd2bin(second[0] & 0x7F)
+        return self._ss
     
     def get_temperature_C(self):
         buf = self.read_reg(self._REG_TEMPERATURE)
@@ -421,7 +416,7 @@ class DFRobot_DS3231M:
                 buffer = self.read_reg(self._REG_CONTROL)
                 buffer[0] &= 0xFD
                 self.write_reg(self._REG_CONTROL, buffer)
-        buf = self.read_reg(self._REG_ALM1_HOUR)
+        buf = self.read_reg(self._REG_ALM1_MIN)
         print(buf[0])
         self.clear_alarm()
         return

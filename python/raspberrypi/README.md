@@ -17,9 +17,10 @@
 
 ## Installation
 
-To use this library, first download into the RaspberryPi, then open the examples folder and run the demo in the folder.
+要使用这个库，首先下载这个库到树莓派，然后打开例程文件夹，要执行某个例程demox.py，<br>
+在命令行中键入python demox.py执行，例如想要执行get_time_and_temp.py例程，您需要输入命令：
 ```Python
-python xxx.py
+python get_time_and_temp.py
 ```
 ## Methods
 
@@ -31,37 +32,37 @@ python xxx.py
   begin()
   
   '''
-  @brief get year of now in sensor
+  @brief 获取当前年份
   @return year
   '''
   get_year()
   
   '''
-  @brief get month of now in sensor
+  @brief 获取当前月份
   @return month
   '''
   get_month()
   
   '''
-  @brief get date of now in sensor
+  @brief 获取当前日期
   @return date
   '''
   get_date()
   
   '''
-  @brief get hour of now in sensor
+  @brief 获取当前小时数
   @return hour
   '''
   get_hour()
   
   '''
-  @brief get minute of now in sensor
+  @brief 获取当前分钟数
   @return minute
   '''
   get_minute()
   
   '''
-  @brief get second of now in sensor
+  @brief 获取当前秒数
   @return second
   '''
   get_second()

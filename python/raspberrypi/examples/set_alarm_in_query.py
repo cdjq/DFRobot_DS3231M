@@ -3,7 +3,7 @@
 file set_alarm_in_query.py
 
 @brief Through the example, you can set alarm clock in query:
-@n     Experiment phenomenon: read data every 1 seconds and print it on serial port .
+@n     Experiment phenomenon: read data every 1 seconds and print it on terminal.
 
 @Copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
 @licence   The MIT License (MIT)
@@ -55,7 +55,7 @@ rtc.set_date(23)#Set the dates in 0-31
 @param mode:H24hours,AM,PM
 '''
 rtc.set_hour(1,rtc.H24hours)
-rtc.set_minute(59)#Set the minutes in 0-59
+rtc.set_minute(58)#Set the minutes in 0-59
 rtc.set_second(55)#Set the seconds in 0-59
 
 rtc.adjust()#Set status on work
@@ -79,7 +79,7 @@ rtc.adjust()#Set status on work
 @param minutes   Alarm clock (minute)
 @param seconds   Alarm clock (second)
 '''
-rtc.set_alarm(alarmType=rtc.SecondsMinutesHoursDayMatch,date=23,hour=2,mode=rtc.H24hours,minute=0,second=0)
+rtc.set_alarm(alarmType=rtc.SecondsMinutesHoursDayMatch,date=23,hour=1,mode=rtc.H24hours,minute=59,second=0)
 '''
 @brief disable the 32k output (default is enable)
 '''
@@ -95,7 +95,7 @@ def main():
         if rtc.is_alarm() == True:
             print("Alarm clock is triggered.")
             rtc.clear_alarm()
-        #if you are a beginner of python,you can run this code
+        #如果您不是很熟悉python，可以这样打印
         '''
         print(rtc.get_year()),
         print("/"),
@@ -113,7 +113,7 @@ def main():
         print(","),
         print(rtc.get_AM_or_PM())
         '''
-        #If you have been learning Python for a while,you can run this code
+        #5.如果您很熟悉python，可以这样打印数据
         print("{0}/{1}/{2},{3},{4}:{5}:{6},{7}".format(rtc.get_year(),rtc.get_month(),rtc.get_date(),\
         rtc.get_day_of_the_week(),rtc.get_hour(),rtc.get_minute(),rtc.get_second(),rtc.get_AM_or_PM()))#print now time
         

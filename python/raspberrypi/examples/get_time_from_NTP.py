@@ -3,7 +3,7 @@
 @file get_time_from_NTP.py
 
 @brief Through the example, you can get the accurate time from NTP server:
-@n     Experiment phenomenon: read data every 1 seconds and print it on serial port .
+@n     Experiment phenomenon: read data every 1 seconds and print it on terminal .
 
 @Copyright Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
 @licence   The MIT License (MIT)
@@ -68,7 +68,7 @@ print("Now this time has been input to DS3231M")
 
 def main():
     while True:
-        #if you are a beginner of python,you can run this code
+        #如果您不是很熟悉python，可以这样打印
         '''
         print(rtc.get_year()),
         print("/"),
@@ -86,7 +86,7 @@ def main():
         print(","),
         print(rtc.get_AM_or_PM())
         '''
-        #If you have been learning Python for a while,you can run this code
+        #5.如果您很熟悉python，可以这样打印数据
         print("{0}/{1}/{2},{3},{4}:{5}:{6},{7}".format(rtc.get_year(),rtc.get_month(),rtc.get_date(),\
         rtc.get_day_of_the_week(),rtc.get_hour(),rtc.get_minute(),rtc.get_second(),rtc.get_AM_or_PM()))#print now time
         print(" ")
