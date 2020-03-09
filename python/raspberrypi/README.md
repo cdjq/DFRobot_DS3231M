@@ -19,12 +19,12 @@
 
 要使用这个库，首先下载这个库到树莓派，然后打开例程文件夹，要执行某个例程demox.py，<br>
 在命令行中键入python demox.py执行，例如想要执行get_time_and_temp.py例程，您需要输入命令：
-```Python
+```python
 python get_time_and_temp.py
 ```
 ## Methods
 
-```Python
+```python
   '''
   @brief Init chip 
   @return True means chip init succeeds, False means it fails. 
